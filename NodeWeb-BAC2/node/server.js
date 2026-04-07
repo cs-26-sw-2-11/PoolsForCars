@@ -14,13 +14,29 @@ import fs from "fs";
 /* ****************************************************************************
  * Application code for the yatzy application 
  ***************************************************************************** */
-import {processReq} from "./app.js";
-export {startServer};
+import {processReq} from "./router.js";
+export {fileResponse, startServer};
 
 const hostname = '127.0.0.1';
 const port = 3410;
 //const serverName="http://localhost:3000";
 
+
+function fileResponse(res, filename){
+  const sPath=filename;
+  console.log("Reading:"+sPath);
+  fs.readFile(sPath, (err, data) => {
+    if (err) {
+      console.error(err);
+      errorResponse(res,404,String(err));
+    }else {
+      res.statusCode = 200;
+      res.setHeader('Content-Type', "text/html");
+      res.write(data);
+      res.end('\n');
+    }
+  })
+}
 
 
 /* *********************************************************************
