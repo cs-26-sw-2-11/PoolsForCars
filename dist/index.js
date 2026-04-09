@@ -1,4 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 console.log('Hello, Node.js TypeScript!');
+export {};
 //# sourceMappingURL=index.js.map

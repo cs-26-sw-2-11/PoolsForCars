@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/cs-26-sw-2-11/PoolsForCars#readme",
   "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
     "@types/node": "^25.5.2",
     "typescript": "^6.0.2"
   }
