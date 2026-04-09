@@ -1,8 +1,3 @@
-/* *****************************************************************
-  DISCLAIMER: This code is developed to support education and demo 
-  purposes and certain simplifications have been made to keep the code
-  short and comprehensible.
-  ****************************************************************** */
 
 //THIS APP USES ES6 MODULES  
 import http from 'http';
@@ -11,16 +6,13 @@ import fs from "fs";
 //import contentType from "content-type";
 //import url from "url";
 //import qs from "querystring";
-/* ****************************************************************************
- * Application code for the yatzy application 
- ***************************************************************************** */
+
 import {processReq} from "./router.js";
 export {fileResponse, startServer};
 
 const hostname = '127.0.0.1';
 const port = 3410;
 //const serverName="http://localhost:3000";
-
 
 function fileResponse(res, filename){
   const sPath=filename;
@@ -37,7 +29,6 @@ function fileResponse(res, filename){
     }
   })
 }
-
 
 /* *********************************************************************
    Setup HTTP server and route handling 
