@@ -1,11 +1,4 @@
-export declare function createRandomUser(): {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-};
-export declare const users: {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
-}[];
+import type { User } from '../models/user.model.js';
+export declare function createRandomUser(): User;
+export declare const users: User[];
 //# sourceMappingURL=user.seeder.d.ts.map
