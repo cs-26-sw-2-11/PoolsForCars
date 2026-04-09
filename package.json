@@ -1,0 +1,25 @@
+{
+  "name": "poolsforcars",
+  "version": "1.0.0",
+  "description": "This is a P2 project by AAU students. Thank you for reading this :)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cs-26-sw-2-11/PoolsForCars.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/cs-26-sw-2-11/PoolsForCars/issues"
+  },
+  "homepage": "https://github.com/cs-26-sw-2-11/PoolsForCars#readme",
+  "devDependencies": {
+    "@types/node": "^25.5.2",
+    "typescript": "^6.0.2"
+  }
+}

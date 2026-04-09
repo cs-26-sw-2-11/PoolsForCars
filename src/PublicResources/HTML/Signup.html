@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTML Signup Form</title>
+</head>
+
+<body>
+<div class="Signup Header">
+<h1>Sign-Up</h1>
+    <div class="wrap text">
+<fieldset> 
+<legend>Personal Information</legend>
+    <form action="signup-records" id="signupForm" method="post">
+    <label>Name: 
+        <input type="text" id="nameSignupInput" required></label><br>
+    <label>Address:
+        <input type="text" id="addressInput" required></label><br>
+    <label>City:
+        <input type="number" id="cityInput" minlength="4" maxlength="4" required></label><br>
+    <label>Phone: 
+        <input type="tel" id="phoneSignupInput" required></label><br>
+    <label>School Schedule: 
+        <input type="text" id="scheduleInput"></label><br>
+</fieldset>
+<fieldset>
+<legend>Carpooling preferences</legend>
+    <label>Days with acess to car:
+        <input type="number" id="daysInput" min="0"></label><br>
+    <label>Walking distance for pickup: 
+        <input type="number" id="walkingDistanceInput" min="0"></label><br>
+    <label>Dropoff radius from distination: 
+        <input type="number" id="dropoffRadiusInput" min="0"></label><br>
+    <label>Detour: 
+        <input type="number" id="detourInput" min="0"></label><br>
+</fieldset>
+    <button id="signupSubmit" type="submit"> 
+        Sign Up
+    </button>
+</div>
+</form>
+</body>
