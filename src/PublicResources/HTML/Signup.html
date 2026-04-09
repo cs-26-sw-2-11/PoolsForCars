@@ -4,36 +4,39 @@
     <title>HTML Signup Form</title>
 </head>
 
+
 <body>
 <div class="Signup Header">
 <h1>Sign-Up</h1>
     <div class="wrap text">
-<fieldset> 
-<legend>Personal Information</legend>
-    <form action="signup-records" id="signupForm" method="post">
-    <label>Name: 
-        <input type="text" id="nameSignupInput" required></label><br>
-    <label>Address:
-        <input type="text" id="addressInput" required></label><br>
-    <label>City:
-        <input type="number" id="cityInput" minlength="4" maxlength="4" required></label><br>
-    <label>Phone: 
-        <input type="tel" id="phoneSignupInput" required></label><br>
-    <label>School Schedule: 
-        <input type="text" id="scheduleInput"></label><br>
-</fieldset>
-<fieldset>
+    <fieldset>
+    <legend>Personal Information</legend>
+<form action="signup-records" id="signupForm" method="post">
+    <label>First Name:</label>
+        <input type="text" id="nameInput" name="firstName" required minlength="1" maxlength="25"><br>
+    <label>Last Name:</label>
+        <input type="text" id="lastNameInput" name="lastName" required minlength="1" maxlength="25"><br>
+    <label>Address:</label>
+        <input type="text" id="addressInput" name="address" required><br>
+    <label>Postal Code:</label>
+        <input type="number" id="postalCodeInput" name="postalCode" required minlength="4" maxlength="4"><br>
+    <label>Phone:</label>
+        <input type="tel" id="phoneInput" name="phone" required pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"><br>
+    <label>School Schedule:</label>
+        <input type="text" id="scheduleInput" name="schedule"><br>
+    </fieldset>
+    <fieldset>
 <legend>Carpooling preferences</legend>
-    <label>Days with acess to car:
-        <input type="number" id="daysInput" min="0"></label><br>
-    <label>Walking distance for pickup: 
-        <input type="number" id="walkingDistanceInput" min="0"></label><br>
-    <label>Dropoff radius from distination: 
-        <input type="number" id="dropoffRadiusInput" min="0"></label><br>
-    <label>Detour: 
-        <input type="number" id="detourInput" min="0"></label><br>
-</fieldset>
-    <button id="signupSubmit" type="submit"> 
+    <label>Days with access to a car:</label>
+        <input type="number" id="daysInput" name="days" required min="0"><br>
+    <label>Walking distance for pickup: </label>
+        <input type="number" id="walkingDistanceInput" name="walkingDistance" required min="0"><br>
+    <label>Dropoff distance from destination: </label>
+        <input type="number" id="dropoffRadiusInput" name="dropoffRadius" required min="0"><br>
+    <label>Detour from original route: </label>
+        <input type="number" id="detourInput" name="detour" required min="0"><br>
+    </fieldset>
+    <button id="signupSubmit" type="submit">
         Sign Up
     </button>
 </div>
