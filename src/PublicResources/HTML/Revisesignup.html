@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HTML Signup Form</title>
+</head>
+<body>
+<div class="Signup Header">
+<div class="title"> Sign Up </div>
+    <fieldset>
+    <legend>Personal Information</legend>
+<form action="signup-records" id="signupForm" method="post">  
+   <div class="input-box"> 
+    <span class="details">First Name</span>
+    <input type="text" required>
+   </div>
+    <div class="input-box"> 
+    <span class="details">Last Name</span>
+    <input type="text" required>
+   </div>
+    <div class="input-box"> 
+    <span class="details">Adresse</span>
+        <input type="text" id="addressInput" name="address" required><br>
+    </div>
+    <div class="input-box">
+        <span class="details">Postal Code</span>
+        <input type="number" id="postalCodeInput" name="postalCode" required minlength="4" maxlength="4"><br>
+    </div>
+    <div class="input-box">
+        <span class="details">Phone</span>
+        <input type="tel" id="phoneInput" name="phone" required pattern="[0-9]{8}"><br>
+    </div>
+   <div class="input-box">
+        <span class="details">School Schedule</span>
+        <input type="text" id="scheduleInput" name="schedule"><br>
+    </div>
+    </fieldset>
+    <fieldset>
+<legend>Carpooling preferences</legend>
+   <div class="input-box">
+    <span class="details">Days with acess to car per week: </span>
+        <input type="number" id="daysInput" name="days" required min="0" max="5"><br>
+   </div>
+    <div class="input-box">
+        <span class="details">Walking distance for pickup: </span>
+        <input type="number" id="walkingDistanceInput" name="walkingDistance" required min="0"><br>
+    </div>
+    <div class="input-box">
+        <span class="details">Dropoff distance from destination: </span>
+        <input type="number" id="dropoffRadiusInput" name="dropoffRadius" required min="0"><br>
+    </div>
+    <div class="input-box">
+        <span class="details">Detour from original route in minutes: </span>
+        <input type="number" id="detourInput" name="detour" required min="0"><br>
+    </div>
+    </fieldset>
+    <button id="signupSubmit" type="submit">
+        Sign Up
+    </button>
+</div>
+</form>
+</body>
