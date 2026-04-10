@@ -79,4 +79,52 @@ export const users = faker.helpers.multiple(createRandomUser, {
     count: 2,
 });
 
+
+
+import { OpenRouteService } from "ors-client";
+
+import dotenv from 'dotenv';
+dotenv.config();
+
+
+
+const client = new OpenRouteService({
+    apiKey: process.env.ORS_API_KEY || "",
+});
+
+async function geocodingExamples() {
+    try {
+        users.forEach(user => {
+            geocode(user);
+        });
+
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+
+async function geocode(user: User) {
+    const searchResults = await client.geocoding.search({
+        // text: "Fibigerstræde 15, 9220 Aalborg",
+        text: String(user.calender[0]?.pickupPoint.address),
+        // size: 5,
+        // layers: ["address", "country"],
+        // "focus.point": [57.012186, 9.992092],
+        // "boundary.circle": [57.012186, 9.992092, 1],
+        // "focus.point": [9.992092, 57.012186],
+        // "boundary.circle": [9.992092, 57.012186, 1],
+        // "boundary.country": ["DK"]
+    });
+
+    console.log("Search results:", searchResults.features.length);
+    searchResults.features.forEach((feature, index) => {
+        console.log(`Result: ${index}`, feature.properties);
+        console.log(`Result: ${index}`, feature.geometry);
+    });
+
+}
+
+
 console.log(JSON.stringify(users, null, 4));
+geocodingExamples();
