@@ -1,25 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="Frontendstyle.css">
     <title>HTML Login Form</title>
 </head>
 
+
 <body>
-    <div class="Login Header">
-    <h1>Carpooling</h1>
-    <h2>Enter your name and phone number </h2>
-
+    <div class="header">
+    <div class="tittle"></div><span> Carpooling</span>
+    <h4>Enter your last name and phone number </h2>
     <form action="login-records" id="loginForm" method="post">
-        <label for ="nameInput">Name: </label>
-            <input type="text" id="nameInput" name="nameInput"
-                placeholder="Enter your Name" required minlength="1" maxlength="25">
-
+        <label for ="lastNameInput">Last Name: </label>
+            <input type="text" id="lastNameInput" name="lastName"
+                placeholder="Enter your Last Name" required minlength="1" maxlength="25">
          <label for="phoneInput"> Phone Number:</label>
-            <input type="tel" id="phoneInput" name="phoneInput"
-                placeholder="Enter your Phone Number" required pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}">
-
-        <div class="wrap text">
-        <button id="loginSubmit" type="submit"> 
+            <input type="tel" id="phoneInput" name="phone"
+                placeholder="Enter your Phone Number" required pattern="[0-9]{8}">
+        <div class="wrapper">
+        <button id="loginSubmit" type="submit">
             Login
         </button>
      </div>
@@ -27,7 +26,5 @@
 <a href="https://media.newyorker.com/photos/59095bb86552fa0be682d9d0/master/pass/Monkey-Selfie.jpg">
 Create an account
 </a>
-    
-<div id="loginMessage"></div>
-</body>
-</html>
+   
+
