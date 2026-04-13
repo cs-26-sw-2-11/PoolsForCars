@@ -24,13 +24,21 @@ export const processReq = async (req: http.IncomingMessage, res: http.ServerResp
     }
     case "GET":{
         switch(req.url){
-            case "/":{
+            case "/":
+            try{
             fileResponse(res,"src/PublicResources/HTML/Signup.html")
-            }
+            }   catch (err) {
+                    console.log(err);
+                     return 'Something went wrong';
+                }
             break;
-            case "/login":{
+            case "/login":
+            try{
             fileResponse(res,"src/PublicResources/HTML/Login.html")
-            }
+            }   catch (err) {
+                    console.log(err);
+                    return 'Something went wrong';
+                }
             break;
             defaul:
                 console.log("hmmm something went wrong")
