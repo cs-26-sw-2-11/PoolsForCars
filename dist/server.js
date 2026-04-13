@@ -9,6 +9,7 @@ import { processReq } from "./router.js";
 const hostname = '127.0.0.1';
 const port = 3410;
 //const serverName="http://localhost:3000";
+// NEED TO HANDLE THE DIFFERENT REQUEST COMING IN FROM USER SIGNUP, LOGIN, GROUP CREATION AND SUCH
 export const fileResponse = async (res, filename) => {
     const sPath = filename;
     console.log("Reading:" + sPath);
