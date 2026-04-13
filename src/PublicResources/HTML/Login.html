@@ -1,30 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="Frontendstyle.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../CSS/Frontendstyle.css">
     <title>HTML Login Form</title>
 </head>
-
-
 <body>
-    <div class="header">
-    <div class="tittle"></div><span> Carpooling</span>
-    <h4>Enter your last name and phone number </h2>
-    <form action="login-records" id="loginForm" method="post">
-        <label for ="lastNameInput">Last Name: </label>
-            <input type="text" id="lastNameInput" name="lastName"
-                placeholder="Enter your Last Name" required minlength="1" maxlength="25">
-         <label for="phoneInput"> Phone Number:</label>
-            <input type="tel" id="phoneInput" name="phone"
-                placeholder="Enter your Phone Number" required pattern="[0-9]{8}">
-        <div class="wrapper">
-        <button id="loginSubmit" type="submit">
-            Login
-        </button>
-     </div>
-     </form>
+<div class="Header">
+<div class="title">Login</div>
+    <fieldset>
+    <div class="legend" style="text-align: center;">Welcome Back</div>
+<form action="login-records" id="loginForm" method="post">
+   <p class="form-intro" style="text-align: center;">Enter your last name and phone number.</p>
+   <div class="user-details">
+   <div class="input-box">
+    <label class="details" for="lastNameInput">Last Name</label>
+    <input type="text" id="lastNameInput" name="lastName"
+        placeholder="Enter your last name" required minlength="1" maxlength="25">
+   </div>
+    <div class="input-box">
+        <label class="details" for="phoneInput">Phone</label>
+        <input type="tel" id="phoneInput" name="phone"
+            placeholder="Enter your phone number" required pattern="[0-9]{8}">
+    </div>
+    </div>
+    </fieldset>
+    <button id="loginSubmit" type="submit">Login</button>
+</form>
+</br>
+<p class="login-text">Don't have an account? </br>
 <a href="https://media.newyorker.com/photos/59095bb86552fa0be682d9d0/master/pass/Monkey-Selfie.jpg">
-Create an account
-</a>
-   
-
+Create an account</a>
+</div>
+</br>
+</p>
+</body>
+</html>
