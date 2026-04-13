@@ -1,22 +1,26 @@
+ *{
+  box-sizing: border-box;
+}
 
 body {
-  height: 150vh;
+  min-height: 100vh;
+  margin: 0;
   display: flex;
-  justify-content: center;  
+  justify-content: center;
   align-items: center;
   padding: 10px;
-  background: lightblue;
+  background:#87ade1
 }
 
 .signup-header {
-  max-height: 700px;
-  max-width: 700px;
-  width: 100%;
+  width: min(100%, 520px);
   background-color: #fff;
-  padding: 25px 30px;
-  border-radius: 5px;
+  padding: 20px 25px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
 }
+
 .signup-header .title {
   font-size: 30px;
   font-weight: 500;
@@ -36,7 +40,7 @@ form .user-details {
 }
 form .user-details .input-box {
   margin-bottom: 15px;
-  width: calc(100% / 2 - 20px);
+  width: 100%;
 }
 form .input-box .details {
   display: block;
@@ -44,13 +48,11 @@ form .input-box .details {
   margin-bottom: 5px;
 }
 .user-details .input-box input {
-  box-sizing: border-box;
-  height: 45px;
   width: 100%;
   outline: none;
   font-size: 16px;
   border-radius: 5px;
-  padding-left: 15px;
+  padding: 12px 15px;
   border: 1px solid #ccc;
   border-bottom-width: 2px;
   transition: all 0.3s ease;
@@ -67,4 +69,8 @@ button {
     width: 100%;
     font-size: 16px;
 }
-
+@media (max-width: 520px) {
+  form .user-details .input-box {
+    width: 100%;
+  }
+}
