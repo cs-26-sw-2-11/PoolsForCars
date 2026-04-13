@@ -1,5 +1,4 @@
-import { createUser } from './models/user.model.js';
-import type { User } from './models/user.model.js';
+import { Serializer } from 'v8';
 import { fileResponse, startServer } from './server.js';
 import * as http from 'http';
 
@@ -11,51 +10,47 @@ export const processReq = async (req: http.IncomingMessage, res: http.ServerResp
     const parsedURL: URL = new URL(req.url ?? "", `http://${req.headers.host}`);
     const splitURL: string[] = parsedURL.pathname.split("/").filter(element => element !== "");
     const searchParams: string[] = parsedURL.searchParams.keys().toArray();
-    console.log(parsedURL, searchParams.length, searchParams, splitURL);
+    console.log(parsedURL, searchParams.length, searchParams);
 
-    switch (splitURL[0]) {
-        case "user": {
-            switch (splitURL[1]) {
-                case "create": {
-                    const body: User = await parseJsonBody(req) as User;
-                    await createUser(body);
-                }
+    
+
+    switch(req.method){
+    case "POST":{
+        switch(req.url){
+            case "/login":{
+                //console.log(1231);
             }
-
         }
     }
-
-
-
-    // switch (req.method) {
-    //     case "GET": {
-    //         fileResponse(res, "./src/PublicResources/HTML/carpool.html")
-    //     }
-    // }
-}
-
-
-
-
-function parseJsonBody(req: http.IncomingMessage): Promise<any> {
-  return new Promise((resolve, reject) => {
-    let body = "";
-
-    req.on("data", chunk => {
-      body += chunk.toString();
-    });
-
-    req.on("end", () => {
-      try {
-        const json = JSON.parse(body || "{}");
-        resolve(json);
-      } catch (err) {
-        reject(err);
-      }
-    });
-
-    req.on("error", err => {
-      reject(err);
-    });
-  });
+    case "GET":{
+        switch(req.url){
+            case "/":{
+            fileResponse(res,"src/PublicResources/HTML/Signup.html")
+            }
+            break;
+            case "/login":{
+            fileResponse(res,"src/PublicResources/HTML/Login.html")
+            }
+            break;
+            defaul:
+                console.log("hmmm something went wrong")
+            
+        /*
+        //USE "sp" from above to get query search parameters
+        switch(pathElements[1]){   
+          case "":{
+             fileResponse(res,"PublicResources/HTML/carpool.html")
+          }
+          break;
+          case "login": {
+             fileResponse(res,"PublicResources/HTML/Login.html")
+          }
+          break;
+          default: //for anything else we assume it is a file to be served
+            console.log("hmmm something went wrong")
+          break;
+        */
+        }
+    }
+    }
 }
