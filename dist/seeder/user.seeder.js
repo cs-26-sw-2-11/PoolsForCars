@@ -65,7 +65,7 @@ export const users = faker.helpers.multiple(createRandomUser, {
 });
 import { OpenRouteService } from "ors-client";
 import dotenv from 'dotenv';
-import { readUsers } from '../models/users.model.js';
+import { readUsers, writeUsers } from '../models/users.model.js';
 import { time } from 'node:console';
 dotenv.config();
 const client = new OpenRouteService({
@@ -101,15 +101,12 @@ async function geocode(user) {
 }
 // geocodingExamples();
 const before = new Date();
-for (const user of users) {
-    await createUser(user);
-    // console.log(user.id);
-}
+// for (const user of users) {
+//     await createUser(user);
+//     // console.log(user.id);
+// }
+await writeUsers(users);
 const after = new Date();
 console.log(`Creating ${fakeUsers} users took ` + String(after.getTime() - before.getTime()) + " milliseconds");
-// console.log(await readUsers());
-//
-// for (let i = 0; i < fakeUsers; i++) {
-console.log(await readUser(fakeUsers - 1));
-// }
+await readUsers();
 //# sourceMappingURL=user.seeder.js.map

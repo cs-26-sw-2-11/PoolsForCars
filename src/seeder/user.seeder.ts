@@ -89,7 +89,7 @@ export const users = faker.helpers.multiple(createRandomUser, {
 import { OpenRouteService } from "ors-client";
 
 import dotenv from 'dotenv';
-import { readUsers } from '../models/users.model.js';
+import { readUsers, writeUsers } from '../models/users.model.js';
 import { time } from 'node:console';
 dotenv.config();
 
@@ -138,10 +138,11 @@ async function geocode(user: User) {
 
 const before = new Date();
 
-for (const user of users) {
-    await createUser(user);
-    // console.log(user.id);
-}
+// for (const user of users) {
+//     await createUser(user);
+//     // console.log(user.id);
+// }
+await writeUsers(users);
 
 const after = new Date();
 
