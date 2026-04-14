@@ -2,8 +2,9 @@ import { createUsers, readUsers } from './users.model.js';
 export const createUser = async (user) => {
     try {
         let users = await readUsers();
-        users.set(users.size + 1, user);
-        createUsers(users);
+        users.set(users.size, user);
+        await createUsers(users);
+        // console.log(`Finished making user ${user.id}`)
     }
     catch (error) {
         console.log(error);

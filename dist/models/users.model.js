@@ -12,6 +12,7 @@ export const createUsers = async (users) => {
 export const readUsers = async () => {
     try {
         const users = await asyncReadFile(usersFile);
+        // console.log("User file:", users);
         if (users.length == 0) {
             throw "No Users";
         }

@@ -9,7 +9,7 @@ export async function asyncWriteFile(filename: string, data: any){
         });
     } catch (err) {
         console.log(err);
-        return 'Something went wrong';
+        return `Something went wrong while writing file ${join("src/database/", filename)}`;
     }
 }
 
@@ -22,12 +22,30 @@ export async function asyncReadFile(filename: string){
         return contents;
     } catch (err) {
         console.log(err);
-        return 'Something went wrong';
+        return `Something went wrong while reading file ${join("src/database/", filename)}`;
     }
 }
 
-// asyncWriteFile('data.json', JSON.stringify({name: 'John', age: 30}, null, 2));
-//
-// asyncReadFile('data.json').then((data) => {
-//     console.log(JSON.parse(data));
-// });
+
+export async function asyncAppendLineToFile(filename: string, data: any){
+    try {
+        await fsPromises.appendFile(join("src/database/", filename), data + "\n");
+    } catch (err) {
+        console.log(err);
+        return `Something went wrong while appending to file ${join("src/database/", filename)}`;
+    }
+}
+
+
+
+
+// fsPromises.appendFile
+// let users = [
+//     {name: 'John', age: 30},
+//     {name: 'Jane', age: 30},
+//     {name: 'Bob', age: 30},
+//     {name: 'Joe', age: 30}
+// ]
+// for (const user of users) {
+//     await asyncAppendLineToFile('data.json', JSON.stringify(user));
+// }
