@@ -1,4 +1,7 @@
 import type { CalenderDay } from './calender_day.model.js';
+import type { Users } from './users.model.js';
+
+import { createUsers, readUsers } from './users.model.js';
 
 export interface User {
     id: number;
@@ -8,18 +11,45 @@ export interface User {
     calender: CalenderDay[];
 }
 
-export const createUser = (user: User) => {
-    // code to create user from database
+export const createUser = async (user: User) => {
+    try {
+        let users: Users = await readUsers();
+        users.set(users.size + 1, user);
+        createUsers(users);
+    } catch (error) {
+        console.log(error);
+        throw error; // TODO: handle it properly
+    }
 };
 
-export const readUser = (user: User) => {
-    // code to read user from database
+export const readUser = async (userID: number) => {
+    try {
+        let users: Users = await readUsers();
+        return users.get(userID);
+    } catch (error) {
+        console.log(error);
+        throw error; // TODO: handle it properly
+    }
 };
 
-export const updateUser = (user: User) => {
-    // code to update user from database
+export const updateUser = async (userID: number, user: User) => {
+    try {
+        let users: Users = await readUsers();
+        users.set(userID, user);
+        createUsers(users);
+    } catch (error) {
+        console.log(error);
+        throw error; // TODO: handle it properly
+    }
 };
 
-export const deleteUser = (user: User) => {
-    // code to delete user from database
+export const deleteUser = async (userID: number) => {
+    try {
+        let users: Users = await readUsers();
+        users.delete(userID);
+        createUsers(users);
+    } catch (error) {
+        console.log(error);
+        throw error; // TODO: handle it properly
+    }
 };

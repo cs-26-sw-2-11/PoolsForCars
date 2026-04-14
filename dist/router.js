@@ -4,8 +4,8 @@ startServer();
 export const processReq = async (req, res) => {
     console.log("GOT: " + req.method + " " + req.url + " " + req.headers.host);
     const parsedURL = new URL(req.url ?? "", `http://${req.headers.host}`);
-    const keyword = parsedURL.searchParams.keys().toArray();
-    console.log(parsedURL, keyword.length, keyword);
+    const searchParams = parsedURL.searchParams.keys().toArray();
+    console.log(parsedURL, searchParams.length, searchParams);
     switch (req.method) {
         case "GET": {
             fileResponse(res, "./src/PublicResources/HTML/carpool.html");
