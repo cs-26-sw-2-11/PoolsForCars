@@ -5,19 +5,21 @@ import { createUser } from '../models/user.model.js';
 // ───────────────────────────────────────────────────────────────
 // Set the seed for the seeder - same seed will always generate same result.
 faker.seed(69420);
+// Users to create
+const fakeUsers = 1000;
 // Set the centerLocation which will be the destination for all users.
-let centerLocation = {
+const centerLocation = {
     address: "Fibigerstræde 15, 9220 Aalborg",
     coordinates: [57.0161, 9.97759],
 };
 // Set the coordinate deviation for origin points.
-let d = 0.011192;
+const d = 0.011192;
 // Set the time interval
-let hourTimes = ["08", "09"];
-let minuteTimes = ["00", "15", "30", "45"];
+const hourTimes = ["08", "09"];
+const minuteTimes = ["00", "15", "30", "45"];
 // ───────────────────────────────────────────────────────────────
 let idCounter = 0;
-let weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 export function createRandomUser() {
     let calender = [];
     for (let i = 0; i < 5; i++) {
@@ -59,10 +61,12 @@ export function createRandomUser() {
 }
 ;
 export const users = faker.helpers.multiple(createRandomUser, {
-    count: 2,
+    count: fakeUsers,
 });
 import { OpenRouteService } from "ors-client";
 import dotenv from 'dotenv';
+import { readUsers } from '../models/users.model.js';
+import { time } from 'node:console';
 dotenv.config();
 const client = new OpenRouteService({
     apiKey: process.env.ORS_API_KEY || "",
@@ -95,9 +99,12 @@ async function geocode(user) {
         console.log(`Result: ${index}`, feature.geometry);
     });
 }
-console.log(JSON.stringify(users, null, 4));
 // geocodingExamples();
-users.forEach(user => {
-    createUser(user);
-});
+const before = new Date();
+for (const user of users) {
+    await createUser(user);
+    // console.log(user.id);
+}
+const after = new Date();
+console.log(`Creating ${fakeUsers} users took ` + String(after.getTime() - before.getTime()) + " milliseconds");
 //# sourceMappingURL=user.seeder.js.map

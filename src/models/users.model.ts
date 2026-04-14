@@ -18,6 +18,7 @@ export const createUsers = async (users: Users): Promise<void> => {
 export const readUsers = async (): Promise<Users> => {
     try {
         const users: string = await asyncReadFile(usersFile);
+        // console.log("User file:", users);
         if (users.length == 0) {
             throw "No Users";
         }
@@ -33,7 +34,7 @@ export const readUsers = async (): Promise<Users> => {
         return mapUsers;
     } catch (error) {
         if (error == "No Users") {
-            return new Map<number, User>;
+            return new Map<number, User> as Users;
         }
         console.log(error);
         throw error; // TODO: handle it properly
