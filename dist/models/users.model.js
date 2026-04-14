@@ -1,13 +1,16 @@
-import { asyncWriteFile, asyncReadFile } from '../database/helper-functions.js';
+import { asyncWriteFile, asyncReadFile, asyncAppendLineToFile } from '../database/helper-functions.js';
 export const usersFile = "users.ndjson";
-// export const createUsers = async (users: Users): Promise<void> => {
-//     try {
-//         await asyncWriteFile(usersFile, JSON.stringify(Object.fromEntries(users)));
-//     } catch (error) {
-//         console.log(error);
-//         throw error; // TODO: handle it properly
-//     }
-// };
+export const writeUsers = async (users) => {
+    try {
+        for (const user of users) {
+            await asyncAppendLineToFile(usersFile, JSON.stringify(user));
+        }
+    }
+    catch (error) {
+        console.log(error);
+        throw error; // TODO: handle it properly
+    }
+};
 export const readUsers = async () => {
     try {
         const users = await asyncReadFile(usersFile);
