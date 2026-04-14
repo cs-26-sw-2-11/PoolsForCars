@@ -1,5 +1,6 @@
 import { fakerDA as faker } from '@faker-js/faker';
 import type { User } from '../models/user.model.js';
+import {  deleteUser } from '../models/user.model.js';
 import type { CalenderDay } from '../models/calender_day.model.js';
 import type { Location } from '../models/location.model.js';
 
@@ -14,7 +15,7 @@ import { createUser, readUser} from '../models/user.model.js';
 faker.seed(69420);
 
 // Users to create
-const fakeUsers = 1000;
+const fakeUsers = 10;
 
 // Set the centerLocation which will be the destination for all users.
 const centerLocation: Location = {
@@ -138,12 +139,18 @@ async function geocode(user: User) {
 
 const before = new Date();
 
-// for (const user of users) {
-//     await createUser(user);
-//     // console.log(user.id);
-// }
-await writeUsers(users);
+for (const user of users) {
+    await createUser(user);
+    // console.log(user.id);
+}
+// await writeUsers(users);
 
 const after = new Date();
 
 console.log(`Creating ${fakeUsers} users took ` + String(after.getTime() - before.getTime()) + " milliseconds");
+
+// console.log(await readUsers());
+
+await deleteUser(5);
+
+// console.log(await readUsers());

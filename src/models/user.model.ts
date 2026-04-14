@@ -27,7 +27,7 @@ export const createUser = async (user: User) => {
 export const readUser = async (user_id: number) => {
     try {
         let users: Users = await readUsers();
-        return users[user_id];
+        return users.get(user_id);
     } catch (error) {
         console.log(error);
         throw error; // TODO: handle it properly
@@ -37,7 +37,7 @@ export const readUser = async (user_id: number) => {
 export const updateUser = async (user_id: number, updated_user: User) => {
     try {
         let users: Users = await readUsers();
-        users[user_id] = updated_user;
+        users.set(user_id, updated_user);
         writeUsers(users);
     } catch (error) {
         console.log(error);
@@ -45,13 +45,13 @@ export const updateUser = async (user_id: number, updated_user: User) => {
     }
 };
 
-// export const deleteUser = async (user_id: number) => {
-//     try {
-//         let users: Users = await readUsers();
-//         users.delete(userID);
-//         createUsers(users);
-//     } catch (error) {
-//         console.log(error);
-//         throw error; // TODO: handle it properly
-//     }
-// };
+export const deleteUser = async (user_id: number) => {
+    try {
+        let users: Users = await readUsers();
+        console.log(users.delete(user_id));
+        writeUsers(users);
+    } catch (error) {
+        console.log(error);
+        throw error; // TODO: handle it properly
+    }
+};

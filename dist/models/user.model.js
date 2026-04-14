@@ -1,4 +1,4 @@
-import { readUsers, usersFile } from './users.model.js';
+import { readUsers, usersFile, writeUsers } from './users.model.js';
 import { asyncAppendLineToFile } from '../database/helper-functions.js';
 export const createUser = async (user) => {
     try {
@@ -9,35 +9,36 @@ export const createUser = async (user) => {
         throw error; // TODO: handle it properly
     }
 };
-export const readUser = async (userID) => {
+export const readUser = async (user_id) => {
     try {
         let users = await readUsers();
-        return users[userID];
+        return users.get(user_id);
     }
     catch (error) {
         console.log(error);
         throw error; // TODO: handle it properly
     }
 };
-// export const updateUser = async (userID: number, user: User) => {
-//     try {
-//         let users: Users = await readUsers();
-//         users.set(userID, user);
-//         createUsers(users);
-//     } catch (error) {
-//         console.log(error);
-//         throw error; // TODO: handle it properly
-//     }
-// };
-//
-// export const deleteUser = async (userID: number) => {
-//     try {
-//         let users: Users = await readUsers();
-//         users.delete(userID);
-//         createUsers(users);
-//     } catch (error) {
-//         console.log(error);
-//         throw error; // TODO: handle it properly
-//     }
-// };
+export const updateUser = async (user_id, updated_user) => {
+    try {
+        let users = await readUsers();
+        users.set(user_id, updated_user);
+        writeUsers(users);
+    }
+    catch (error) {
+        console.log(error);
+        throw error; // TODO: handle it properly
+    }
+};
+export const deleteUser = async (user_id) => {
+    try {
+        let users = await readUsers();
+        console.log(users.delete(user_id));
+        writeUsers(users);
+    }
+    catch (error) {
+        console.log(error);
+        throw error; // TODO: handle it properly
+    }
+};
 //# sourceMappingURL=user.model.js.map
