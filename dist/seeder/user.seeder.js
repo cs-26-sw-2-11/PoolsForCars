@@ -1,5 +1,5 @@
 import { fakerDA as faker } from '@faker-js/faker';
-import { createUser } from '../models/user.model.js';
+import { createUser, readUser } from '../models/user.model.js';
 // ───────────────────────────────────────────────────────────────
 //  :::::: SEEDING CONTROL PANEL ::::::
 // ───────────────────────────────────────────────────────────────
@@ -107,4 +107,9 @@ for (const user of users) {
 }
 const after = new Date();
 console.log(`Creating ${fakeUsers} users took ` + String(after.getTime() - before.getTime()) + " milliseconds");
+// console.log(await readUsers());
+//
+// for (let i = 0; i < fakeUsers; i++) {
+console.log(await readUser(fakeUsers - 1));
+// }
 //# sourceMappingURL=user.seeder.js.map

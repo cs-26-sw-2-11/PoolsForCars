@@ -2,18 +2,18 @@ import type { User } from './user.model.js';
 
 import { asyncWriteFile, asyncReadFile } from '../database/helper-functions.js';
 
-const usersFile: string = "users.json";
+export const usersFile: string = "users.ndjson";
 
-export type Users = Map<number, User>;
+export type Users = User[];
 
-export const createUsers = async (users: Users): Promise<void> => {
-    try {
-        await asyncWriteFile(usersFile, JSON.stringify(Object.fromEntries(users)));
-    } catch (error) {
-        console.log(error);
-        throw error; // TODO: handle it properly
-    }
-};
+// export const createUsers = async (users: Users): Promise<void> => {
+//     try {
+//         await asyncWriteFile(usersFile, JSON.stringify(Object.fromEntries(users)));
+//     } catch (error) {
+//         console.log(error);
+//         throw error; // TODO: handle it properly
+//     }
+// };
 
 export const readUsers = async (): Promise<Users> => {
     try {
@@ -23,18 +23,13 @@ export const readUsers = async (): Promise<Users> => {
             throw "No Users";
         }
 
-        const parsedUsers: Record<number, User> = JSON.parse(users) as Record<number, User>;
-
-        const mapUsers: Users = new Map<number, User>(
-            Object.entries(parsedUsers).map(([key, value]) => [
-                Number(key),
-                value
-            ])
-        );
-        return mapUsers;
+        return users
+            .split("\n")
+            .filter(line => line.trim() !== "")
+            .map(line => JSON.parse(line)) as Users;
     } catch (error) {
         if (error == "No Users") {
-            return new Map<number, User> as Users;
+            return [] as User[];
         }
         console.log(error);
         throw error; // TODO: handle it properly
