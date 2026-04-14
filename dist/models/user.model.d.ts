@@ -6,8 +6,8 @@ export interface User {
     phoneNumber: string;
     calender: CalenderDay[];
 }
-export declare const createUser: (user: User) => void;
-export declare const readUser: (user: User) => void;
-export declare const updateUser: (user: User) => void;
-export declare const deleteUser: (user: User) => void;
+export declare const createUser: (user: User) => Promise<void>;
+export declare const readUser: (userID: number) => Promise<User | undefined>;
+export declare const updateUser: (userID: number, user: User) => Promise<void>;
+export declare const deleteUser: (userID: number) => Promise<void>;
 //# sourceMappingURL=user.model.d.ts.map
