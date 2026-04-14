@@ -3,7 +3,7 @@ import type { User } from '../models/user.model.js';
 import type { CalenderDay } from '../models/calender_day.model.js';
 import type { Location } from '../models/location.model.js';
 
-import { createUser } from '../models/user.model.js';
+import { createUser, readUser} from '../models/user.model.js';
 
 
 // ───────────────────────────────────────────────────────────────

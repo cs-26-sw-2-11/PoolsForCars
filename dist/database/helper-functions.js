@@ -31,14 +31,14 @@ export async function asyncAppendLineToFile(filename, data) {
         return `Something went wrong while appending to file ${join("src/database/", filename)}`;
     }
 }
-fsPromises.appendFile;
-let users = [
-    { name: 'John', age: 30 },
-    { name: 'Jane', age: 30 },
-    { name: 'Bob', age: 30 },
-    { name: 'Joe', age: 30 }
-];
-for (const user of users) {
-    await asyncAppendLineToFile('data.json', JSON.stringify(user));
-}
+// fsPromises.appendFile
+// let users = [
+//     {name: 'John', age: 30},
+//     {name: 'Jane', age: 30},
+//     {name: 'Bob', age: 30},
+//     {name: 'Joe', age: 30}
+// ]
+// for (const user of users) {
+//     await asyncAppendLineToFile('data.json', JSON.stringify(user));
+// }
 //# sourceMappingURL=helper-functions.js.map
