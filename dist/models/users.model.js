@@ -1,9 +1,10 @@
-import { asyncWriteFile, asyncReadFile, asyncAppendLineToFile } from '../database/helper-functions.js';
+import { asyncReadFile, asyncAppendLineToFile, asyncWriteFile } from '../database/helper-functions.js';
 export const usersFile = "users.ndjson";
 export const writeUsers = async (users) => {
     try {
-        for (const user of users) {
-            await asyncAppendLineToFile(usersFile, JSON.stringify(user));
+        await asyncWriteFile(usersFile, "");
+        for (const key of users.keys()) {
+            await asyncAppendLineToFile(usersFile, JSON.stringify(users.get(key)));
         }
     }
     catch (error) {
@@ -14,18 +15,22 @@ export const writeUsers = async (users) => {
 export const readUsers = async () => {
     try {
         const users = await asyncReadFile(usersFile);
-        // console.log("User file:", users);
         if (users.length == 0) {
             throw "No Users";
         }
-        return users
+        const parsedUsers = users
             .split("\n")
             .filter(line => line.trim() !== "")
             .map(line => JSON.parse(line));
+        const mapUsers = new Map(parsedUsers.map(user => [
+            user.id,
+            user
+        ]));
+        return mapUsers;
     }
     catch (error) {
         if (error == "No Users") {
-            return [];
+            return new Map;
         }
         console.log(error);
         throw error; // TODO: handle it properly

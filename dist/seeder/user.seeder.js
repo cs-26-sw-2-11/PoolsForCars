@@ -1,4 +1,5 @@
 import { fakerDA as faker } from '@faker-js/faker';
+import { deleteUser } from '../models/user.model.js';
 import { createUser, readUser } from '../models/user.model.js';
 // ───────────────────────────────────────────────────────────────
 //  :::::: SEEDING CONTROL PANEL ::::::
@@ -6,7 +7,7 @@ import { createUser, readUser } from '../models/user.model.js';
 // Set the seed for the seeder - same seed will always generate same result.
 faker.seed(69420);
 // Users to create
-const fakeUsers = 1000;
+const fakeUsers = 10;
 // Set the centerLocation which will be the destination for all users.
 const centerLocation = {
     address: "Fibigerstræde 15, 9220 Aalborg",
@@ -101,12 +102,14 @@ async function geocode(user) {
 }
 // geocodingExamples();
 const before = new Date();
-// for (const user of users) {
-//     await createUser(user);
-//     // console.log(user.id);
-// }
-await writeUsers(users);
+for (const user of users) {
+    await createUser(user);
+    // console.log(user.id);
+}
+// await writeUsers(users);
 const after = new Date();
 console.log(`Creating ${fakeUsers} users took ` + String(after.getTime() - before.getTime()) + " milliseconds");
-await readUsers();
+// console.log(await readUsers());
+await deleteUser(5);
+// console.log(await readUsers());
 //# sourceMappingURL=user.seeder.js.map
