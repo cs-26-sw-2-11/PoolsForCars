@@ -1,9 +1,11 @@
 import { Serializer } from 'v8';
-import { fileResponse, startServer } from './server.js';
+import { handleRequest, fileResponse, startServer } from './server.js';
 import * as http from 'http';
+import * as app from './app.js';
 
 
 startServer();
+
 
 export const processReq = async (req: http.IncomingMessage, res: http.ServerResponse) => {
     console.log("GOT: " + req.method + " " + req.url + " " + req.headers.host);
@@ -12,13 +14,11 @@ export const processReq = async (req: http.IncomingMessage, res: http.ServerResp
     const searchParams: string[] = parsedURL.searchParams.keys().toArray();
     console.log(parsedURL, searchParams.length, searchParams);
 
-    
-
     switch(req.method){
     case "POST":{
         switch(req.url){
             case "/login":{
-                //console.log(1231);
+               handleRequest(req).then((result) => {app.cleanFormString(result)})
             }
         }
     }
@@ -29,7 +29,7 @@ export const processReq = async (req: http.IncomingMessage, res: http.ServerResp
             fileResponse(res,"src/PublicResources/HTML/Signup.html")
             }   catch (err) {
                     console.log(err);
-                     return 'Something went wrong';
+                    return 'Something went wrong';
                 }
             break;
             case "/login":
