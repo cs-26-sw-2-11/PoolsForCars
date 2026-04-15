@@ -1,6 +1,7 @@
 import { Serializer } from 'v8';
-import { fileResponse, startServer } from './server.js';
+import { handleRequest, fileResponse, startServer } from './server.js';
 import * as http from 'http';
+import * as app from './app.js';
 startServer();
 export const processReq = async (req, res) => {
     console.log("GOT: " + req.method + " " + req.url + " " + req.headers.host);
@@ -11,20 +12,28 @@ export const processReq = async (req, res) => {
         case "POST": {
             switch (req.url) {
                 case "/login": {
-                    //console.log(1231);
+                    handleRequest(req).then((result) => { app.cleanFormString(result); });
                 }
             }
         }
         case "GET": {
             switch (req.url) {
                 case "/":
-                    {
+                    try {
                         fileResponse(res, "src/PublicResources/HTML/Signup.html");
+                    }
+                    catch (err) {
+                        console.log(err);
+                        return 'Something went wrong';
                     }
                     break;
                 case "/login":
-                    {
+                    try {
                         fileResponse(res, "src/PublicResources/HTML/Login.html");
+                    }
+                    catch (err) {
+                        console.log(err);
+                        return 'Something went wrong';
                     }
                     break;
                     defaul: console.log("hmmm something went wrong");
