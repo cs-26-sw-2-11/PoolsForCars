@@ -1,5 +1,5 @@
 import { asyncReadFile, asyncAppendLineToFile, asyncWriteFile } from '../database/helper-functions.js';
-export const usersFile = "users.ndjson";
+export const usersFile = "users/users.ndjson";
 export const writeUsers = async (users) => {
     try {
         await asyncWriteFile(usersFile, "");

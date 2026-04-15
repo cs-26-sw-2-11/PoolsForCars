@@ -1,5 +1,5 @@
 import { fakerDA as faker } from '@faker-js/faker';
-import { deleteUser } from '../models/user.model.js';
+import { deleteUser, initUsers } from '../models/user.model.js';
 import { createUser, readUser } from '../models/user.model.js';
 // ───────────────────────────────────────────────────────────────
 //  :::::: SEEDING CONTROL PANEL ::::::
@@ -101,15 +101,21 @@ async function geocode(user) {
     });
 }
 // geocodingExamples();
+await initUsers();
 const before = new Date();
-for (const user of users) {
-    await createUser(user);
-    // console.log(user.id);
-}
+// await Promise.all(
+//     users.map(user => {
+//         createUser(user)
+//     }))
+// for (const user of users) {
+//     await createUser(user);
+//     console.log(user.id);
+// }
 // await writeUsers(users);
 const after = new Date();
 console.log(`Creating ${fakeUsers} users took ` + String(after.getTime() - before.getTime()) + " milliseconds");
 // console.log(await readUsers());
-await deleteUser(5);
+console.log(await readUser(5));
+await deleteUser(6);
 // console.log(await readUsers());
 //# sourceMappingURL=user.seeder.js.map

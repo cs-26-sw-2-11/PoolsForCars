@@ -1,18 +1,18 @@
-import type { User } from './user.model.js';
+// ====== IMPORTS ======
 import { asyncReadFile, asyncAppendLineToFile, asyncWriteFile } from '../database/helper-functions.js';
+import { USERS_FILE } from './user.model.js';
 
+import type { User } from './user.model.js';
 
+// ====== TYPES ======
 export type Users = Map<number, User>;
 
-
-export const usersFile: string = "users.ndjson";
-
-
+// ====== WRITE USERS ======
 export const writeUsers = async (users: Users): Promise<void> => {
     try {
-        await asyncWriteFile(usersFile, "");
+        await asyncWriteFile(USERS_FILE, "");
         for (const key of users.keys()) {
-            await asyncAppendLineToFile(usersFile, JSON.stringify(users.get(key)));
+            await asyncAppendLineToFile(USERS_FILE, JSON.stringify(users.get(key)));
         }
     } catch (error) {
         console.log(error);
@@ -20,9 +20,10 @@ export const writeUsers = async (users: Users): Promise<void> => {
     }
 };
 
+// ====== READ USERS ======
 export const readUsers = async (): Promise<Users> => {
     try {
-        const users: string = await asyncReadFile(usersFile);
+        const users: string = await asyncReadFile(USERS_FILE);
 
         if (users.length == 0) {
             throw "No Users";
