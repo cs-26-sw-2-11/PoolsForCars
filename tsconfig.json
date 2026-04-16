@@ -11,6 +11,7 @@
     "moduleResolution": "NodeNext",
     "target": "esnext",
     "types": ["node"],
+
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -44,6 +45,6 @@
 
     // Custom set options
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
-  }
+    "forceConsistentCasingInFileNames": true,
+    }
 }
