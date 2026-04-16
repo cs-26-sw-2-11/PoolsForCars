@@ -1,12 +1,13 @@
 import type { Cost } from './cost.model.js';
+import type { User } from './user.model.js';
 
 export interface Group {
     id: number;
     rows: number;
     columns: number;
-    row_labels: [number, number];
+    row_labels: User[];
     column_labels: string[];
-    values: Cost[][]
+    values: Cost[][];
 }
 
 export const createGroup = (group: Group) => {
