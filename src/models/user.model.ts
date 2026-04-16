@@ -28,7 +28,6 @@ export const META_FILE: string = "users/meta.json";
 // ====== IN-MEMORY STATE ======
 const USERS = new Map<number, User>() as Users;
 let meta: UserMeta;
-let lastUserId: number = 0;
 
 // ====== WRITE QUEUE ======
 let userWriteQueue: Promise<any> = Promise.resolve();
@@ -84,7 +83,7 @@ export const createUser = async (user: User): Promise<User> => {
         await asyncAppendLineToFile(USERS_FILE, JSON.stringify(user));
 
         // persist meta
-        await asyncWriteFile(META_FILE, JSON.stringify(meta))
+        await asyncWriteFile(META_FILE, JSON.stringify(meta));
 
         return user;
     })
