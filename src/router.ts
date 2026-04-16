@@ -1,5 +1,8 @@
+
 import { Serializer } from 'v8';
 import { handleRequest, fileResponse, startServer } from './server.js';
+import { createUser } from './models/user.model.js';
+import type { User } from './models/user.model.js';
 import * as http from 'http';
 import * as app from './app.js';
 
