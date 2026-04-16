@@ -2,9 +2,7 @@
 import * as fs from 'fs';
 import { asyncAppendLineToFile, asyncReadFile, asyncWriteFile, DATABASE_DIRNAME } from '../database/helper-functions.js'
 
-import type { CalenderDay } from './calender_day.model.js';
-import { createMeta, type Meta } from './meta.model.js'
-import type { Week } from './week.model.js';
+import { type Week } from './week.model.js';
 
 // ====== TYPES ======
 export interface User {
@@ -19,20 +17,24 @@ export interface User {
 
 export type Users = Map<number, User>;
 
+interface UserMeta {
+    lastId: number;
+}
+
 // ====== CONFIG ======
 export const USERS_FILE: string = "users/users.ndjson";
-const META_FILE: string = "users/meta.json";
+export const META_FILE: string = "users/meta.json";
 
 // ====== IN-MEMORY STATE ======
 const USERS = new Map<number, User>() as Users;
-let meta: Meta;
+let meta: UserMeta;
 let lastUserId: number = 0;
 
 // ====== WRITE QUEUE ======
-let writeQueue: Promise<any> = Promise.resolve();
+let userWriteQueue: Promise<any> = Promise.resolve();
 const enqueue = <T>(task: () => Promise<T>): Promise<T> => {
-    writeQueue = writeQueue.then(task, task); // handle the rejected callback properly or something
-    return writeQueue;
+    userWriteQueue = userWriteQueue.then(task, task); // handle the rejected callback properly or something
+    return userWriteQueue;
 }
 
 // ====== INIT (load from disk) ======;
@@ -42,10 +44,9 @@ export const initUsers = async (): Promise<void> => {
         try {
             const metaString: string = await asyncReadFile(META_FILE);
             if (metaString.length !== 0) {
-                meta = JSON.parse(metaString);
-                lastUserId = meta.lastUserId;
+                meta = JSON.parse(metaString) as UserMeta;
             } else {
-                meta = await createMeta();
+                meta = { lastId: 0 } as UserMeta;
             }
         } catch (error) {
             console.warn("Something went wrong, trying to initialize the users", error);
@@ -74,23 +75,16 @@ export const initUsers = async (): Promise<void> => {
 // ====== CREATE USER (SAFE) ======
 export const createUser = async (user: User): Promise<User> => {
     return enqueue(async () => {
-        const id: number = lastUserId++;
-        user.id = id;
+        user.id = meta.lastId++;
 
         // update memory
-        USERS.set(id, user);
+        USERS.set(user.id, user);
 
         // append to file
         await asyncAppendLineToFile(USERS_FILE, JSON.stringify(user));
 
         // persist meta
-        if (meta) {
-            console.log("meta data exists");
-            meta.lastUserId = lastUserId;
-            await asyncWriteFile(META_FILE, JSON.stringify(meta))
-        } else {
-            await asyncWriteFile(META_FILE, JSON.stringify({ lastUserId }))
-        }
+        await asyncWriteFile(META_FILE, JSON.stringify(meta))
 
         return user;
     })
