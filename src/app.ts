@@ -1,13 +1,21 @@
-import { processReq } from "./router.js";
-import { fileResponse, startServer } from "./server.js";
+//import { processReq } from "./router.js";
+import { fileResponse, /*startServer*/ } from "./server.js";
 import { type User } from "./models/user.model.js";
 //We use EC6 modules
 
 
 
+export const cleanFormStringSignup = (form: string) => {
+    try{
+        console.log(form);
+    } catch(err){
+        console.log(err);
+        return 'Something went wrong'
+    }
+}
+
 export const cleanFormStringLogin = (form: string) => {
     try{
-         console.log(form)
         let underway: string = form.replace("nameInput=", "")
         underway = underway.replace("phoneInput=","")
         // var login = underway.split("&")

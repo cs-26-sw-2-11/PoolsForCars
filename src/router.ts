@@ -1,15 +1,14 @@
-
+/*
 import { Serializer } from 'v8';
 import { handleRequest, fileResponse, startServer } from './server.js';
 import { createUser } from './models/user.model.js';
 import type { User } from './models/user.model.js';
 import * as http from 'http';
 import * as app from './app.js';
+*/
 
 
-startServer();
-
-
+/*
 export const processReq = async (req: http.IncomingMessage, res: http.ServerResponse) => {
     console.log("GOT: " + req.method + " " + req.url + " " + req.headers.host);
     const parsedURL: URL = new URL(req.url ?? "", `http://${req.headers.host}`);
@@ -20,7 +19,7 @@ export const processReq = async (req: http.IncomingMessage, res: http.ServerResp
     switch(req.method){
     case "POST":{
         switch(req.url){
-            case "/":{
+            case "/signup":{
                 handleRequest(req).then((result) => {app.cleanFormStringSignup(result)})
             }
             case "/login":{
@@ -48,8 +47,7 @@ export const processReq = async (req: http.IncomingMessage, res: http.ServerResp
             break;
             defaul:
                 console.log("hmmm something went wrong")
-            
-        /*
+        
         //USE "sp" from above to get query search parameters
         switch(pathElements[1]){   
           case "":{
@@ -63,8 +61,11 @@ export const processReq = async (req: http.IncomingMessage, res: http.ServerResp
           default: //for anything else we assume it is a file to be served
             console.log("hmmm something went wrong")
           break;
-        */
+
         }
     }
     }
 }
+*/
+
+

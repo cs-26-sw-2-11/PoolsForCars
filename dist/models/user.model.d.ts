@@ -8,7 +8,7 @@ export interface User {
     calender: Week[];
     groups: number[];
 }
-export type Users = Map<number, User>;
+export declare const USERS_FILE: string;
 export declare const initUsers: () => Promise<void>;
 export declare const createUser: (user: User) => Promise<User>;
 export declare const readUser: (user_id: number) => Promise<User>;

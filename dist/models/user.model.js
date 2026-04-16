@@ -1,11 +1,10 @@
 // ====== IMPORTS ======
 import * as fs from 'fs';
-import { readUsers, usersFile, writeUsers } from './users.model.js';
+import { writeUsers } from './users.model.js';
 import { asyncAppendLineToFile, asyncReadFile, asyncWriteFile, DATABASE_DIRNAME } from '../database/helper-functions.js';
-// import type { Users } from './users.model.js';
 import { createMeta } from './meta.model.js';
 // ====== CONFIG ======
-const USERS_FILE = "users/users.ndjson";
+export const USERS_FILE = "users/users.ndjson";
 const META_FILE = "users/meta.json";
 // ====== IN-MEMORY STATE ======
 const USERS = new Map();
@@ -38,7 +37,7 @@ export const initUsers = async () => {
     // Load users
     if (fs.existsSync(DATABASE_DIRNAME + USERS_FILE)) {
         try {
-            const users = await asyncReadFile(usersFile);
+            const users = await asyncReadFile(USERS_FILE);
             const parsedUsers = users
                 .split("\n")
                 .filter(line => line.trim() !== "")
@@ -73,6 +72,7 @@ export const createUser = async (user) => {
         return user;
     });
 };
+// ====== READ USER ======
 export const readUser = async (user_id) => {
     try {
         return USERS.get(user_id);
@@ -82,6 +82,7 @@ export const readUser = async (user_id) => {
         throw error; // TODO: handle it properly
     }
 };
+// ====== UPDATE USER ======
 export const updateUser = async (id, updated_user) => {
     return enqueue(async () => {
         // update memory
@@ -90,6 +91,7 @@ export const updateUser = async (id, updated_user) => {
         await writeUsers(USERS);
     });
 };
+// ====== DELETE USER ======
 export const deleteUser = async (id) => {
     return enqueue(async () => {
         // update memory
