@@ -1,0 +1,246 @@
+/* BASIC STYLING */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* PHONE FRAME */
+.phone {
+    width: 375px;
+    background: white;
+    border-radius: 40px;
+    border: 12px solid #999;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    max-height: 800px;
+    overflow-y: auto;
+}
+
+/* PHONE HEADER */
+.phone-header {
+    background: #f0f0f0;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+}
+
+/* NAVIGATION TABS */
+.nav-tabs {
+    display: flex;
+    background: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+}
+
+.nav-tab {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #999;
+    border-bottom: 3px solid transparent;
+}
+
+.nav-tab.active {
+    color: #333;
+    border-bottom-color: #667eea;
+}
+
+/* DATE NAVIGATION */
+.date-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+    gap: 10px;
+}
+
+.date-nav button {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.date-nav button:hover {
+    background: #f0f0f0;
+}
+
+#current-date {
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+}
+
+/* STEPS */
+.step {
+    padding: 20px;
+}
+
+.step h2 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* FORM ELEMENTS */
+form label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+    font-size: 14px;
+}
+
+form input[type="text"],
+form input[type="time"],
+form input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+}
+
+form input[type="text"]:focus,
+form input[type="time"]:focus,
+form input[type="number"]:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+}
+
+/* CHECKBOXES AND RADIO BUTTONS */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.checkbox-group input {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    margin: 0;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+/* BUTTONS */
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-back {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.btn-back:hover {
+    background: #d0d0d0;
+}
+
+.btn-next {
+    background: #667eea;
+    color: white;
+}
+
+.btn-next:hover {
+    background: #5568d3;
+}
+
+.btn-submit {
+    background: #28a745;
+    color: white;
+    width: 100%;
+}
+
+.btn-submit:hover {
+    background: #218838;
+}
+
+/* SUMMARY BOX */
+.summary-box {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.summary-box p {
+    margin: 10px 0;
+    font-size: 14px;
+    color: #555;
+}
+
+/* SUCCESS MESSAGE */
+.success-box {
+    padding: 30px 20px;
+    text-align: center;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 8px;
+    color: #155724;
+}
+
+.success-box h2 {
+    color: #155724;
+    margin-bottom: 10px;
+}
+
+/* SCROLLBAR */
+.phone::-webkit-scrollbar {
+    width: 6px;
+}
+
+.phone::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.phone::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.phone::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
