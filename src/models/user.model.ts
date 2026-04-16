@@ -24,8 +24,7 @@ const META_FILE: string = "users/meta.json";
 
 // ====== IN-MEMORY STATE ======
 const USERS = new Map<number, User>() as Users;
-let meta: Meta;
-let lastUserId: number = 0;
+let meta: UserMeta;
 
 // ====== WRITE QUEUE ======
 let writeQueue: Promise<any> = Promise.resolve();
@@ -84,13 +83,7 @@ export const createUser = async (user: User): Promise<User> => {
         await asyncAppendLineToFile(USERS_FILE, JSON.stringify(user));
 
         // persist meta
-        if (meta) {
-            console.log("meta data exists");
-            meta.lastUserId = lastUserId;
-            await asyncWriteFile(META_FILE, JSON.stringify(meta))
-        } else {
-            await asyncWriteFile(META_FILE, JSON.stringify({ lastUserId }))
-        }
+        await asyncWriteFile(META_FILE, JSON.stringify(meta));
 
         return user;
     })
