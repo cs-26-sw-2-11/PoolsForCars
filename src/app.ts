@@ -5,10 +5,10 @@ import { type User } from "./models/user.model.js";
 
 
 
-export const cleanFormString = (form: string) => {
+export const cleanFormStringLogin = (form: string) => {
     try{
-        form.replace
-        var underway = form.replace("nameInput=", "")
+         console.log(form)
+        let underway: string = form.replace("nameInput=", "")
         underway = underway.replace("phoneInput=","")
         // var login = underway.split("&")
         // console.log(login[0]+" + "+login[1])

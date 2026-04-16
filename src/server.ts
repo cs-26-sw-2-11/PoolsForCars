@@ -21,12 +21,12 @@ const port = 3410;
 export const handleRequest = async (req: http.IncomingMessage): Promise<string> => {
         // Stores the data as a buffer object, which contains binary data
         const chunks: Buffer[] = [];
-
+        
         // When a request comes, it pushes data to the buffer array
         for await (const chunk of req) {
             chunks.push(chunk as Buffer);
         }
-
+        console.log(chunks)
         // Once all the data has arrived, it removes the spaces in the buffer
         // and converts the binary data into a string.
         return Buffer.concat(chunks).toString()
@@ -56,6 +56,7 @@ async function requestHandler(req: http.IncomingMessage, res: http.ServerRespons
     console.log(`Received request: ${req.method} ${req.url}`);
     try {
         await processReq(req, res);
+        
     } catch (e) {
         console.log(/*InternalError + "!!: " + */ e);
         // errorResponse(res, 500, "");
