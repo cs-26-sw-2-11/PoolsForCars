@@ -4,6 +4,7 @@ import { asyncAppendLineToFile, asyncReadFile, asyncWriteFile, DATABASE_DIRNAME 
 
 import type { CalenderDay } from './calender_day.model.js';
 import { createMeta, type Meta } from './meta.model.js'
+import type { Week } from './week.model.js';
 
 // ====== TYPES ======
 export interface User {
@@ -11,7 +12,9 @@ export interface User {
     firstName: string;
     lastName: string;
     phoneNumber: string;
-    calender: CalenderDay[];
+    schedule: Week;
+    calender: Week[];
+    groups: number[];
 }
 
 export type Users = Map<number, User>;
