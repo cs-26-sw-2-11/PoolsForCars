@@ -1,7 +1,10 @@
 import { fakerDA as faker } from '@faker-js/faker';
 import type { User } from '../models/user.model.js';
+import { deleteUser, initUsers } from '../models/user.model.js';
 import type { CalenderDay } from '../models/calender_day.model.js';
 import type { Location } from '../models/location.model.js';
+
+import { createUser, readUser } from '../models/user.model.js';
 
 
 // ───────────────────────────────────────────────────────────────
@@ -11,18 +14,21 @@ import type { Location } from '../models/location.model.js';
 // Set the seed for the seeder - same seed will always generate same result.
 faker.seed(69420);
 
+// Users to create
+const fakeUsers = 10;
+
 // Set the centerLocation which will be the destination for all users.
-let centerLocation: Location = {
+const centerLocation: Location = {
     address: "Fibigerstræde 15, 9220 Aalborg",
     coordinates: [57.0161, 9.97759],
 }
 
 // Set the coordinate deviation for origin points.
-let d: number = 0.011192;
+const d: number = 0.011192;
 
 // Set the time interval
-let hourTimes: string[] = ["08", "09"];
-let minuteTimes: string[] = ["00", "15", "30", "45"];
+const hourTimes: string[] = ["08", "09"];
+const minuteTimes: string[] = ["00", "15", "30", "45"];
 
 
 
@@ -31,7 +37,7 @@ let minuteTimes: string[] = ["00", "15", "30", "45"];
 
 
 let idCounter = 0;
-let weekDays: [string, string, string, string, string] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const weekDays: [string, string, string, string, string] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 
 export function createRandomUser(): User {
@@ -76,7 +82,7 @@ export function createRandomUser(): User {
 };
 
 export const users = faker.helpers.multiple(createRandomUser, {
-    count: 2,
+    count: fakeUsers,
 });
 
 
@@ -84,6 +90,8 @@ export const users = faker.helpers.multiple(createRandomUser, {
 import { OpenRouteService } from "ors-client";
 
 import dotenv from 'dotenv';
+import { readUsers, writeUsers } from '../models/users.model.js';
+import { time } from 'node:console';
 dotenv.config();
 
 
@@ -126,5 +134,30 @@ async function geocode(user: User) {
 }
 
 
-console.log(JSON.stringify(users, null, 4));
-geocodingExamples();
+// geocodingExamples();
+
+await initUsers();
+
+const before = new Date();
+
+// await Promise.all(
+//     users.map(user => {
+//         createUser(user)
+//     }))
+
+// for (const user of users) {
+//     await createUser(user);
+//     console.log(user.id);
+// }
+// await writeUsers(users);
+
+const after = new Date();
+
+console.log(`Creating ${fakeUsers} users took ` + String(after.getTime() - before.getTime()) + " milliseconds");
+
+// console.log(await readUsers());
+
+console.log(await readUser(5));
+await deleteUser(6);
+
+// console.log(await readUsers());
