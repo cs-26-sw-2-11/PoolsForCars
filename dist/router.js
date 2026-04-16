@@ -12,7 +12,7 @@ export const processReq = async (req, res) => {
         case "POST": {
             switch (req.url) {
                 case "/login": {
-                    handleRequest(req).then((result) => { app.cleanFormString(result); });
+                    //handleRequest(req).then((result) => {app.cleanFormStringLogin(result)})
                 }
             }
         }

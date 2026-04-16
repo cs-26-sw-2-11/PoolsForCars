@@ -17,8 +17,11 @@ export const processReq = async (req: http.IncomingMessage, res: http.ServerResp
     switch(req.method){
     case "POST":{
         switch(req.url){
+            case "/":{
+                handleRequest(req).then((result) => {app.cleanFormStringSignup(result)})
+            }
             case "/login":{
-               handleRequest(req).then((result) => {app.cleanFormString(result)})
+                handleRequest(req).then((result) => {app.cleanFormStringLogin(result)})
             }
         }
     }
