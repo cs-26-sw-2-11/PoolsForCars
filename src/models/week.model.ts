@@ -1,4 +1,4 @@
-import type { CalenderDay } from "./calender_day.model.js";
+import { type CalenderDay } from "./calender_day.model.js";
 
 export interface Week {
     weekNumber: number;
