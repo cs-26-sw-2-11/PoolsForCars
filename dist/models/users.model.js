@@ -1,10 +1,12 @@
+// ====== IMPORTS ======
 import { asyncReadFile, asyncAppendLineToFile, asyncWriteFile } from '../database/helper-functions.js';
-export const usersFile = "users/users.ndjson";
+import { USERS_FILE } from './user.model.js';
+// ====== WRITE USERS ======
 export const writeUsers = async (users) => {
     try {
-        await asyncWriteFile(usersFile, "");
+        await asyncWriteFile(USERS_FILE, "");
         for (const key of users.keys()) {
-            await asyncAppendLineToFile(usersFile, JSON.stringify(users.get(key)));
+            await asyncAppendLineToFile(USERS_FILE, JSON.stringify(users.get(key)));
         }
     }
     catch (error) {
@@ -12,9 +14,10 @@ export const writeUsers = async (users) => {
         throw error; // TODO: handle it properly
     }
 };
+// ====== READ USERS ======
 export const readUsers = async () => {
     try {
-        const users = await asyncReadFile(usersFile);
+        const users = await asyncReadFile(USERS_FILE);
         if (users.length == 0) {
             throw "No Users";
         }

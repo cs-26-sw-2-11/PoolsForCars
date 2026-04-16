@@ -21,11 +21,14 @@
   "devDependencies": {
     "@faker-js/faker": "^10.4.0",
     "@types/dotenv": "^6.1.1",
-    "@types/node": "^25.5.2",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
     "typescript": "^6.0.2"
   },
   "dependencies": {
     "dotenv": "^17.4.1",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.2",
     "ors-client": "^1.0.6",
     "ts-node": "^10.9.2"
   }
