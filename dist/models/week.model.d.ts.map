@@ -1,1 +1,0 @@
-{"version":3,"file":"week.model.d.ts","sourceRoot":"","sources":["../../src/models/week.model.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,WAAW,EAAE,MAAM,yBAAyB,CAAC;AAE3D,MAAM,WAAW,IAAI;IACjB,UAAU,EAAE,MAAM,CAAC;IACnB,QAAQ,EAAE,MAAM,CAAC;IACjB,IAAI,EAAE,CAAC,WAAW,EAAE,WAAW,EAAE,WAAW,EAAE,WAAW,EAAE,WAAW,CAAC,CAAC;CAC3E"}
