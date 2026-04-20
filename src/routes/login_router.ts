@@ -1,6 +1,5 @@
 //=== IMPORTS ===///
 import express from "express";
-import * as path from 'path';
 import { body, validationResult} from "express-validator"
 import { filePath } from "./index.js"
 import { readUsers, type User, type Users } from "../models/user.model.js"
@@ -34,15 +33,18 @@ router.route("")
     //=== TERMINATES THE REQUEST BY NOT RESPONDING IF DATA IS INCORRECT ===//
     // Collects the objects from the HTTP body
     const { lastName, phone } = req.body;
-
     // Console logs to ensure they match input
-    console.log(` Last name: ${lastName} & Phone number: ${phone} `);
+    //console.log(` Last name: ${lastName} & Phone number: ${phone} `);
     
-    const exists: Map = readUsers();
-    console.log(exists)
-
-    return res.json({ success: true });
-
+    readUsers().then((users: Users) => {
+        users.forEach((user: User) => {
+            if(user.lastName === lastName && user.phoneNumber === phone){
+                console.log("Name and phone number match")
+                return res.json({ success: true });
+            }
+        });
+    });
+    console.log("lol")
 })
 
 export default router;

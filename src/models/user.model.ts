@@ -181,5 +181,3 @@ export const clearUsers = async (): Promise<void> => {
     await asyncWriteFile(USERS_FILE, "");
     await asyncWriteFile(META_FILE, "");
 }
-
-
