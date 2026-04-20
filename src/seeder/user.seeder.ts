@@ -146,7 +146,6 @@ export const clearAndFakeUsers = async () => {
 
 
 
-
 // dotenv.config();
 //
 //
@@ -177,5 +176,3 @@ export const clearAndFakeUsers = async () => {
 //
 // }
 //
-
-// geocodingExamples();
