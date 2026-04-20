@@ -1,53 +1,26 @@
+import express from "express";
+import routes from "./routes/index.js";
+import * as path from 'path';
 
-//THIS APP USES ES6 MODULES  
-import * as http from 'http';
-import fs from "fs";
+//=== VARIABLES ===//
 
-//import contentType from "content-type";
-//import url from "url";
-//import qs from "querystring";
-
-import { processReq } from "./router.js";
-// export { fileResponse, startServer };
+// Our port number on the IWP server
+const port = 3410;
 
 const hostname = '127.0.0.1';
-const port = 3410;
-//const serverName="http://localhost:3000";
+const app = express();
+const filePath = path.resolve(process.cwd());
 
-export const fileResponse = async (res: http.ServerResponse, filename: string) => {
-    const sPath = filename;
-    console.log("Reading:" + sPath);
-    fs.readFile(sPath, (err, data) => {
-        if (err) {
-            console.error(err);
-            // errorResponse(res, 404, String(err));
-        } else {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', "text/html");
-            res.write(data);
-            res.end('\n');
-        }
-    })
-}
 
-/* *********************************************************************
-   Setup HTTP server and route handling 
-   ******************************************************************** */
-const server = http.createServer(requestHandler);
-async function requestHandler(req: http.IncomingMessage, res: http.ServerResponse) {
-    console.log(`Received request: ${req.method} ${req.url}`);
-    try {
-        await processReq(req, res);
-    } catch (e) {
-        console.log(/*InternalError + "!!: " + */ e);
-        // errorResponse(res, 500, "");
-    }
-}
+//=== SOMETHING ===//
+// explain every lines
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/ScriptsForUsers", express.static(filePath+"/dist/html_scripts"));
+app.use("/CSSforHTML", express.static(filePath+"/src/PublicResources"));
+app.use(routes);
 
-export const startServer = async () => {
-    /* start the server */
-    server.listen(port, hostname, () => {
-        console.log(`Server running at http://${hostname}:${port}/`);
-        fs.writeFileSync('message.txt', `Server running at http://${hostname}:${port}/`);
-    });
-}
+
+//=== STARTS SERVER ===///
+app.listen(port)
+console.log(`Server running at http://${hostname}:${port}/`);
