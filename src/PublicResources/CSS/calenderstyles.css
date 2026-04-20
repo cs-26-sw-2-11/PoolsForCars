@@ -58,7 +58,16 @@ body {
     color: #333;
     border-bottom-color: #667eea;
 }
-
+/* WEEK NAVIGATION */
+.week-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #ddd;
+    gap: 10px;
+}
 /* DATE NAVIGATION */
 .date-nav {
     display: flex;

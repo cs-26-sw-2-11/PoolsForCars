@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ride Booking App</title>
-    <link rel="stylesheet" href="../../PublicResources/CSS/calenderstyles.css">
+    <link rel="stylesheet" href="../CSS/calenderstyles.css">
 </head>
 <body>
     <div class="phone">
         <!-- Phone header with time and status -->
         <div class="phone-header">
-            <span>9:41</span>
+            
         </div>
 
         <!-- Navigation tabs -->
@@ -18,7 +18,12 @@
             <button class="nav-tab">My Profile</button>
             <button class="nav-tab active">Calendar</button>
         </div>
-
+        <!-- Week Navigation -->
+        <div class="week-nav">
+            <button id="prev-week">← Previous Week</button>
+            <span id="current-week">Current Week</span>
+            <button id="next-week">Next Week →</button>
+        </div>
         <!-- Date navigation -->
         <div class="date-nav">
             <button id="prev-date">← Previous</button>
@@ -79,7 +84,7 @@
         <div class="step" id="step-3" style="display: none;">
             <h2>Step 3: More Details</h2>
             <form id="form-step-3">
-                <label>Do you have a car available?</label>
+                <label>Are you able to drive this date?</label>
                 <div class="checkbox-group">
                     <input type="radio" name="car-available" value="yes" id="car-yes">
                     <label for="car-yes">Yes</label>
@@ -127,6 +132,6 @@
         </div>
     </div>
 
-    <script src="../../calenderscript.js"></script>
+    <script src="../calenderscript.js"></script>
 </body>
 </html>
