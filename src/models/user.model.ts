@@ -11,7 +11,7 @@ export interface User {
     lastName: string;
     phoneNumber: string;
     schedule: Week;
-    calender: Week[];
+    calender: Record<number, Week>;
     groups: number[];
 }
 
@@ -136,30 +136,37 @@ export const writeUsers = async (users: Users): Promise<void> => {
 
 // ====== READ USERS ======
 export const readUsers = async (): Promise<Users> => {
-    try {
-        const users: string = await asyncReadFile(USERS_FILE);
-
-        if (users.length == 0) {
-            throw "No Users";
-        }
-
-        const parsedUsers: User[] = users
-            .split("\n")
-            .filter(line => line.trim() !== "")
-            .map(line => JSON.parse(line)) as User[];
-
-        const mapUsers: Users = new Map<number, User>(
-            parsedUsers.map(user => [
-                user.id,
-                user
-            ])
-        );
-        return mapUsers;
-    } catch (error) {
-        if (error == "No Users") {
-            return new Map<number, User>;
-        }
-        console.log(error);
-        throw error; // TODO: handle it properly
-    }
+    return USERS;
+    // try {
+    //     const users: string = await asyncReadFile(USERS_FILE);
+    //
+    //     if (users.length == 0) {
+    //         throw "No Users";
+    //     }
+    //
+    //     const parsedUsers: User[] = users
+    //         .split("\n")
+    //         .filter(line => line.trim() !== "")
+    //         .map(line => JSON.parse(line)) as User[];
+    //
+    //     const mapUsers: Users = new Map<number, User>(
+    //         parsedUsers.map(user => [
+    //             user.id,
+    //             user
+    //         ])
+    //     );
+    //     return mapUsers;
+    // } catch (error) {
+    //     if (error == "No Users") {
+    //         return new Map<number, User>;
+    //     }
+    //     console.log(error);
+    //     throw error; // TODO: handle it properly
+    // }
 };
+
+// ====== CLEAR USERS ======
+export const clearUsers = async (): Promise<void> => {
+    await asyncWriteFile(USERS_FILE, "");
+    await asyncWriteFile(META_FILE, "");
+}
