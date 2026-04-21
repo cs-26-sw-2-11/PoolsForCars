@@ -17,6 +17,7 @@ export interface User {
 }
 
 export type Users = Map<number, User>;
+export type usersJSON = Record<number, User>;
 
 interface UserMeta {
     lastId: number;
@@ -166,8 +167,19 @@ export const readUsers = async (): Promise<Users> => {
     // }
 };
 
+export const readUsersJSON = async (): Promise<usersJSON> => {
+    const users: usersJSON = {};
+
+    for (const key of USERS.keys()) {
+        users[key] = USERS.get(key) as User;
+    }
+    return users;
+}
+
 // ====== CLEAR USERS ======
 export const clearUsers = async (): Promise<void> => {
     await asyncWriteFile(USERS_FILE, "");
     await asyncWriteFile(META_FILE, "");
 }
+
+

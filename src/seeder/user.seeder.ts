@@ -18,7 +18,7 @@ import dotenv from 'dotenv';
 // Set the seed for the seeder - same seed will always generate same result.
 faker.seed(69420);
 
-// Users to create
+// Users to create when running the script directly
 const fakeUsers = 5;
 
 // Set the centerLocation which will be the destination for all users.
@@ -35,18 +35,19 @@ const minuteTimes: string[] = ["00", "15", "30", "45"];
 
 const startDate: string = new Date().toISOString();
 
+let idCounter = 0;
+const weekDays: [string, string, string, string, string] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 
 // ───────────────────────────────────────────────────────────────
 
 
 
-let idCounter = 0;
-const weekDays: [string, string, string, string, string] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+// ───────────────────────────────────────────────────────────────
+//  :::::: USER GENERATION ::::::
+// ───────────────────────────────────────────────────────────────
 
-
-export function createRandomUser(): User {
-
+export const createRandomUser = async (): Promise<User> => {
     // create the default schedule, used to initialize new weeks
     let schedule: Week = {
         startDate: startDate,
@@ -83,6 +84,7 @@ export function createRandomUser(): User {
             groups: [null, null],
         } as CalenderDay;
     });
+
     return {
         id: idCounter++,
         firstName: faker.person.firstName(),
@@ -98,19 +100,60 @@ export function createRandomUser(): User {
     };
 };
 
-export const users = faker.helpers.multiple(createRandomUser, {
-    count: fakeUsers,
-});
+export const createRandomUsers = async (amount: number): Promise<User[]> => {
+    const promises: Promise<User>[] = faker.helpers.multiple(createRandomUser, { count: amount });
+    return await Promise.all(promises);
+};
+
+export const clearAndFakeUsers = async () => {
+    await clearUsers();
+
+    await initUsers();
+
+    const before = new Date();
+
+
+    const users: User[] = await createRandomUsers(fakeUsers);
+
+    await Promise.all(
+        users.map(user => {
+            return createUser(user)
+        }));
+
+    const after = new Date();
+
+    console.log(`Creating ${fakeUsers} users took ` + String(after.getTime() - before.getTime()) + " milliseconds");
+}
 
 
 
-dotenv.config();
 
 
 
-const client = new OpenRouteService({
-    apiKey: process.env.ORS_API_KEY || "",
-});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// dotenv.config();
+//
+//
+//
+// const client = new OpenRouteService({
+//     apiKey: process.env.ORS_API_KEY || "",
+// });
 
 
 // async function geocode(user: User) {
@@ -136,32 +179,3 @@ const client = new OpenRouteService({
 //
 
 // geocodingExamples();
-
-await clearUsers();
-
-await initUsers();
-
-const before = new Date();
-
-// users.forEach(user => {
-//     geocode(user);
-// });
-
-await Promise.all(
-    users.map(user => {
-        return createUser(user)
-    }));
-
-const after = new Date();
-
-console.log(`Creating ${fakeUsers} users took ` + String(after.getTime() - before.getTime()) + " milliseconds");
-
-const usersRead: Users = await readUsers();
-
-console.log(usersRead);
-console.log(usersRead.get(0)?.schedule.days["Monday"]);
-
-// console.log(await readUser(5));
-// await deleteUser(6);
-
-// console.log(await readUsers());
