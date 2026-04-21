@@ -9,5 +9,5 @@ export interface CalenderDay {
     pickupPoint: Location;
     destination: Location;
     timeOfArrival: string;
-    groups: [number, number]
+    groups: [number | null, number | null];
 }

@@ -1,6 +1,5 @@
 // ====== IMPORTS ======
 import type { Cost } from './cost.model.js';
-import type { User } from './user.model.js';
 
 import * as fs from 'fs';
 import { asyncAppendLineToFile, asyncReadFile, asyncWriteFile, DATABASE_DIRNAME } from '../database/helper-functions.js'
@@ -10,9 +9,10 @@ export interface Group {
     id: number;
     rows: number;
     columns: number;
-    row_labels: User[];
-    column_labels: string[];
+    row_labels: [number, [number, number]][];
+    column_labels: number[];
     values: Cost[][];
+    route: number[];
 }
 
 export type Groups = Map<number, Group>;
