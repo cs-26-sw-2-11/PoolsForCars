@@ -1,10 +1,14 @@
 import type { CalenderDay } from "../models/calender_day.model.js";
 import type { WeeklyCompatibilityIndex } from "../models/compatibility.model.js";
-import { initUsers, readUser, readUsers, type User, type Users } from "../models/user.model.js";
+import { createGroup, initGroups, readGroup, type Group } from "../models/group.model.js";
+import { initUsers, readUser, readUsers, updateUser, type User, type Users } from "../models/user.model.js";
 import type { Week } from "../models/week.model.js";
 import { findEligbleDrivers } from "./temporal_compatibility.js";
+import type { Cost } from "../models/cost.model.js";
+import { getRoute } from "../openrouteservice.js";
 
-await initUsers()
+await initUsers();
+await initGroups();
 
 const users: Users = await readUsers();
 const user: User = users.get(0) as User;
@@ -18,20 +22,142 @@ export const findGroups = async (user: User) => {
         for (let dayString in week.days) {
             const day: CalenderDay = week.days[dayString] as CalenderDay;
             for (let candidate of compatibility.sortedAccumulator ?? []) {
-                testGroup(user, await readUser(candidate[0]));
-
+                testGroup(user, await readUser(candidate[0]), Number(weekNumber), dayString);
             }
         }
     }
 }
 
-const testGroup = (user: User, candidate: User) => {
-    if (candidate.calender[week][day]) {
 
+const testGroup = async (user: User, candidate: User, week: number, day: string) => {
+
+
+    const candidateGroups: [number | null, number | null] = candidate.calender[week]?.days[day]?.groups as [number | null, number | null];
+
+    let groupCandidate: Group;
+    if (candidateGroups[0] == null) {
+        groupCandidate = await makeNewGroup(candidate, week, day);
+    } else {
+        console.log("group found");
+        groupCandidate = await readGroup(candidateGroups[0]);
     }
 
 
+
+
+    // check if candidate is already in a group on this day.
+    // if no: make new group for driver on this day.
+
 }
+
+
+const makeNewGroup = async (user: User, week: number, day: string) => {
+    const group: Group = {
+        id: 0,
+        rows: 0,
+        columns: 0,
+        row_labels: [],
+        column_labels: [],
+        values: [],
+        route: []
+    };
+
+    const userDay = user.calender[week]?.days[day];
+    const v1: number = addGroupVertex(group, user.id, userDay?.pickupPoint.coordinates as [number, number]);
+    const v2: number = addGroupVertex(group, user.id, userDay?.destination.coordinates as [number, number]);
+    const e1: number = addGroupEdge(group, v1, v2);
+
+
+    const vertex1 = group.row_labels[v1] ?? [0, [0, 0]];
+    const vertex2 = group.row_labels[v2] ?? [0, [0, 0]];
+
+    const route = await getRoute(vertex1[1], vertex2[1]);
+    const routeTravelTime: number = route.routes[0]?.summary.duration as number;
+    console.log("TRAVEL TIME:", routeTravelTime);
+    //
+    // const routeTravelTime: number = 20;
+
+    if (group.values[e1] !== undefined) {
+        console.log("Writing travel times");
+        const v1Cost: Cost = group.values[e1][v1] as Cost;
+        const v2Cost: Cost = group.values[e1][v2] as Cost;
+        v1Cost.travelTimeSeconds = routeTravelTime;
+        v2Cost.travelTimeSeconds = routeTravelTime;
+    }
+
+    const newGroup = await createGroup(group);
+    user.groups[0] = newGroup.id;
+    if (userDay?.groups !== undefined) {
+        userDay.groups[0] = newGroup.id;
+    }
+    updateUser(user.id, user);
+    return newGroup;
+}
+
+
+function addGroupVertex(group: Group, userId: number, coordinates: [number, number]) {
+    group.row_labels.push([userId, coordinates]);
+    return group.rows++;
+}
+
+function addGroupEdge(group: Group, v1_index: number, v2_index: number) {
+    // add a column label for the new column
+    group.column_labels.push(group.columns++);
+
+    let newColumn: Cost[] = [];
+    for (let i = 0; i < group.rows; i++) {
+        let cost: Cost = {
+            travelTimeSeconds: 0,
+            straightLineDistance: 0
+        };
+        newColumn.push(cost);
+    }
+
+
+    let row1: [number, [number, number]] = group.row_labels[v1_index] ?? [0, [0, 0]];
+    let row2: [number, [number, number]] = group.row_labels[v2_index] ?? [0, [0, 0]];
+
+    let v1v2straghtLineDistance =
+        Math.sqrt(
+            Math.pow(row2[1][0] - row1[1][0], 2) +
+            Math.pow(row2[1][1] - row1[1][1], 2)
+        );
+
+    if (newColumn[v1_index] !== undefined &&
+        newColumn[v2_index] !== undefined) {
+        newColumn[v1_index].straightLineDistance = v1v2straghtLineDistance;
+        newColumn[v2_index].straightLineDistance = v1v2straghtLineDistance;
+    }
+
+    group.values.push(newColumn);
+    return group.columns - 1;
+}
+
+
+
+await findGroups(user);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// check if candidate is already in a group on this day.
+// if no: make new group for driver on this day.
+
+
+
 
 /*
 interface Cost {
