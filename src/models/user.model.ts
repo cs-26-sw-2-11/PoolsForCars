@@ -12,6 +12,7 @@ export interface User {
     phoneNumber: string;
     schedule: Week;
     calender: Record<number, Week>;
+    lookingForGroups: boolean;
     groups: number[];
 }
 

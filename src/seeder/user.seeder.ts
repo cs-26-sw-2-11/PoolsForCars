@@ -61,7 +61,7 @@ export function createRandomUser(): User {
             date: startDate,
             carAvailability: faker.datatype.boolean(),
             seatsOffered: faker.number.int({ min: 1, max: 4 }),
-            carpoolingIntent: faker.datatype.boolean(),
+            carpoolingIntent: /*faker.datatype.boolean()*/ true,
             pickupPoint: {
                 address: String(faker.location.streetAddress()),
                 coordinates: [
@@ -79,7 +79,8 @@ export function createRandomUser(): User {
                 const hour: number = faker.number.int({ min: 0, max: hourTimes.length - 1 });
                 const minute: number = faker.number.int({ min: 0, max: minuteTimes.length - 1 });
                 return `${hourTimes[hour]}:${minuteTimes[minute]}`;
-            })()
+            })(),
+            groups: [null, null],
         } as CalenderDay;
     });
     return {
@@ -91,6 +92,7 @@ export function createRandomUser(): User {
         calender: {
             "1": schedule,
         },
+        lookingForGroups: false,
         groups: [],
 
     };
