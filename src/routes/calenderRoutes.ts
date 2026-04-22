@@ -4,6 +4,10 @@ export const calenderRoutes = express.Router();
 
 import * as calenderController from '../controllers/calender.controller.js';
 
+calenderRoutes.route("/:userId")
+    .get(calenderController.getCalender)
+
+
 
 // calenderRoutes.get('/', calenderController.getCalenders);
 //

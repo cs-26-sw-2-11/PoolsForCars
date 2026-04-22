@@ -21,12 +21,12 @@ export const createUser = async (req: express.Request, res: express.Response, ne
 
 
 export const getUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.log("WAASSAA");
     const users: userModel.usersJSON = await userModel.readUsersJSON();
     res.status(200).json(users);
 }
 
 export const getUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.log(req.params);
     const user: userModel.User = await userModel.readUser(Number(req.params['userId']));
     res.status(200).json(user);
     // res.send(`NOT YET IMPLEMENTED, getUserById ${req.params}`);

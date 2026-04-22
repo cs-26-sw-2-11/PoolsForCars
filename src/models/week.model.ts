@@ -5,3 +5,5 @@ export interface Week {
     endDate: string;
     days: Record<string, CalenderDay>;
 }
+
+export type Calender = Record<number, Week>;

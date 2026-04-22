@@ -1,7 +1,5 @@
 import express from "express";
 import routes from "./routes/index.js";
-import { userRoutes } from "./routes/userRoutes.js";
-import { devUserRoutes } from "./routes/devUserRoutes.js";
 import * as path from 'path';
 
 
@@ -23,8 +21,6 @@ app.use("/ScriptsForUsers", express.static(filePath + "/dist/html_scripts"));
 app.use("/CSSforHTML", express.static(filePath + "/src/PublicResources"));
 app.use(routes);
 
-app.use('/users', userRoutes);
-app.use('/dev/users', devUserRoutes);
 
 
 //=== STARTS SERVER ===///
