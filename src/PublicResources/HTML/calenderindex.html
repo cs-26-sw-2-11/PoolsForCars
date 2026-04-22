@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ride Booking App</title>
-    <link rel="stylesheet" href="../CSS/calenderstyles.css">
+    <link rel="stylesheet" href="../../PublicResources/CSS/calenderstyles.css">
 </head>
 <body>
     <div class="phone">
@@ -15,20 +15,20 @@
 
         <!-- Navigation tabs -->
         <div class="nav-tabs">
-            <button class="nav-tab">My Profile</button>
-            <button class="nav-tab active">Calendar</button>
+            <button class="nav-tab">Calender</button>
+            <button class="nav-tab active">Schedule</button>
         </div>
         <!-- Week Navigation -->
         <div class="week-nav">
-            <button id="prev-week">← Previous Week</button>
+            <button id="prev-week" onclick="previousWeek()">← Prev Week</button>
             <span id="current-week">Current Week</span>
-            <button id="next-week">Next Week →</button>
+            <button id="next-week" onclick="nextWeek()">Next Week →</button>
         </div>
         <!-- Date navigation -->
         <div class="date-nav">
-            <button id="prev-date">← Previous</button>
-            <span id="current-date">Monday, 12/04</span>
-            <button id="next-date">Next →</button>
+            <button id="prev-date" onclick="previousDate()">← Previous</button>
+            <span id="current-date">Current Date</span>
+            <button id="next-date" onclick="nextDay()">Next →</button>
         </div>
 
         <!-- FORM STEP 1 -->
@@ -75,7 +75,7 @@
 
                 <div class="button-group">
                     <button type="button" class="btn-back" onclick="goToStep(1)">← Back</button>
-                    <button type="button" class="btn-next" onclick="goToStep(3)">Next →</button>
+                    <button type="button" class="btn-next" onclick="checkRoleandGo()">Next →</button>
                 </div>
             </form>
         </div>
@@ -119,7 +119,7 @@
             </div>
 
             <div class="button-group">
-                <button type="button" class="btn-back" onclick="goToStep(3)">← Back</button>
+                <button type="button" class="btn-back" onclick="goFromStepFour()">← Back</button>
                 <button type="button" class="btn-submit" onclick="submitBooking()">✓ Submit Booking</button>
             </div>
         </div>
@@ -132,6 +132,6 @@
         </div>
     </div>
 
-    <script src="../calenderscript.js"></script>
+    <script src="../../calenderscript.js"></script>
 </body>
 </html>

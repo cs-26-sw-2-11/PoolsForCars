@@ -138,7 +138,14 @@ function showSuccessMessage() {
     // Show success message
     document.getElementById("success-message").style.display = "block";
 }
+function goFromStepFour() {
+    if (bookingInfo.role === "passenger") {
+        goToStep(2);
+    } else {
+        goToStep(3);
+}
 
+}
 // ===== START OVER - RESET EVERYTHING =====
 function startOver() {
     // Clear all the data
@@ -171,3 +178,89 @@ function startOver() {
     // Go back to step 1
     goToStep(1);
 }
+
+function checkRoleandGo() {
+    // Get the selected role
+    const selectedRole = document.querySelector('input[name="role"]:checked').value;
+
+    // If the user is a driver, go to step 3, otherwise go to step 4
+    if (selectedRole === "driver") {
+        goToStep(3);
+    } else {
+        goToStep(4);
+    }
+}
+
+// ===== CALENDAR NAVIGATION FUNCTIONALITY =====
+
+// Initialize current date and week
+let currentDate = new Date();
+let currentWeekStart = getWeekStart(currentDate);
+
+// Function to get the start of the week (Monday)
+function getWeekStart(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Sunday
+    return new Date(d.setDate(diff));
+}
+
+// Function to format date as "Mon DD, YYYY"
+function formatDate(date) {
+    const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+}
+
+// Function to format week range
+function formatWeek(weekStart) {
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 6);
+    return `${formatDate(weekStart)} - ${formatDate(weekEnd)}`;
+}
+
+// Update the display of current date and week
+function Display() {
+    document.getElementById('current-date').textContent = formatDate(currentDate);
+    document.getElementById('current-week').textContent = formatWeek(currentWeekStart);
+}
+
+// Navigate to previous week
+function previousWeek() {
+    currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+    currentDate = new Date(currentWeekStart); // Set current date to start of the week
+    Display();
+}
+
+// Navigate to next week
+function nextWeek() {
+    currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+    currentDate = new Date(currentWeekStart); // Set current date to start of the week
+    Display();
+}
+
+// Navigate to previous date
+function previousDate() {
+    currentDate.setDate(currentDate.getDate() - 1);
+    // If we've gone to a previous week, update the week start
+    if (currentDate < currentWeekStart) {
+        currentWeekStart = getWeekStart(currentDate);
+    }
+    Display();
+}
+
+// Navigate to next date
+function nextDay() {
+    currentDate.setDate(currentDate.getDate() + 1);
+    // If we've gone to a next week, update the week start
+    const nextWeekStart = getWeekStart(currentDate);
+    if (nextWeekStart > currentWeekStart) {
+        currentWeekStart = nextWeekStart;
+    }
+    Display();
+}
+
+// Initialize the calendar display when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    Display();
+});
+
