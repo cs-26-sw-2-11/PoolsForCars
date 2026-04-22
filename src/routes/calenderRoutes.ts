@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.route("")
     .get((req, res) => {
-        res.sendFile(filePath + "/Calender.html");
+        res.sendFile(filePath + "/calenderindex.html");
     });
 
 router.route("/:userId")
