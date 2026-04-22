@@ -4,9 +4,11 @@ import * as path from 'path';
 import { body, validationResult } from "express-validator";
 import loginRoutes from "./login_router.js";
 import signupRoutes from "./signupRoutes.js";
+import profileRoutes from "./profileRoutes.js";
 import { userRoutes } from "./userRoutes.js";
 import { devUserRoutes } from "./devUserRoutes.js";
-import { calenderRoutes } from "./calenderRoutes.js";
+import calenderRoutes from "./calenderRoutes.js";
+import { profile } from "console";
 
 
 
@@ -30,7 +32,7 @@ router.use('/login', loginRoutes);
 router.use('/signup', signupRoutes);
 router.use('/users', userRoutes);
 router.use('/calender', calenderRoutes);
-router.use('/profile', calenderRoutes);
+router.use('/profile', profileRoutes);
 router.use('/groups', calenderRoutes);
 
 router.use('/dev/users', devUserRoutes);
