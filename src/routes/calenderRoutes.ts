@@ -1,17 +1,23 @@
+//=== IMPORTS ===///
 import express from 'express';
-
-export const calenderRoutes = express.Router();
-
+import { filePath } from "./index.js"
 import * as calenderController from '../controllers/calender.controller.js';
 
-calenderRoutes.route("/:userId")
+const router = express.Router();
+
+
+router.route("")
+    .get((req, res) => {
+        res.sendFile(filePath + "/Calender.html");
+    });
+
+router.route("/:userId")
     .get(calenderController.getCalender)
 
 
 
-// calenderRoutes.get('/', calenderController.getCalenders);
 //
 // calenderRoutes.get('/:calenderId', calenderController.getcalenderById);
 //
 // calenderRoutes.post('/', calenderController.createcalender);
-
+export default router;
