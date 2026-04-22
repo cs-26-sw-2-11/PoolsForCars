@@ -11,41 +11,24 @@
 </head>
 
 <body>
-
-<div class="Header">
-  <div class="title">Login</div>
-
-  <!-- ✅ FORM START -->
-  <form id="loginForm">
-
+<div class="Header"style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);;">
+<div class="title" style="text-align: center;"><h3>Login</h3></div>
     <fieldset>
-
-      <div class="legend" style="text-align: center;">
-        Welcome Back
-      </div>
-
-      <p class="form-intro" style="text-align: center;">
-        Enter your last name and phone number.
-      </p>
-
-      <div class="user-details">
-
-        <div class="input-box">
-          <label for="lastNameInput">Last Name</label>
-          <input type="text" id="lastNameInput" name="lastName"
-            placeholder="Enter your last name"
-            required minlength="1" maxlength="25">
-        </div>
-
-        <div class="input-box">
-          <label for="phoneInput">Phone</label>
-          <input type="tel" id="phoneInput" name="phone"
-            placeholder="Enter your phone number"
-            required pattern="[0-9]{8}">
-        </div>
-
-      </div>
-
+    <div class="legend" style="text-align: center;">Welcome</div>
+<form action="login-records" id="loginForm" method="post">
+   <p class="form-intro" style="text-align: center;">Enter your last name and phone number.</p>
+   <div class="user-details">
+   <div class="input-box">
+    <label class="details" for="lastNameInput">Last Name</label>
+    <input type="text" id="lastNameInput" name="lastName"
+        placeholder="Enter your last name" required minlength="1" maxlength="25">
+   </div>
+    <div class="input-box">
+        <label class="details" for="phoneInput">Phone</label>
+        <input type="tel" id="phoneInput" name="phone"
+            placeholder="Enter your phone number" required pattern="[0-9]{8}">
+    </div>
+    </div>
     </fieldset>
 
     <!-- ✅ MUST BE INSIDE FORM -->

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../CSS/Frontendstyle.css">
+    <title>Profile</title>
+</head>
+<body>
+    <div class="profile-page">
+        <div class="Header Header--profile">
+            <nav class="menu-bar menu-bar--inside" aria-label="Top navigation">
+                <ul class="topbarmenu">
+                    <li><a href="Signup.html">Calendar</a></li>
+                    <li><a href="Profile.html">Profile</a></li>
+                    <li><a href="Login.html">Group</a></li>
+                    <li><a href="https://media.newyorker.com/photos/59095bb86552fa0be682d9d0/master/pass/Monkey-Selfie.jpg">Logout</a></li>
+                </ul>
+            </nav>
+
+            <section class="profile-hero-card">
+                <div class="profile-hero" aria-label="Profile image">
+                    <div class="profile-avatar">
+                        <div class="profile-avatar__icon"></div>
+                    </div>
+                </div>
+                <div class="profile-hero-copy">
+                    <div class="title title--left">Welcome John Doe</div>
+                    <p class="form-intro">Manage your personal information and carpooling preferences.</p>
+                </div>
+            </section>
+
+            <form action="profile-records" id="profileForm" method="post">
+                <fieldset>
+                    <div class="legend">Personal Information</div>
+                    <div class="user-details user-details--stacked">
+                        <div class="input-box">
+                            <label class="details" for="profileFirstName">First name</label>
+                            <input type="text" id="profileFirstName" name="firstName" required>
+                        </div>
+                        <div class="input-box">
+                            <label class="details" for="profileLastName">Last name</label>
+                            <input type="text" id="profileLastName" name="lastName" required>
+                        </div>
+                        <div class="input-box">
+                            <label class="details" for="profilePhone">Phone</label>
+                            <input type="tel" id="profilePhone" name="phone" required pattern="[0-9]{8}">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <div class="legend">Carpooling Preferences</div>
+                    <div class="day-grid">
+                        <section class="day-card" data-role-card>
+                            <div class="day-card__title">Monday</div>
+                            <div class="day-card__field">
+                                <span class="details">Passenger or Driver</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="mondayPassenger">
+                                        <input type="radio" id="mondayPassenger" name="mondayRideRole" value="passenger" checked>
+                                        <span>Passenger</span>
+                                    </label>
+                                    <label class="radio-option" for="mondayDriver">
+                                        <input type="radio" id="mondayDriver" name="mondayRideRole" value="driver">
+                                        <span>Driver</span>
+                                    </label>
+                                </div>
+                                <input type="hidden" name="mondayCarAvailability" value="false">
+                                <input type="hidden" name="mondayCarpoolingIntent" value="true">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="mondaySeats">Seats Available</label>
+                                <input type="number" id="mondaySeats" name="mondaySeatsOffered" min="0" max="8" placeholder="Auto 0 if passenger">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="mondayPickup">Pickup-point</label>
+                                <input type="text" id="mondayPickup" name="mondayPickupPoint" placeholder="Address to point">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="mondayDestination">Destination</label>
+                                <input type="text" id="mondayDestination" name="mondayDestination" placeholder="Address to stop">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="mondayArrival">Time of arrival</label>
+                                <input type="time" id="mondayArrival" name="mondayTimeOfArrival">
+                            </div>
+                        </section>
+
+                        <section class="day-card" data-role-card>
+                            <div class="day-card__title">Tuesday</div>
+                            <div class="day-card__field">
+                                <span class="details">Passenger or Driver</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="tuesdayPassenger">
+                                        <input type="radio" id="tuesdayPassenger" name="tuesdayRideRole" value="passenger" checked>
+                                        <span>Passenger</span>
+                                    </label>
+                                    <label class="radio-option" for="tuesdayDriver">
+                                        <input type="radio" id="tuesdayDriver" name="tuesdayRideRole" value="driver">
+                                        <span>Driver</span>
+                                    </label>
+                                </div>
+                                <input type="hidden" name="tuesdayCarAvailability" value="false">
+                                <input type="hidden" name="tuesdayCarpoolingIntent" value="true">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="tuesdaySeats">Seats Available</label>
+                                <input type="number" id="tuesdaySeats" name="tuesdaySeatsOffered" min="0" max="8" placeholder="Auto 0 if passenger">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="tuesdayPickup">Pickup-point</label>
+                                <input type="text" id="tuesdayPickup" name="tuesdayPickupPoint" placeholder="Address to point">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="tuesdayDestination">Destination</label>
+                                <input type="text" id="tuesdayDestination" name="tuesdayDestination" placeholder="Address to stop">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="tuesdayArrival">Time of arrival</label>
+                                <input type="time" id="tuesdayArrival" name="tuesdayTimeOfArrival">
+                            </div>
+                        </section>
+
+                        <section class="day-card" data-role-card>
+                            <div class="day-card__title">Wednesday</div>
+                            <div class="day-card__field">
+                                <span class="details">Passenger or Driver</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="wednesdayPassenger">
+                                        <input type="radio" id="wednesdayPassenger" name="wednesdayRideRole" value="passenger" checked>
+                                        <span>Passenger</span>
+                                    </label>
+                                    <label class="radio-option" for="wednesdayDriver">
+                                        <input type="radio" id="wednesdayDriver" name="wednesdayRideRole" value="driver">
+                                        <span>Driver</span>
+                                    </label>
+                                </div>
+                                <input type="hidden" name="wednesdayCarAvailability" value="false">
+                                <input type="hidden" name="wednesdayCarpoolingIntent" value="true">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="wednesdaySeats">Seats Available</label>
+                                <input type="number" id="wednesdaySeats" name="wednesdaySeatsOffered" min="0" max="8" placeholder="Auto 0 if passenger">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="wednesdayPickup">Pickup-point</label>
+                                <input type="text" id="wednesdayPickup" name="wednesdayPickupPoint" placeholder="Address to point">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="wednesdayDestination">Destination</label>
+                                <input type="text" id="wednesdayDestination" name="wednesdayDestination" placeholder="Address to stop">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="wednesdayArrival">Time of arrival</label>
+                                <input type="time" id="wednesdayArrival" name="wednesdayTimeOfArrival">
+                            </div>
+                        </section>
+
+                        <section class="day-card" data-role-card>
+                            <div class="day-card__title">Thursday</div>
+                            <div class="day-card__field">
+                                <span class="details">Passenger or Driver</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="thursdayPassenger">
+                                        <input type="radio" id="thursdayPassenger" name="thursdayRideRole" value="passenger" checked>
+                                        <span>Passenger</span>
+                                    </label>
+                                    <label class="radio-option" for="thursdayDriver">
+                                        <input type="radio" id="thursdayDriver" name="thursdayRideRole" value="driver">
+                                        <span>Driver</span>
+                                    </label>
+                                </div>
+                                <input type="hidden" name="thursdayCarAvailability" value="false">
+                                <input type="hidden" name="thursdayCarpoolingIntent" value="true">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="thursdaySeats">Seats Available</label>
+                                <input type="number" id="thursdaySeats" name="thursdaySeatsOffered" min="0" max="8" placeholder="Auto 0 if passenger">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="thursdayPickup">Pickup-point</label>
+                                <input type="text" id="thursdayPickup" name="thursdayPickupPoint" placeholder="Address to point">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="thursdayDestination">Destination</label>
+                                <input type="text" id="thursdayDestination" name="thursdayDestination" placeholder="Address to stop">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="thursdayArrival">Time of arrival</label>
+                                <input type="time" id="thursdayArrival" name="thursdayTimeOfArrival">
+                            </div>
+                        </section>
+
+                        <section class="day-card" data-role-card>
+                            <div class="day-card__title">Friday</div>
+                            <div class="day-card__field">
+                                <span class="details">Passenger or Driver</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="fridayPassenger">
+                                        <input type="radio" id="fridayPassenger" name="fridayRideRole" value="passenger" checked>
+                                        <span>Passenger</span>
+                                    </label>
+                                    <label class="radio-option" for="fridayDriver">
+                                        <input type="radio" id="fridayDriver" name="fridayRideRole" value="driver">
+                                        <span>Driver</span>
+                                    </label>
+                                </div>
+                                <input type="hidden" name="fridayCarAvailability" value="false">
+                                <input type="hidden" name="fridayCarpoolingIntent" value="true">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="fridaySeats">Seats Available</label>
+                                <input type="number" id="fridaySeats" name="fridaySeatsOffered" min="0" max="8" placeholder="Auto 0 if passenger">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="fridayPickup">Pickup-point</label>
+                                <input type="text" id="fridayPickup" name="fridayPickupPoint" placeholder="Address to point">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="fridayDestination">Destination</label>
+                                <input type="text" id="fridayDestination" name="fridayDestination" placeholder="Address to stop">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="fridayArrival">Time of arrival</label>
+                                <input type="time" id="fridayArrival" name="fridayTimeOfArrival">
+                            </div>
+                        </section>
+                    </div>
+                </fieldset>
+                <div class="button-row">
+                    <button id="editProfile" type="submit">Edit</button>
+                    <button id="saveProfile" class="button-secondary" type="button">Saved</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll("[data-role-card]").forEach(function (card) {
+            var roleInputs = card.querySelectorAll('input[type="radio"]');
+            var availabilityInput = card.querySelector('input[name$="CarAvailability"]');
+            var intentInput = card.querySelector('input[name$="CarpoolingIntent"]');
+            var seatsInput = card.querySelector('input[name$="SeatsOffered"]');
+
+            function syncRole() {
+                var selected = card.querySelector('input[type="radio"]:checked');
+                var isDriver = selected && selected.value === "driver";
+                availabilityInput.value = isDriver ? "true" : "false";
+                intentInput.value = isDriver ? "true" : "false";
+
+                if (!isDriver) {
+                    seatsInput.value = "0";
+                }
+            }
+
+            roleInputs.forEach(function (input) {
+                input.addEventListener("change", syncRole);
+            });
+
+            syncRole();
+        });
+    </script>
+</body>
+</html>
