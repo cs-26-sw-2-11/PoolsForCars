@@ -1,4 +1,5 @@
 export interface Cost {
     travelTimeSeconds: number;
-    straightLineDistance: number;
+    travelDistanceMeters: number;
+    distanceEuclidean: number;
 }

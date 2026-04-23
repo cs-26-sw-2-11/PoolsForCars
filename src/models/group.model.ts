@@ -13,6 +13,10 @@ export interface Group {
     column_labels: number[];
     values: Cost[][];
     route: number[];
+    secsPerKmAverage: number;
+    kmPerEuclideanDistAverage: number;
+    totalTravelTimeSeconds: number;
+    totalDetourTimeSeconds: number;
 }
 
 export type Groups = Map<number, Group>;

@@ -15,7 +15,7 @@ type CompatibilityScore = number;
 type UserCompatibilityMap = Record<UserId, CompatibilityScore>;
 
 // day --> (user --> compatibility)
-type DayCompatibilityMap = Record<DayName, UserCompatibilityMap>;
+export type DayCompatibilityMap = Record<DayName, UserCompatibilityMap>;
 
 // week --> (day --> ...)
 type WeekCompatibilityMap = Record<WeekNumber, DayCompatibilityMap>;
