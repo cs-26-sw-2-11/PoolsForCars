@@ -16,7 +16,48 @@ const user: User = users.get(0) as User;
 const compatibility: WeeklyCompatibilityIndex = await findEligbleDrivers(user);
 console.log(compatibility);
 
-export const findGroups = async (user: User) => {
+/* findCompatibleCandidates:
+ * Recieve user as input
+ * Loops over all weeks in users calender as week
+ * Loops over all days in week as day
+ * Loops over all users in the database as possibleCandidate
+ * Check if possibleCandidate has the intent to carpool on this day
+ * If user == passenger ; check if possibleCandidate == driver
+ * If user == driver ; check if possibleCandidate == passenger
+ * All checks passed.
+ * Calculate temporal compatibility between user and possibleCandidate
+ * If temporal compatibility != 0 ;
+ *      append possibleCandidate to list of candidates on this day
+ *      and
+ *      add temporal combatibility score to the candidates sum
+ * When all candidates for all days have been found, order the list of temporal compatibilitty scores
+ * Return combatibility object
+ *
+ *
+ * searchForGroups:
+ * Recieve user as input
+ * Run findCompatibleCandidates() and recieve object of candidates with compatibility scores
+ * Loops over all weeks in users calender as week
+ * Loops over all days in week as day
+ * Loops over all candidates from sorted list
+ * Checks if candidate is in list of compatible candidates on this day
+ * Run testGroup with users day and candidates day as input 
+ *
+ *
+ * testGroup:
+ * Make a new temporary group
+ * Make an empty list of distances to destination
+ * Calculate and append users distance to destination to list
+ * Loop over all users in candidate group
+ * Calculate and append distance to destination for all users to list
+ * When all distances have been calculated, order by largest to smallest (driver should be first, destination should be last)
+ * Loop over all user in list ; 
+ *      if user has actual (timeInSeconds) distance to next user ; 
+ *
+ *
+*/
+
+export const searchForGroups = async (user: User) => {
     for (let weekNumber in user.calender) {
         const week: Week = user.calender[weekNumber] as Week;
         for (let dayString in week.days) {
@@ -136,6 +177,46 @@ function addGroupEdge(group: Group, v1_index: number, v2_index: number) {
 
 
 await findGroups(user);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+ * 
+ *
+*/
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
