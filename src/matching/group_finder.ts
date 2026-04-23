@@ -1,8 +1,8 @@
 import type { CalenderDay } from "../models/calender_day.model.js";
-import type { WeeklyCompatibilityIndex } from "../models/compatibility.model.js";
+import { convertToDayname, type WeeklyCompatibilityIndex } from "../models/compatibility.model.js";
 import { createGroup, initGroups, readGroup, type Group } from "../models/group.model.js";
 import { initUsers, readUser, readUsers, updateUser, type User, type Users } from "../models/user.model.js";
-import type { Week } from "../models/week.model.js";
+import type { Calender, Week } from "../models/week.model.js";
 import { findEligbleDrivers } from "./temporal_compatibility.js";
 import type { Cost } from "../models/cost.model.js";
 import { getRoute } from "../openrouteservice.js";
@@ -10,11 +10,13 @@ import { getRoute } from "../openrouteservice.js";
 await initUsers();
 await initGroups();
 
-const users: Users = await readUsers();
-const user: User = users.get(0) as User;
+const USERS: Users = await readUsers();
+const USER: User = USERS.get(0) as User;
 
-const compatibility: WeeklyCompatibilityIndex = await findEligbleDrivers(user);
+const compatibility: WeeklyCompatibilityIndex = await findEligbleDrivers(USER);
 console.log(compatibility);
+
+const ACCEPTED_DETOUR: number = 10 * 60;
 
 /* findCompatibleCandidates:
  * Recieve user as input
@@ -51,44 +53,182 @@ console.log(compatibility);
  * Loop over all users in candidate group
  * Calculate and append distance to destination for all users to list
  * When all distances have been calculated, order by largest to smallest (driver should be first, destination should be last)
- * Loop over all user in list ; 
- *      if user has actual (timeInSeconds) distance to next user ; 
+ * Loop over all users in list until the current user is found
+ * Use the groups average secsPerKm and kmPerEuclideanDist to calculate travel distance from the previous user and to the next user
+ * Calculate a total travel time without the edge, which would be broken if this user joined the group
+ * Add the new travel times for the new edges to and from this user
+ * If (new travel time - straight route from driver to destination) > max accepted detour ; user is not suitable for group
+ * Else ;
+ *      Call ORS API to get route from previous user --> user and route from user --> next user in the route order
+ *      Calculate travel times and detour again with actual route data
+ *      If detour is not too high ; add user to group
+ *      Else ; user is not suitable for group
+ *
+ *
+ * Assumptions:
+ *  - A group will always have actual all 3 parameters of the cost object filled out for all users in route
+ *  - A group will always have an average secsPerKm and kmPerEuclideanDist
  *
  *
 */
 
 export const searchForGroups = async (user: User) => {
     for (let weekNumber in user.calender) {
-        const week: Week = user.calender[weekNumber] as Week;
-        for (let dayString in week.days) {
-            const day: CalenderDay = week.days[dayString] as CalenderDay;
+        const userWeek: Week = user.calender[weekNumber] as Week;
+        for (let dayString in userWeek.days) {
+            const userDay: CalenderDay = userWeek.days[dayString] as CalenderDay;
             for (let candidate of compatibility.sortedAccumulator ?? []) {
-                testGroup(user, await readUser(candidate[0]), Number(weekNumber), dayString);
+                if (compatibility.weeks[weekNumber] === undefined) continue; // checks if the week is undefined
+                if (!compatibility.weeks[weekNumber][convertToDayname(dayString)][candidate[0]]) continue; // checks if the candidate is
+                // compatible with the user on this day
+
+                const candidateUser: User = await readUser(candidate[0]);
+                const candidateDay: CalenderDay = candidateUser.calender[weekNumber]?.days[dayString] as CalenderDay;
+                await testGroup(user.id, userDay, candidateUser.id, candidateDay);
             }
         }
     }
 }
 
 
-const testGroup = async (user: User, candidate: User, week: number, day: string) => {
+/*
+ * testGroup:
+ * Make a new temporary group
+ * Make an empty list of distances to destination
+ * Calculate and append users distance to destination to list
+ * Loop over all users in candidate group
+ * Calculate and append distance to destination for all users to list
+ * When all distances have been calculated, order by largest to smallest (driver should be first, destination should be last)
+ * Loop over all users in list until the current user is found
+ * Use the groups average secsPerKm and kmPerEuclideanDist to calculate travel distance from the previous user and to the next user
+ * Calculate a total travel time without the edge, which would be broken if this user joined the group
+ * Add the new travel times for the new edges to and from this user
+ * If (new travel time - straight route from driver to destination) > max accepted detour ; user is not suitable for group
+ * Else ;
+ *      Call ORS API to get route from previous user --> user and route from user --> next user in the route order
+ *      Calculate travel times and detour again with actual route data
+ *      If detour is not too high ; add user to group
+ *      Else ; user is not suitable for group
+ *
+ *
+ * Assumptions:
+ *  - A group will always have actual all 3 parameters of the cost object filled out for all users in route
+ *  - A group will always have an average secsPerKm and kmPerEuclideanDist
+ */
 
 
-    const candidateGroups: [number | null, number | null] = candidate.calender[week]?.days[day]?.groups as [number | null, number | null];
+const testGroup = async (userId: number, userDay: CalenderDay, candidateId: number, candidateDay: CalenderDay) => {
+    const candidateGroups: [number | null, number | null] = candidateDay.groups as [number | null, number | null];
+    if (candidateGroups[0] === null && candidateGroups[1] === null) {
+        return;
+    }
 
-    let groupCandidate: Group;
-    if (candidateGroups[0] == null) {
-        groupCandidate = await makeNewGroup(candidate, week, day);
-    } else {
-        console.log("group found");
-        groupCandidate = await readGroup(candidateGroups[0]);
+    const candidateMorningGroup: Group = await readGroup(Number(candidateGroups[0])) as Group;
+
+    // [[[userId, [LAN, LON]], distance]]
+    const userDistancesToDestination: [[number, [number, number]], number][] = [
+        [
+            [userId, userDay.pickupPoint.coordinates],
+            euclideanDistance(userDay.destination.coordinates, candidateDay.destination.coordinates)
+        ]
+    ];
+
+    for (let user of candidateMorningGroup.row_labels) {
+        userDistancesToDestination.push([user, euclideanDistance(user[1], candidateDay.destination.coordinates)])
+    }
+
+    userDistancesToDestination.sort((a, b) => a[1] - b[1]); // check how its sorted (ascending or descending)
+
+    let userIndex: number = 0;
+    for (const item of userDistancesToDestination.entries()) {
+        const index = item[0];
+        const user = item[1];
+        if (user[0][0] === userId)
+            userIndex = index;
+        break;
+    }
+
+    if (userDistancesToDestination[userIndex - 1] === undefined) return;
+    const previousUser: [number, [number, number]] = userDistancesToDestination[userIndex - 1]?.[0] as [number, [number, number]];
+    const currentUser: [number, [number, number]] = userDistancesToDestination[userIndex]?.[0] as [number, [number, number]];
+    const nextUser: [number, [number, number]] = userDistancesToDestination[userIndex + 1]?.[0] as [number, [number, number]];
+    const distanceFromPreviousToCurrentUser: number = euclideanDistance(previousUser[1], currentUser[1]);
+    const distanceFromCurrentToNextUser: number = euclideanDistance(currentUser[1], nextUser[1]);
+
+    const travelTimePreviousToCurrentUser: number =
+        distanceFromPreviousToCurrentUser *
+        candidateMorningGroup.kmPerEuclideanDistAverage *
+        candidateMorningGroup.secsPerKmAverage;
+    const travelTimeCurrentToNextUser: number =
+        distanceFromCurrentToNextUser *
+        candidateMorningGroup.kmPerEuclideanDistAverage *
+        candidateMorningGroup.secsPerKmAverage;
+
+    let previousUserIndex: number = 0;
+    let nextUserIndex: number = 0;
+    for (const item of candidateMorningGroup.row_labels.entries()) {
+        if (previousUser[0] === item[1][0]) previousUserIndex = item[0];
+        if (nextUser[0] === item[1][0]) nextUserIndex = item[0];
     }
 
 
+    let totalTravelTime: number = candidateMorningGroup.totalTravelTimeSeconds;
+    const oldEdge: Cost[] = findEdge(candidateMorningGroup.values, previousUserIndex, nextUserIndex);
+    totalTravelTime -= (oldEdge[previousUserIndex] as Cost).travelTimeSeconds;
 
+    const driverToDestEdge: Cost[] = findEdge(candidateMorningGroup.values, 0, 1);
+    if (
+        Math.abs(
+            (totalTravelTime + travelTimePreviousToCurrentUser + travelTimeCurrentToNextUser) - (driverToDestEdge[0] as Cost).travelTimeSeconds
+                ) > ACCEPTED_DETOUR
+    ) {
+        console.log("Detour too large for user");
+        return;
+    }
+
+
+    console.log("Detour is acceptable");
+
+
+
+
+
+    // let groupCandidate: Group;
+    // if (candidateGroups[0] == null) {
+    //     groupCandidate = await makeNewGroup(candidate, week, day);
+    // } else {
+    //     console.log("group found");
+    //     groupCandidate = await readGroup(candidateGroups[0]);
+    // }
 
     // check if candidate is already in a group on this day.
     // if no: make new group for driver on this day.
 
+
+}
+
+
+
+
+
+
+
+
+
+
+
+const findEdge = (matrix: Cost[][], index1: number, index2: number): Cost[] => {
+    for (const edge of matrix) {
+        if (JSON.stringify(edge[index1]) !== JSON.stringify(edge[index2])) continue;
+        return edge;
+    }
+    return {} as Cost[];
+}
+
+
+
+const euclideanDistance = (vector1: [number, number], vector2: [number, number]): number => {
+    return Math.sqrt(Math.pow((vector2[0] - vector1[0]), 2) + Math.pow((vector2[1] - vector1[1]), 2));
 }
 
 
@@ -100,7 +240,11 @@ const makeNewGroup = async (user: User, week: number, day: string) => {
         row_labels: [],
         column_labels: [],
         values: [],
-        route: []
+        route: [],
+        totalTravelTimeSeconds: 0,
+        totalDetourTimeSeconds: 0,
+        secsPerKmAverage: 0,
+        kmPerEuclideanDistAverage: 0,
     };
 
     const userDay = user.calender[week]?.days[day];
@@ -114,6 +258,8 @@ const makeNewGroup = async (user: User, week: number, day: string) => {
 
     const route = await getRoute(vertex1[1], vertex2[1]);
     const routeTravelTime: number = route.routes[0]?.summary.duration as number;
+    const routeTravelDistance: number = route.routes[0]?.summary.distance as number;
+    const distanceEuclidean: number = euclideanDistance(vertex1[1], vertex2[1]);
     console.log("TRAVEL TIME:", routeTravelTime);
     //
     // const routeTravelTime: number = 20;
@@ -124,6 +270,10 @@ const makeNewGroup = async (user: User, week: number, day: string) => {
         const v2Cost: Cost = group.values[e1][v2] as Cost;
         v1Cost.travelTimeSeconds = routeTravelTime;
         v2Cost.travelTimeSeconds = routeTravelTime;
+        v1Cost.travelDistanceMeters = routeTravelDistance;
+        v2Cost.travelDistanceMeters = routeTravelDistance;
+        v1Cost.distanceEuclidean = distanceEuclidean;
+        v2Cost.distanceEuclidean = distanceEuclidean;
     }
 
     const newGroup = await createGroup(group);
@@ -201,10 +351,6 @@ await findGroups(user);
 
 
 
-/* 
- * 
- *
-*/
 
 
 
