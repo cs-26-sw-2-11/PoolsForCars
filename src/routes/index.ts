@@ -14,8 +14,6 @@ import groupRoutes from "./groupRoutes.js";
 
 //=====VARIABLES=====//
 
-
-
 const router = express.Router();
 //Gets the absolute path to our porjects HTML folder, based on
 export const filePath = path.resolve(process.cwd(), "src", "PublicResources", "HTML");
