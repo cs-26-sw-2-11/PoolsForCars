@@ -1,5 +1,4 @@
 import express from "express";
-
 import * as userModel from '../models/user.model.js';
 import * as calendarModel from '../models/calendar.model.js';
 import * as calendarDayModel from "../models/calendar_day.model.js";
@@ -37,8 +36,6 @@ export const createUser = async (req: express.Request, res: express.Response, ne
     }
 }
 
-
-
 export const getUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const users: userModel.usersJSON = await userModel.readUsersJSON();
     res.status(200).json(users);
@@ -50,24 +47,40 @@ export const getUserById = async (req: express.Request, res: express.Response, n
     // res.send(`NOT YET IMPLEMENTED, getUserById ${req.params}`);
 }
 
-
-
-export const updateUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    res.send("NOT YET IMPLEMENTED");
-}
+// export const updateUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {}
 
 export const updateUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    res.send("NOT YET IMPLEMENTED");
+    try{
+        let user: userModel.User = await userModel.readUser(Number(req.params['userId']));
+        
+        const { firstName, lastName, phoneNumber, lookingForGroups } = req.body;
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.phoneNumber = phoneNumber;
+        user.lookingForGroups = lookingForGroups;
+        userModel.updateUser(Number(req.params['userId']), user);
+        res.status(200).json(user);
+    } catch(err){
+        console.log(err);
+    }
 }
 
 
-
-export const deleteUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    res.send("NOT YET IMPLEMENTED");
-}
+//export const deleteUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {res.send("NOT YET IMPLEMENTED");}
 
 export const deleteUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    res.send("NOT YET IMPLEMENTED");
+    try{
+        console.log("1231")
+        userModel.deleteUser(1);
+        let user: userModel.User = await userModel.readUser(Number(req.params['userId']));
+        if( user === null ){
+            res.status(200).json("Deletion Successful");
+        }else {
+            res.status(200).json("Couldn't delete user");
+        }
+    } catch(err){
+        console.log(err)
+    }
 }
 
 // ───────────────────────────────────────────────────────────────

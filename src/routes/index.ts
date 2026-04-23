@@ -1,7 +1,6 @@
 //=== IMPORTS ===///
 import express from "express";
 import * as path from 'path';
-import { body, validationResult } from "express-validator";
 import loginRoutes from "./login_router.js";
 import signupRoutes from "./signupRoutes.js";
 import profileRoutes from "./profileRoutes.js";
