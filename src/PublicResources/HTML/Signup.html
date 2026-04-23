@@ -8,7 +8,7 @@
 <body>
 <div class="Header">
     <div class="title">Sign Up</div>
-    <form action="signup-records" id="signupForm" method="post">
+    <form action="/users" id="signupForm" method="post">
         <fieldset>
             <div class="legend">Personal Information</div>
             <div class="user-details user-details--stacked">
@@ -29,8 +29,30 @@
 
         <fieldset>
             <div class="legend">Carpooling Preferences</div>
-            <div class="day-grid">
-                <section class="day-card" data-role-card>
+            <div class="day-selector" role="radiogroup" aria-label="Choose a day for carpooling preferences">
+                <label class="day-selector__option" for="signupDayMonday">
+                    <input type="radio" id="signupDayMonday" name="signupSelectedDay" value="monday" checked>
+                    <span>Monday</span>
+                </label>
+                <label class="day-selector__option" for="signupDayTuesday">
+                    <input type="radio" id="signupDayTuesday" name="signupSelectedDay" value="tuesday">
+                    <span>Tuesday</span>
+                </label>
+                <label class="day-selector__option" for="signupDayWednesday">
+                    <input type="radio" id="signupDayWednesday" name="signupSelectedDay" value="wednesday">
+                    <span>Wednesday</span>
+                </label>
+                <label class="day-selector__option" for="signupDayThursday">
+                    <input type="radio" id="signupDayThursday" name="signupSelectedDay" value="thursday">
+                    <span>Thursday</span>
+                </label>
+                <label class="day-selector__option" for="signupDayFriday">
+                    <input type="radio" id="signupDayFriday" name="signupSelectedDay" value="friday">
+                    <span>Friday</span>
+                </label>
+            </div>
+            <div class="day-grid" data-day-picker>
+                <section class="day-card" data-role-card data-day-card="monday">
                     <div class="day-card__title">Monday</div>
                     <div class="day-card__field">
                         <span class="details">Passenger or Driver</span>
@@ -49,7 +71,7 @@
                     </div>
                     <div class="day-card__field">
                         <label class="details" for="signupMondaySeats">Seats Available</label>
-                        <input type="number" id="signupMondaySeats" name="signupMondaySeatsOffered" min="0" max="8" placeholder="Auto 0 if passenger">
+                        <input type="number" id="signupMondaySeats" name="signupMondaySeatsOffered" min="0" max="5" placeholder="Number of seats including driver">
                     </div>
                     <div class="day-card__field">
                         <label class="details" for="signupMondayPickup">Pickup-point</label>
@@ -65,7 +87,7 @@
                     </div>
                 </section>
 
-                <section class="day-card" data-role-card>
+                <section class="day-card" data-role-card data-day-card="tuesday">
                     <div class="day-card__title">Tuesday</div>
                     <div class="day-card__field">
                         <span class="details">Passenger or Driver</span>
@@ -84,7 +106,7 @@
                     </div>
                     <div class="day-card__field">
                         <label class="details" for="signupTuesdaySeats">Seats Available</label>
-                        <input type="number" id="signupTuesdaySeats" name="signupTuesdaySeatsOffered" min="0" max="8" placeholder="Auto 0 if passenger">
+                        <input type="number" id="signupTuesdaySeats" name="signupTuesdaySeatsOffered" min="0" max="5" placeholder="Number of seats excluding driver">
                     </div>
                     <div class="day-card__field">
                         <label class="details" for="signupTuesdayPickup">Pickup-point</label>
@@ -100,7 +122,7 @@
                     </div>
                 </section>
 
-                <section class="day-card" data-role-card>
+                <section class="day-card" data-role-card data-day-card="wednesday">
                     <div class="day-card__title">Wednesday</div>
                     <div class="day-card__field">
                         <span class="details">Passenger or Driver</span>
@@ -119,7 +141,7 @@
                     </div>
                     <div class="day-card__field">
                         <label class="details" for="signupWednesdaySeats">Seats Available</label>
-                        <input type="number" id="signupWednesdaySeats" name="signupWednesdaySeatsOffered" min="0" max="8" placeholder="Auto 0 if passenger">
+                        <input type="number" id="signupWednesdaySeats" name="signupWednesdaySeatsOffered" min="0" max="5" placeholder="Number of seats excluding driver">
                     </div>
                     <div class="day-card__field">
                         <label class="details" for="signupWednesdayPickup">Pickup-point</label>
@@ -135,7 +157,7 @@
                     </div>
                 </section>
 
-                <section class="day-card" data-role-card>
+                <section class="day-card" data-role-card data-day-card="thursday">
                     <div class="day-card__title">Thursday</div>
                     <div class="day-card__field">
                         <span class="details">Passenger or Driver</span>
@@ -154,7 +176,7 @@
                     </div>
                     <div class="day-card__field">
                         <label class="details" for="signupThursdaySeats">Seats Available</label>
-                        <input type="number" id="signupThursdaySeats" name="signupThursdaySeatsOffered" min="0" max="8" placeholder="Auto 0 if passenger">
+                        <input type="number" id="signupThursdaySeats" name="signupThursdaySeatsOffered" min="0" max="5" placeholder="Number of seats excluding driver">
                     </div>
                     <div class="day-card__field">
                         <label class="details" for="signupThursdayPickup">Pickup-point</label>
@@ -170,7 +192,7 @@
                     </div>
                 </section>
 
-                <section class="day-card" data-role-card>
+                <section class="day-card" data-role-card data-day-card="friday">
                     <div class="day-card__title">Friday</div>
                     <div class="day-card__field">
                         <span class="details">Passenger or Driver</span>
@@ -189,7 +211,7 @@
                     </div>
                     <div class="day-card__field">
                         <label class="details" for="signupFridaySeats">Seats Available</label>
-                        <input type="number" id="signupFridaySeats" name="signupFridaySeatsOffered" min="0" max="8" placeholder="Auto 0 if passenger">
+                        <input type="number" id="signupFridaySeats" name="signupFridaySeatsOffered" min="0" max="5" placeholder="Number of seats excluding driver">
                     </div>
                     <div class="day-card__field">
                         <label class="details" for="signupFridayPickup">Pickup-point</label>
@@ -208,33 +230,9 @@
         </fieldset>
 
         <button id="signupSubmit" type="submit">Sign Up</button>
-        <p class="login-text">Already have an account? <a href="https://media.newyorker.com/photos/59095bb86552fa0be682d9d0/master/pass/Monkey-Selfie.jpg">Login</a></p>
+        <p class="login-text">Already have an account? <a href="./Login.html">Login</a></p>
     </form>
 </div>
-<script>
-    document.querySelectorAll("[data-role-card]").forEach(function (card) {
-        var roleInputs = card.querySelectorAll('input[type="radio"]');
-        var availabilityInput = card.querySelector('input[name$="CarAvailability"]');
-        var intentInput = card.querySelector('input[name$="CarpoolingIntent"]');
-        var seatsInput = card.querySelector('input[name$="SeatsOffered"]');
-
-        function syncRole() {
-            var selected = card.querySelector('input[type="radio"]:checked');
-            var isDriver = selected && selected.value === "driver";
-            availabilityInput.value = isDriver ? "true" : "false";
-            intentInput.value = isDriver ? "true" : "false";
-
-            if (!isDriver) {
-                seatsInput.value = "0";
-            }
-        }
-
-        roleInputs.forEach(function (input) {
-            input.addEventListener("change", syncRole);
-        });
-
-        syncRole();
-    });
-</script>
+<script src="../JS/Signup.js"></script>
 </body>
 </html>
