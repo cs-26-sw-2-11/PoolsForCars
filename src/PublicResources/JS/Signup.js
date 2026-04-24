@@ -1,55 +1,123 @@
-    document.querySelectorAll("[data-day-picker]").forEach(function (dayGrid) {
-        var dayInputs = dayGrid.parentElement.querySelectorAll('.day-selector input[type="radio"]');
-        var dayCards = dayGrid.querySelectorAll("[data-day-card]");
-        var selectedDay = "";
+var dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-        function syncDayCards() {
-            dayCards.forEach(function (card) {
-                var isSelected = card.dataset.dayCard === selectedDay;
-                card.hidden = !isSelected;
-            });
-        }
 
-        dayInputs.forEach(function (input) {
-            if (input.checked) {
-                selectedDay = input.value;
-            }
+function buildDayPayload(form, dayName) {
+    var seatsValue = form.get("signup" + dayName + "SeatsOffered" );
+    var pickupAddress = String(form.get("signup" + dayName + "PickupPoint") || "").trim();
+    var destinationAddress = String(form.get("signup" + dayName + "Destination") || "").trim();
+    var arrivalTime = String(form.get("signup" + dayName + "TimeOfArrival") || "").trim();
 
-            input.addEventListener("change", function () {
-                selectedDay = input.value;
-                syncDayCards();
-            });
-        });
+    return {
+        day: dayName,
+        carAvailability: form.get("signup" + dayName + "CarAvailability") === "true",
+        seatsOffered: Number(seatsValue || 0),
+        carpoolingIntent: form.get("signup" + dayName + "CarpoolingIntent") === "true",
+        pickupPoint: {
+            address: pickupAddress,
+            coordinates: [0, 0]
+        },
+        destination: {
+            address: destinationAddress,
+            coordinates: [0, 0]
+        },
+        timeOfArrival: arrivalTime
+    };
+}
 
-        if (!selectedDay && dayInputs.length > 0) {
-            selectedDay = dayInputs[0].value;
-            dayInputs[0].checked = true;
-        }
+function buildUserPayload(form) {
+    var scheduleDays = {};
 
-        syncDayCards();
+    dayNames.forEach(function (dayName) {
+        scheduleDays[dayName] = buildDayPayload(form, dayName);
     });
 
-    document.querySelectorAll("[data-role-card]").forEach(function (card) {
-        var roleInputs = card.querySelectorAll('input[type="radio"]');
-        var availabilityInput = card.querySelector('input[name$="CarAvailability"]');
-        var intentInput = card.querySelector('input[name$="CarpoolingIntent"]');
-        var seatsInput = card.querySelector('input[name$="SeatsOffered"]');
+    var schedule = {
+        days: scheduleDays
+    };
 
-        function syncRole() {
-            var selected = card.querySelector('input[type="radio"]:checked');
-            var isDriver = selected && selected.value === "driver";
-            availabilityInput.value = isDriver ? "true" : "false";
-            intentInput.value = isDriver ? "true" : "false";
-            seatsInput.disabled = !isDriver;
+    return {
+        firstName: String(form.get("firstName") || "").trim(),
+        lastName: String(form.get("lastName") || "").trim(),
+        phoneNumber: String(form.get("phoneNumber") || "").trim(),
+        schedule: schedule,
+        calender: {
+            1: schedule
+        }
+    };
+}
 
-            if (!isDriver) {
-                seatsInput.value = "0";
-            }
+document.querySelectorAll("[data-day-picker]").forEach(function (dayGrid) {
+    var dayInputs = dayGrid.parentElement.querySelectorAll('.day-selector input[type="radio"]');
+    var dayCards = dayGrid.querySelectorAll("[data-day-card]");
+    var selectedDay = "";
+
+    function syncDayCards() {
+        dayCards.forEach(function (card) {
+            var isSelected = card.dataset.dayCard === selectedDay;
+            card.hidden = !isSelected;
+        });
+    }
+
+    dayInputs.forEach(function (input) {
+        if (input.checked) {
+            selectedDay = input.value;
         }
 
-        roleInputs.forEach(function (input) {
-            input.addEventListener("change", syncRole);
+        input.addEventListener("change", function () {
+            selectedDay = input.value;
+            syncDayCards();
         });
-
-        syncRole();
     });
+
+    if (!selectedDay && dayInputs.length > 0) {
+        selectedDay = dayInputs[0].value;
+        dayInputs[0].checked = true;
+    }
+
+    syncDayCards();
+});
+
+document.querySelectorAll("[data-role-card]").forEach(function (card) {
+    var roleInputs = card.querySelectorAll('input[type="radio"]');
+    var availabilityInput = card.querySelector('input[name$="CarAvailability"]');
+    var intentInput = card.querySelector('input[name$="CarpoolingIntent"]');
+    var seatsInput = card.querySelector('input[name$="SeatsOffered"]');
+
+    function syncRole() {
+        var selected = card.querySelector('input[type="radio"]:checked');
+        var isDriver = selected && selected.value === "driver";
+        availabilityInput.value = isDriver ? "true" : "false";
+        intentInput.value = isDriver ? "true" : "false";
+        seatsInput.disabled = !isDriver;
+
+        if (!isDriver) {
+            seatsInput.value = "0";
+        }
+    }
+
+    roleInputs.forEach(function (input) {
+        input.addEventListener("change", syncRole);
+    });
+
+    syncRole();
+});
+
+window.addEventListener("DOMContentLoaded", function () {
+    var form = document.getElementById("signupForm");
+
+    if (!form) {
+        return;
+    }
+    
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var formData = new FormData(form);
+        var userPayload = buildUserPayload(formData);
+        
+        fetch("/users", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(userPayload)
+        });
+    });
+});
