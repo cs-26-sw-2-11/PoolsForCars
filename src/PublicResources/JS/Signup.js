@@ -78,16 +78,14 @@ document.querySelectorAll("[data-day-picker]").forEach(function (dayGrid) {
 });
 
 document.querySelectorAll("[data-role-card]").forEach(function (card) {
-    var roleInputs = card.querySelectorAll('input[type="radio"]');
+    var roleInputs = card.querySelectorAll('input[name$="RideRole"]');
     var availabilityInput = card.querySelector('input[name$="CarAvailability"]');
-    var intentInput = card.querySelector('input[name$="CarpoolingIntent"]');
     var seatsInput = card.querySelector('input[name$="SeatsOffered"]');
 
     function syncRole() {
-        var selected = card.querySelector('input[type="radio"]:checked');
+        var selected = card.querySelector('input[name$="RideRole"]:checked');
         var isDriver = selected && selected.value === "driver";
         availabilityInput.value = isDriver ? "true" : "false";
-        intentInput.value = isDriver ? "true" : "false";
         seatsInput.disabled = !isDriver;
 
         if (!isDriver) {
