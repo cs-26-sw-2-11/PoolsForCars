@@ -5,18 +5,39 @@ import * as fs from 'fs';
 import { asyncAppendLineToFile, asyncReadFile, asyncWriteFile, DATABASE_DIRNAME } from '../database/helper-functions.js'
 
 // ====== TYPES ======
+// export interface Group {
+//     id: number;
+//     rows: number;
+//     columns: number;
+//     row_labels: [number, [number, number]][];
+//     column_labels: number[];
+//     values: Cost[][];
+//     route: number[];
+//     secsPerKmAverage: number;
+//     kmPerEuclideanDistAverage: number;
+//     totalTravelTimeSeconds: number;
+//     totalDetourTimeSeconds: number;
+// }
+
 export interface Group {
     id: number;
-    rows: number;
-    columns: number;
-    row_labels: [number, [number, number]][];
-    column_labels: number[];
-    values: Cost[][];
-    route: number[];
-    secsPerKmAverage: number;
-    kmPerEuclideanDistAverage: number;
+    members: GroupMember[];
+    route: number[]; // optimized order
     totalTravelTimeSeconds: number;
     totalDetourTimeSeconds: number;
+    secsPerMeterAverage: number;
+    metersPerEuclideanDistAverage: number;
+}
+
+export interface GroupMember {
+    userId: number;
+    coordinates: [number, number];
+
+    // cost to next user in chain (null if last)
+    toNext: Cost | null;
+
+    // cost directly to destination
+    toDestination: Cost;
 }
 
 export type Groups = Map<number, Group>;
@@ -148,7 +169,7 @@ export const readGroups = async (): Promise<Groups> => {
             throw "No Groups";
         }
 
-        const parsedGroups: Group[] = groups 
+        const parsedGroups: Group[] = groups
             .split("\n")
             .filter(line => line.trim() !== "")
             .map(line => JSON.parse(line)) as Group[];
@@ -168,3 +189,10 @@ export const readGroups = async (): Promise<Groups> => {
         throw error; // TODO: handle it properly
     }
 };
+
+
+// ====== CLEAR GROUPS ======
+export const clearGroups = async (): Promise<void> => {
+    await asyncWriteFile(GROUPS_FILE, "");
+    await asyncWriteFile(META_FILE, "");
+}
