@@ -9,7 +9,6 @@ import { userRoutes } from "./userRoutes.js";
 import { devUserRoutes } from "./devUserRoutes.js";
 import calendarRoutes from "./calendarRoutes.js";
 import groupRoutes from "./groupRoutes.js";
-import { profile } from "console";
 
 
 
