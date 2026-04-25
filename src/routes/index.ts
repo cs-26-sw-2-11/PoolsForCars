@@ -7,7 +7,8 @@ import signupRoutes from "./signupRoutes.js";
 import profileRoutes from "./profileRoutes.js";
 import { userRoutes } from "./userRoutes.js";
 import { devUserRoutes } from "./devUserRoutes.js";
-import calenderRoutes from "./calenderRoutes.js";
+import calendarRoutes from "./calendarRoutes.js";
+import groupRoutes from "./groupRoutes.js";
 import { profile } from "console";
 
 
@@ -31,9 +32,9 @@ export const filePath = path.resolve(process.cwd(), "src", "PublicResources", "H
 router.use('/login', loginRoutes);
 router.use('/signup', signupRoutes);
 router.use('/users', userRoutes);
-router.use('/calender', calenderRoutes);
+router.use('/calendar', calendarRoutes);
 router.use('/profile', profileRoutes);
-router.use('/groups', calenderRoutes);
+router.use('/groups', groupRoutes);
 
 router.use('/dev/users', devUserRoutes);
 
