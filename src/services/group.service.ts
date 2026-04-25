@@ -1,56 +1,49 @@
+import { getRoute, type DirectionsResponse, type Route } from "../openrouteservice.js";
+import * as calendarDayModel from "../models/calendar_day.model.js";
 import * as groupModel from "../models/group.model.js";
-import * as userModel from "../models/user.model.js";
+import * as costModel from "../models/cost.model.js";
+
+export type Group = groupModel.Group;
 
 
-const makeNewGroup = async (user: userModel.User, week: number, day: string) => {
+export const makeNewGroup = async (userId: number, day: calendarDayModel.CalendarDay): Promise<Group> => {
+    const routeToDest: DirectionsResponse = await getRoute(day.pickupPoint.coordinates, day.destination.coordinates);
+    const firstRouteToDest: Route = routeToDest.routes[0] as Route;
+
+    if (typeof firstRouteToDest === 'undefined') throw "No route found";
+
+    const costToDestination: costModel.Cost = {
+        travelTimeSeconds: firstRouteToDest.summary.duration,
+        travelDistanceMeters: firstRouteToDest.summary.distance,
+        distanceEuclidean: euclideanDistance(day.pickupPoint.coordinates, day.destination.coordinates),
+    }
+
+    const groupMember: groupModel.GroupMember = {
+        userId: userId,
+        coordinates: day.pickupPoint.coordinates,
+        toNext: null,
+        toDestination: costToDestination,
+    }
+
     const group: groupModel.Group = {
         id: 0,
-        rows: 0,
-        columns: 0,
-        row_labels: [],
-        column_labels: [],
-        values: [],
-        route: [],
-        secsPerKmAverage: 0,
-        kmPerEuclideanDistAverage: 0,
-        totalTravelTimeSeconds: 0,
+        members: [groupMember],
+        route: [userId],
+        totalTravelTimeSeconds: costToDestination.travelTimeSeconds,
         totalDetourTimeSeconds: 0,
+        secsPerMeterAverage: costToDestination.travelTimeSeconds / costToDestination.travelDistanceMeters,
+        metersPerEuclideanDistAverage: costToDestination.travelDistanceMeters / costToDestination.distanceEuclidean,
     };
 
-    const userDay = user.calender[week]?.days[day];
-    const v1: number = addGroupVertex(group, user.id, userDay?.pickupPoint.coordinates as [number, number]);
-    const v2: number = addGroupVertex(group, user.id, userDay?.destination.coordinates as [number, number]);
-    const e1: number = addGroupEdge(group, v1, v2);
 
+    const newGroup: groupModel.Group = await groupModel.createGroup(group);
+    day.groups[0] = newGroup.id;
 
-    const vertex1 = group.row_labels[v1] ?? [0, [0, 0]];
-    const vertex2 = group.row_labels[v2] ?? [0, [0, 0]];
-
-    const route = await getRoute(vertex1[1], vertex2[1]);
-    const routeTravelTime: number = route.routes[0]?.summary.duration as number;
-    const routeTravelDistance: number = route.routes[0]?.summary.distance as number;
-    const distanceEuclidean: number = euclideanDistance(vertex1[1], vertex2[1]);
-    console.log("TRAVEL TIME:", routeTravelTime);
-    //
-    // const routeTravelTime: number = 20;
-
-    if (group.values[e1] !== undefined) {
-        console.log("Writing travel times");
-        const v1Cost: Cost = group.values[e1][v1] as Cost;
-        const v2Cost: Cost = group.values[e1][v2] as Cost;
-        v1Cost.travelTimeSeconds = routeTravelTime;
-        v2Cost.travelTimeSeconds = routeTravelTime;
-        v1Cost.travelDistanceMeters = routeTravelDistance;
-        v2Cost.travelDistanceMeters = routeTravelDistance;
-        v1Cost.distanceEuclidean = distanceEuclidean;
-        v2Cost.distanceEuclidean = distanceEuclidean;
-    }
-
-    const newGroup = await createGroup(group);
-    user.groups[0] = newGroup.id;
-    if (userDay?.groups !== undefined) {
-        userDay.groups[0] = newGroup.id;
-    }
-    updateUser(user.id, user);
     return newGroup;
+}
+
+
+
+const euclideanDistance = (vector1: [number, number], vector2: [number, number]): number => {
+    return Math.sqrt(Math.pow((vector2[0] - vector1[0]), 2) + Math.pow((vector2[1] - vector1[1]), 2));
 }
