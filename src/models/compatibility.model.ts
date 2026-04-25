@@ -23,7 +23,10 @@ type WeekCompatibilityMap = Record<WeekNumber, DayCompatibilityMap>;
 export interface WeeklyCompatibilityIndex {
     weeks: WeekCompatibilityMap;
     accumulator: UserCompatibilityMap;
-    sortedAccumulator?: [number, number][];
+    sortedAccumulator?: {
+        id: number;
+        score: number;
+    }[];
 }
 
 // ====== HELPERS ======
@@ -99,7 +102,10 @@ export function convertToDayname(day: string) {
 
 // ====== SORT ======
 export function sortCompatibilityAccumulator(store: WeeklyCompatibilityIndex) {
-    store.sortedAccumulator = Object.entries(store.accumulator)
-        .map(([k, v]) => [Number(k), v] as [number, number])
-        .sort((a, b) => a[1] - b[1]);
+    store.sortedAccumulator = Object.entries(store.accumulator).map<{id: number, score: number}>(
+        ([id, score]) => ({
+            id: Number(id),
+            score: Number(score)
+        }))
+        .sort((a, b) => b.score - a.score);
 }
