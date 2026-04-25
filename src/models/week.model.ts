@@ -1,9 +1,9 @@
-import { type CalenderDay } from "./calender_day.model.js";
+import { type CalendarDay } from "./calendar_day.model.js";
 
 export interface Week {
-    startDate: string;
-    endDate: string;
-    days: Record<string, CalenderDay>;
+    startDate: Date;
+    endDate: Date;
+    days: Record<string, CalendarDay>;
 }
 
-export type Calender = Record<number, Week>;
+

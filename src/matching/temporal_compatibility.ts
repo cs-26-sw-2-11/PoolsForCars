@@ -4,7 +4,7 @@
 // Create a summed temporal compatibility score for all respective drivers and sort the drivers according to this score.
 
 
-import type { CalenderDay } from '../models/calender_day.model.js';
+import type { CalendarDay } from '../models/calendar_day.model.js';
 import { convertToDayname, setCompatibility, sortCompatibilityAccumulator, type WeeklyCompatibilityIndex } from '../models/compatibility.model.js';
 import { type User, type Users, readUsers } from '../models/user.model.js';
 
@@ -30,18 +30,18 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
 
     const users: Users = await readUsers();
 
-    for (let week in user.calender) {
+    for (let week in user.calendar) {
         for (let sub_user of users.values()) {
             if (user.id === sub_user.id) {
                 continue;
             }
-            if (!sub_user.calender[week]) {
+            if (!sub_user.calendar[week]) {
                 continue;
             }
 
-            for (let day in user.calender[week]?.days) {
-                const userDay: CalenderDay = user.calender[week].days[day] as CalenderDay;
-                const subUserDay: CalenderDay = sub_user.calender[week].days[day] as CalenderDay;
+            for (let day in user.calendar[week]?.days) {
+                const userDay: CalendarDay = user.calendar[week].days[day] as CalendarDay;
+                const subUserDay: CalendarDay = sub_user.calendar[week].days[day] as CalendarDay;
 
                 // both user and sub user wants to carpool on this day
                 if (!(userDay.carpoolingIntent && subUserDay.carpoolingIntent)) {

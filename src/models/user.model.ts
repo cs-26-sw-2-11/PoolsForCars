@@ -2,7 +2,8 @@
 import * as fs from 'fs';
 import { asyncAppendLineToFile, asyncReadFile, asyncWriteFile, DATABASE_DIRNAME } from '../database/helper-functions.js'
 
-import { type Calender, type Week } from './week.model.js';
+import { type Week } from './week.model.js';
+import { type Calendar } from './calendar.model.js';
 
 // ====== TYPES ======
 export interface User {
@@ -11,7 +12,7 @@ export interface User {
     lastName: string;
     phoneNumber: string;
     schedule: Week;
-    calender: Calender;
+    calendar: Calendar;
     lookingForGroups: boolean;
     groups: number[];
 }
