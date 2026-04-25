@@ -2,6 +2,8 @@ import express from "express";
 
 import * as userModel from '../models/user.model.js';
 import * as calendarModel from '../models/calendar.model.js';
+import * as calendarDayModel from "../models/calendar_day.model.js";
+import * as groupModel from "../models/group.model.js";
 
 
 // ───────────────────────────────────────────────────────────────
@@ -17,12 +19,14 @@ export const createUser = async (req: express.Request, res: express.Response, ne
         recievedUser.schedule.endDate   = await calendarModel.getLastWorkdayOfWeek(currentDate);
 
         const tempDate: Date = new Date(recievedUser.schedule.startDate.valueOf());
-        for (const day of Object.entries(recievedUser.schedule.days)) {
-            day[1].date = new Date(tempDate.valueOf());
+        for (const dayEntry of Object.entries(recievedUser.schedule.days)) {
+            let day: calendarDayModel.CalendarDay = dayEntry[1];
+            // set the correct dates for the week
+            day.date = new Date(tempDate.valueOf());
             tempDate.setDate(tempDate.getDate() + 1);
         }
 
-        recievedUser.calendar[await calendarModel.dateToWeek(currentDate)] = recievedUser.schedule; // Copy the users schedule into its calendar under the current week
+        recievedUser.calendar[await calendarModel.dateToWeek(currentDate)] = JSON.parse(JSON.stringify(recievedUser.schedule)); // Copy the users schedule into its calendar under the current week
 
         const user: userModel.User = await userModel.createUser(recievedUser); // Create a new user in the database
 
@@ -41,7 +45,6 @@ export const getUsers = async (req: express.Request, res: express.Response, next
 }
 
 export const getUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.log(req.params);
     const user: userModel.User = await userModel.readUser(Number(req.params['userId']));
     res.status(200).json(user);
     // res.send(`NOT YET IMPLEMENTED, getUserById ${req.params}`);
