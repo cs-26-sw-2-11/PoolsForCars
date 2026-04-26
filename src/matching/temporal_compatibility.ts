@@ -15,10 +15,9 @@ const calcLinearDecay = (toa1: string, toa2: string) => {
     const toa1Array: number[] = toa1.split(":").map(string => Number(string));
     const toa2Array: number[] = toa2.split(":").map(string => Number(string));
 
-    const toaDiff: number = Math.abs(
+    const toaDiff: number =
         ((toa1Array[0] ?? 0) * 60 + (toa1Array[1] ?? 0)) -
-        ((toa2Array[0] ?? 0) * 60 + (toa2Array[1] ?? 0))
-    );
+        ((toa2Array[0] ?? 0) * 60 + (toa2Array[1] ?? 0));
     return Math.max(0, 1 - toaDiff / tolerance);
 }
 
@@ -58,11 +57,9 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
                     continue;
                 }
 
-                console.log(userDay, subUserDay);
-
 
                 const compatibility: number = calcLinearDecay(userDay.timeOfArrival, subUserDay.timeOfArrival);
-                if (compatibility !== 0) {
+                if (compatibility !== 0 && compatibility <= 1) {
                     setCompatibility(
                         compatibilityMap,
                         Number(week),
