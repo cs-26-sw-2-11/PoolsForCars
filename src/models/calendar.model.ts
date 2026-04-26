@@ -49,7 +49,6 @@ export const dateToWeek = async (date: Date): Promise<number> => {
         tempDate.setMonth(0, 1 + ((4 - tempDate.getDay()) + 7) % 7);
     }
 
-    console.log("\n");
     // The weeknumber is the number of weeks between the first Thursday of the year and the Thursday in the target week
     return 1 + Math.ceil((firstThursday - tempDate.valueOf()) / 604800000); // 604800000 = number of milliseconds in a week
 }
