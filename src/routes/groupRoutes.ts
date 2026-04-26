@@ -10,4 +10,7 @@ router.route("/:userId/make")
     .post(groupController.makeAllGroups);
 
 
+router.route("/:userId/search")
+    .post(groupController.searchForGroups);
+
 export default router;
