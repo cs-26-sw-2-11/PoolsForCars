@@ -52,19 +52,6 @@ function ensureWeek(
 }
 
 
-// Ensure a week exists
-function ensureUserAccumulator(
-    store: WeeklyCompatibilityIndex,
-    user: number
-): UserCompatibilityMap {
-    const userKey = String(user);
-
-    if (!store.accumulator[userKey]) {
-        store.accumulator[userKey] = 0;
-    }
-
-    return store.accumulator;
-}
 
 // ====== WRITE ======
 export function setCompatibility(
@@ -75,11 +62,14 @@ export function setCompatibility(
     score: number
 ) {
     const weekData = ensureWeek(store, week);
-    const userAccumulatorData = ensureUserAccumulator(store, userId);
 
     const userKey = String(userId);
     weekData[day][userKey] = score;
-    userAccumulatorData[userKey] = score;
+
+    if (!store.accumulator[userKey]) {
+        store.accumulator[userKey] = 0;
+    }
+    store.accumulator[userKey] += score;
 }
 
 // ====== READ ======
