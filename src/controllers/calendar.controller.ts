@@ -27,8 +27,6 @@ export const getCalendarWeek = async (req: express.Request, res: express.Respons
             userModel.updateUser(user.id, user);
         }
 
-        console.log(week);
-
         res.status(200).json(week);
     } catch (err) {
         console.log(err);
