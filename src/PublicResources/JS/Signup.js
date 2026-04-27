@@ -85,7 +85,7 @@ document.querySelectorAll("[data-role-card]").forEach(function (card) {
         var selected = card.querySelector('input[name$="RideRole"]:checked');
         var isDriver = selected && selected.value === "driver";
 
-        availabilityInput.value = isDriver && wantsToCarpool ? "true" : "false";
+        availabilityInput.value = isDriver ? "true" : "false";
         seatsInput.disabled = !isDriver || !wantsToCarpool;
 
         if (!isDriver) {
