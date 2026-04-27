@@ -1,0 +1,106 @@
+form .user-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin: 20px 0 12px 0;
+}
+
+form .user-details .input-box {
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+form .input-box .details {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.user-details .input-box input {
+  width: 100%;
+  outline: none;
+  font-size: 16px;
+  border-radius: 5px;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+}
+
+.user-details .input-box input:focus {
+  border-color: #5b8fd9;
+  box-shadow: 0 0 0 3px rgba(91, 143, 217, 0.15);
+}
+
+button,
+.button-secondary {
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+}
+
+button {
+  background-color: #1AAE9F;
+}
+
+button:hover,
+.button-secondary:hover {
+  opacity: 0.92;
+}
+
+.button-secondary {
+  background-color: #4b5563;
+}
+
+.user-details--stacked .input-box {
+  width: 100%;
+}
+
+.radio-group {
+  display: flex;
+  gap: 10px;
+}
+
+.radio-group--stacked {
+  flex-direction: column;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #d7e0ef;
+  cursor: pointer;
+}
+
+.radio-option input {
+  margin: 0;
+}
+
+.button-row {
+  display: flex;
+  gap: 12px;
+}
+
+.button-row button {
+  margin-bottom: 0;
+}
+
+@media (max-width: 520px) {
+  form .user-details .input-box {
+    width: 100%;
+  }
+
+  .button-row {
+    flex-direction: column;
+  }
+}
