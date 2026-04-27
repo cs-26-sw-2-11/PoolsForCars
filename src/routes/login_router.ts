@@ -35,8 +35,8 @@ router.route("")
             // Console logs to ensure they match input
             //console.log(` Last name: ${lastName} & Phone number: ${phone} `);
 
-            JSON
-            getUsers
+
+        
 
             console.log("lol")
         })

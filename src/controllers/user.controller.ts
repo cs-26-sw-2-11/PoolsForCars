@@ -67,6 +67,7 @@ export const updateUserById = async (req: express.Request, res: express.Response
 
 //export const deleteUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {res.send("NOT YET IMPLEMENTED");}
 
+
 export const deleteUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try{
         userModel.deleteUser(Number(req.params['userId']));
