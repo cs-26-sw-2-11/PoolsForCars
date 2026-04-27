@@ -1,0 +1,76 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 24px 16px;
+  background: #87ade1;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #1f2937;
+}
+
+.Header {
+  width: min(100%, 520px);
+  background-color: #fff;
+  padding: 20px 25px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  margin: 0 auto;
+}
+
+.Header .title {
+  font-size: 30px;
+  font-weight: 500;
+  text-align: center;
+  position: relative;
+}
+
+.Header .legend {
+  font-size: 25px;
+  font-weight: 500;
+  position: relative;
+}
+
+.Header .title h3 {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.Header fieldset {
+  border: 1px solid #d7e0ef;
+  border-radius: 12px;
+  padding: 18px 18px 8px;
+  margin: 20px 0 0;
+}
+
+.form-intro {
+  margin: 12px 0 0;
+  color: #4b5563;
+  font-size: 15px;
+}
+
+.login-text {
+  margin: 8px 0 0;
+  text-align: center;
+  color: #4b5563;
+}
+
+.login-text a {
+  color: #1a6fb0;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-text a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 520px) {
+  body {
+    padding: 16px 10px;
+  }
+}
