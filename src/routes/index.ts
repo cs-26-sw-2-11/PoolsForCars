@@ -10,7 +10,6 @@ import calendarRoutes from "./calendarRoutes.js";
 import groupRoutes from "./groupRoutes.js";
 
 
-
 //=====VARIABLES=====//
 
 const router = express.Router();

@@ -52,7 +52,6 @@ export const getUserById = async (req: express.Request, res: express.Response, n
 export const updateUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try{
         let user: userModel.User = await userModel.readUser(Number(req.params['userId']));
-        
         const { firstName, lastName, phoneNumber, lookingForGroups } = req.body;
         user.firstName = firstName;
         user.lastName = lastName;
@@ -70,13 +69,12 @@ export const updateUserById = async (req: express.Request, res: express.Response
 
 export const deleteUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try{
-        console.log("1231")
-        userModel.deleteUser(1);
+        userModel.deleteUser(Number(req.params['userId']));
         let user: userModel.User = await userModel.readUser(Number(req.params['userId']));
-        if( user === null ){
+        if(typeof user === "undefined"){
             res.status(200).json("Deletion Successful");
         }else {
-            res.status(200).json("Couldn't delete user");
+            res.status(500).json("Couldn't delete user");
         }
     } catch(err){
         console.log(err)
@@ -90,6 +88,8 @@ export const deleteUserById = async (req: express.Request, res: express.Response
 // ───────────────────────────────────────────────────────────────
 //  :::::: MISCELLANEOUS ::::::
 // ───────────────────────────────────────────────────────────────
+
+// LOGIN VERIFICATION
 
 
 export const enableGroupSearching = async (req: express.Request, res: express.Response, next: express.NextFunction) => {

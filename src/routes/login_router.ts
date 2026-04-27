@@ -3,6 +3,7 @@ import express from "express";
 import { body, validationResult } from "express-validator"
 import { filePath } from "./index.js"
 import { readUsers, type User, type Users } from "../models/user.model.js"
+import { getUsers } from "../controllers/user.controller.js";
 
 
 const router = express.Router();
@@ -15,8 +16,6 @@ export const validate = (req: express.Request, res: express.Response, next: expr
     }
     next(); // continue only if valid
 };
-
-
 
 router.route("")
     .get((req, res) => {
@@ -36,14 +35,9 @@ router.route("")
             // Console logs to ensure they match input
             //console.log(` Last name: ${lastName} & Phone number: ${phone} `);
 
-            readUsers().then((users: Users) => {
-                users.forEach((user: User) => {
-                    if (user.lastName === lastName && user.phoneNumber === phone) {
-                        console.log("Name and phone number match")
-                        return res.json({ success: true });
-                    }
-                });
-            });
+            JSON
+            getUsers
+
             console.log("lol")
         })
 
