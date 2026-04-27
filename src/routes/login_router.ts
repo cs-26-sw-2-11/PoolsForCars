@@ -3,7 +3,7 @@ import express from "express";
 import { body, validationResult } from "express-validator"
 import { filePath } from "./index.js"
 import { readUsers, type User, type Users } from "../models/user.model.js"
-import { getUsers } from "../controllers/user.controller.js";
+import { getUsers, loginHandling } from "../controllers/user.controller.js";
 import { loginHandler } from "../services/user.service.js";
 
 
@@ -23,22 +23,25 @@ router.route("")
         res.sendFile(filePath + "/Login.html");
     })
     .post(
-        //=== FILTERS THE DATA AND MAKES SURE IT IS THE CORRECT FORMAT BY ONLY WHITELISTING CERTAIN CHARACTERS ===//
-        // no clue why "/^[\p{L}]+(?:[ '-][\p{L}]+)*$/u" works, but chatgpt said its good.
         [
             body("lastName").trim().notEmpty().isLength({ min: 1, max: 20 }).matches(/^[\p{L}]+(?:[ '-][\p{L}]+)*$/u).withMessage("Invalid name"),
-            body("phone").trim().notEmpty().matches(/^\d{2}( \d{2}){3}$/).withMessage("Phone must be 1-8 digits"),
+            body("phone").trim().notEmpty().customSanitizer(value => value.replace(/\s/g, "")).matches(/^\d{8}$/).withMessage("Phone must be 8 digits"),
         ], validate,
-        (req: express.Request, res: express.Response) => {
+        (req: express.Request, res: express.Response, next: express.NextFunction) => {
             //=== TERMINATES THE REQUEST BY NOT RESPONDING IF DATA IS INCORRECT ===//
             // Collects the objects from the HTTP body
 
-            const { lastName, phone } = req.body;
-            // Console logs to ensure they match input
-            //console.log(` Last name: ${lastName} & Phone number: ${phone} `);
-            
 
-            console.log("lol")
+        const handler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+            try {
+                await loginHandling(req, res, next);
+                return res.json({ success: true });
+            } catch (err) {
+                return next(err);
+            }
+        };
+            // Console logs to ensure they match input
+            // console.log(` Last name: ${lastName} & Phone number: ${phone} `);
         })
 
 export default router;

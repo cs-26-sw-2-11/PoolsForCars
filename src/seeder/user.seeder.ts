@@ -89,7 +89,7 @@ export const createRandomUser = async (): Promise<User> => {
         id: idCounter++,
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
-        phoneNumber: faker.phone.number({ style: "national" }),
+        phoneNumber: faker.phone.number({ style: "national" }).replace(/\D/g, ''),
         schedule: schedule,
         calendar: {},
         lookingForGroups: false,

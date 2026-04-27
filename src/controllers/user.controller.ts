@@ -78,10 +78,13 @@ export const deleteUserById = async (req: express.Request, res: express.Response
 
 // LOGIN Handling
 export const loginHandling = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    uservice.loginHandler
+   const user = await uservice.loginHandler(req)
+   if (Number(user)===-1){
+    console.log("user doesnt match");
+   } else{
+    console.log(`The users ID is ${user}`);
+   }
 }
-
-
 
 export const enableGroupSearching = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     res.send("NOT YET IMPLEMENTED");
