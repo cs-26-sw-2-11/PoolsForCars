@@ -25,24 +25,17 @@ function buildDayPayload(form, dayName) {
 }
 
 function buildUserPayload(form) {
-    var scheduleDays = {};
+    var preferences = {};
 
     dayNames.forEach(function (dayName) {
-        scheduleDays[dayName] = buildDayPayload(form, dayName);
+        preferences[dayName] = buildDayPayload(form, dayName);
     });
-
-    var schedule = {
-        days: scheduleDays
-    };
 
     return {
         firstName: String(form.get("firstName") || "").trim(),
         lastName: String(form.get("lastName") || "").trim(),
         phoneNumber: String(form.get("phoneNumber") || "").trim(),
-        schedule: schedule,
-        calender: {
-            1: schedule
-        }
+        preferences: preferences
     };
 }
 
