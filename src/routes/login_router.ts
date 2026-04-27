@@ -4,6 +4,7 @@ import { body, validationResult } from "express-validator"
 import { filePath } from "./index.js"
 import { readUsers, type User, type Users } from "../models/user.model.js"
 import { getUsers } from "../controllers/user.controller.js";
+import { loginHandler } from "../services/user.service.js";
 
 
 const router = express.Router();
@@ -31,12 +32,11 @@ router.route("")
         (req: express.Request, res: express.Response) => {
             //=== TERMINATES THE REQUEST BY NOT RESPONDING IF DATA IS INCORRECT ===//
             // Collects the objects from the HTTP body
+
             const { lastName, phone } = req.body;
             // Console logs to ensure they match input
             //console.log(` Last name: ${lastName} & Phone number: ${phone} `);
-
-
-        
+            
 
             console.log("lol")
         })
