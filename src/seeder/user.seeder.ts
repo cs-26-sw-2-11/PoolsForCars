@@ -1,7 +1,7 @@
 import { fakerDA as faker } from '@faker-js/faker';
 import type { User, Users } from '../models/user.model.js';
 import { clearUsers, deleteUser, initUsers } from '../models/user.model.js';
-import type { CalenderDay } from '../models/calender_day.model.js';
+import type { CalendarDay } from '../models/calendar_day.model.js';
 import type { Location } from '../models/location.model.js';
 
 import type { Week } from '../models/week.model.js';
@@ -33,7 +33,7 @@ const d: number = 0.011192;
 const hourTimes: string[] = ["08", "09"];
 const minuteTimes: string[] = ["00", "15", "30", "45"];
 
-const startDate: string = new Date().toISOString();
+const startDate: Date = new Date();
 
 let idCounter = 0;
 const weekDays: [string, string, string, string, string] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -82,18 +82,16 @@ export const createRandomUser = async (): Promise<User> => {
                 return `${hourTimes[hour]}:${minuteTimes[minute]}`;
             })(),
             groups: [null, null],
-        } as CalenderDay;
+        } as CalendarDay;
     });
 
     return {
         id: idCounter++,
         firstName: faker.person.firstName(),
         lastName: faker.person.lastName(),
-        phoneNumber: faker.phone.number({ style: "national" }),
+        phoneNumber: faker.phone.number({ style: "national" }).replace(/\D/g, ''),
         schedule: schedule,
-        calender: {
-            "1": schedule,
-        },
+        calendar: {},
         lookingForGroups: false,
         groups: [],
 
@@ -158,7 +156,7 @@ export const clearAndFakeUsers = async () => {
 // async function geocode(user: User) {
 //     const searchResults = await client.geocoding.search({
 //         // text: "Fibigerstræde 15, 9220 Aalborg",
-//         text: String(user.calender[0]?.days[0].pickupPoint.address),
+//         text: String(user.calendar[0]?.days[0].pickupPoint.address),
 //         // size: 5,
 //         // layers: ["address", "country"],
 //         // "focus.point": [57.012186, 9.992092],

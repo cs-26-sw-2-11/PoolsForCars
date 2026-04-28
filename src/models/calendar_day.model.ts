@@ -1,8 +1,8 @@
 import type { Location } from  './location.model.js';
 
-export interface CalenderDay {
-    day: string;
-    date: string;
+export interface CalendarDay {
+    // day: string;
+    date: Date;
     carAvailability: boolean;
     seatsOffered: number;
     carpoolingIntent: boolean;

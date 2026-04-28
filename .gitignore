@@ -1,2 +1,5 @@
 .env
 dist/*
+src/database/users/
+src/database/groups/
+

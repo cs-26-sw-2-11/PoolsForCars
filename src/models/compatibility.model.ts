@@ -15,7 +15,7 @@ type CompatibilityScore = number;
 type UserCompatibilityMap = Record<UserId, CompatibilityScore>;
 
 // day --> (user --> compatibility)
-type DayCompatibilityMap = Record<DayName, UserCompatibilityMap>;
+export type DayCompatibilityMap = Record<DayName, UserCompatibilityMap>;
 
 // week --> (day --> ...)
 type WeekCompatibilityMap = Record<WeekNumber, DayCompatibilityMap>;
@@ -23,7 +23,10 @@ type WeekCompatibilityMap = Record<WeekNumber, DayCompatibilityMap>;
 export interface WeeklyCompatibilityIndex {
     weeks: WeekCompatibilityMap;
     accumulator: UserCompatibilityMap;
-    sortedAccumulator?: [number, number][];
+    sortedAccumulator?: {
+        id: number;
+        score: number;
+    }[];
 }
 
 // ====== HELPERS ======
@@ -49,19 +52,6 @@ function ensureWeek(
 }
 
 
-// Ensure a week exists
-function ensureUserAccumulator(
-    store: WeeklyCompatibilityIndex,
-    user: number
-): UserCompatibilityMap {
-    const userKey = String(user);
-
-    if (!store.accumulator[userKey]) {
-        store.accumulator[userKey] = 0;
-    }
-
-    return store.accumulator;
-}
 
 // ====== WRITE ======
 export function setCompatibility(
@@ -72,11 +62,14 @@ export function setCompatibility(
     score: number
 ) {
     const weekData = ensureWeek(store, week);
-    const userAccumulatorData = ensureUserAccumulator(store, userId);
 
     const userKey = String(userId);
     weekData[day][userKey] = score;
-    userAccumulatorData[userKey] = score;
+
+    if (!store.accumulator[userKey]) {
+        store.accumulator[userKey] = 0;
+    }
+    store.accumulator[userKey] += score;
 }
 
 // ====== READ ======
@@ -99,7 +92,10 @@ export function convertToDayname(day: string) {
 
 // ====== SORT ======
 export function sortCompatibilityAccumulator(store: WeeklyCompatibilityIndex) {
-    store.sortedAccumulator = Object.entries(store.accumulator)
-        .map(([k, v]) => [Number(k), v] as [number, number])
-        .sort((a, b) => a[1] - b[1]);
+    store.sortedAccumulator = Object.entries(store.accumulator).map<{id: number, score: number}>(
+        ([id, score]) => ({
+            id: Number(id),
+            score: Number(score)
+        }))
+        .sort((a, b) => b.score - a.score);
 }

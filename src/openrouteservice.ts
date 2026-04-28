@@ -1,4 +1,6 @@
-import { OpenRouteService } from "ors-client";
+import { OpenRouteService, type DirectionsResponse, type Route } from "ors-client";
+export type { DirectionsResponse, Route };
+
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -36,11 +38,11 @@ async function geocodingExamples() {
 }
 
 // Get a route
-export const getRoute = async (coordinate1: [number, number], coordinate2: [number, number]) => {
+export const getRoute = async (coordinate1: [number, number], coordinate2: [number, number]): Promise<DirectionsResponse> => {
     return await client.directions.calculateRoute("driving-car", {
         coordinates: [
             [coordinate1[1], coordinate1[0]],
             [coordinate2[1], coordinate2[0]],
         ],
-    })
+    });
 }

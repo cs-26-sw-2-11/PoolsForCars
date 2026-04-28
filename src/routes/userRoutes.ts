@@ -11,4 +11,4 @@ userRoutes.route("")
 userRoutes.get('/:userId', userController.getUserById);
 
 
-// userRoutes.get('/:userId/calender', calenderController.getCalender);
+// userRoutes.get('/:userId/calendar', calendarController.getCalendar);
