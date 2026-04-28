@@ -10,6 +10,7 @@ export const getUsersService = async () => {
 
 export const loginHandler = async (req: express.Request) => {
     let { lastName, phone } = req.body;
+
     const users = await getUsersService();
     Object.entries(users);
     for (const [key, value] of Object.entries(users)) {
