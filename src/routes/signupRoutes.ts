@@ -15,10 +15,11 @@ router.route("")
     })
     .post(
         [
-         // Input validation / verification needed on form data. i.e. firstName, lastName, phone, and on subcatagories of preferences
-
+        // Input validation / verification needed on form data. i.e. firstName, lastName, phone, and on subcategories of preferences
+        // Don't know how to do it on subcategories tho 🤷‍♂️
         ],
         (req: express.Request, res:express.Response) =>{
+        // calls the service responsible for the signup, should probably be moved to a controller function instead of a body function.
         services.doSignup(req);
     });
 

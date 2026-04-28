@@ -2,13 +2,14 @@
 import express from "express";
 import { body, validationResult } from "express-validator"
 import { filePath } from "./index.js"
-import { readUsers, type User, type Users } from "../models/user.model.js"
 import { getUsers, loginHandling } from "../controllers/user.controller.js";
-import { loginHandler } from "../services/user.service.js";
+
 
 
 const router = express.Router();
 
+// Function responsible for validating inputs. i.e. if if the body("lastName") the default route doesn't match 
+// - the specifed specs, it returns an error, with the message send from the validation step. i.e. ("invalid name")
 export const validate = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -18,7 +19,9 @@ export const validate = (req: express.Request, res: express.Response, next: expr
     next(); // continue only if valid
 };
 
+// Default route for /loging, can be setup to handle the specific requests like .delete, .post, .put, etc.
 router.route("")
+    // If get request, respond by sending a file, using an absolute filepath
     .get((req, res) => {
         res.sendFile(filePath + "/Login.html");
     })
