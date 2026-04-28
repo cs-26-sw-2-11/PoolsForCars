@@ -25,4 +25,4 @@ app.use(routes);
 
 //=== STARTS SERVER ===///
 app.listen(port)
-console.log(`Server running at http://${hostname}:${port}/`);
+console.log(`Server running at http://${hostname}:${port}/signup`);

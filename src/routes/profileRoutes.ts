@@ -1,10 +1,8 @@
 //=== IMPORTS ===///
 import express from 'express';
 import { filePath } from "./index.js"
-import { deleteUser, updateUser, type User } from '../models/user.model.js';
 import { deleteUserById, updateUserById } from '../controllers/user.controller.js';
-import { check } from "express-validator";
-import { url } from 'node:inspector';
+
 
 const router = express.Router();
 

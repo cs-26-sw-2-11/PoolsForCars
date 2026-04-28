@@ -146,7 +146,7 @@ window.addEventListener("DOMContentLoaded", function () {
         var formData = new FormData(form);
         var userPayload = buildUserPayload(formData);
         
-        fetch("/users", {
+        fetch("/signup", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(userPayload)
