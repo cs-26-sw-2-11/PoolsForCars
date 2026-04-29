@@ -1,4 +1,8 @@
 
+var profileForm = document.getElementById("profileForm");
+var editButton = document.getElementById("editProfile");
+var saveButton = document.getElementById("saveProfile");
+
 document.querySelectorAll("[data-day-picker]").forEach(function (dayGrid) {
     var dayInputs = dayGrid.parentElement.querySelectorAll('.day-selector input[type="radio"]');
     var dayCards = dayGrid.querySelectorAll("[data-day-card]");
@@ -30,66 +34,86 @@ document.querySelectorAll("[data-day-picker]").forEach(function (dayGrid) {
     syncDayCards();
 });
 
-document.querySelectorAll("[data-role-card]").forEach(function (card) {
-    var roleInputs = card.querySelectorAll('input[name$="RideRole"]');
-    var availabilityInput = card.querySelector('input[name$="CarAvailability"]');
+function syncRoleCard(card) {
+    var availabilityInputs = card.querySelectorAll('input[name$="CarAvailability"]');
     var seatsInput = card.querySelector('input[name$="SeatsOffered"]');
-    var carpoolInputs = card.querySelectorAll('input[name$="CarpoolingIntent"]');
     var pickupInput = card.querySelector('input[name$="PickupPoint"]');
     var destinationInput = card.querySelector('input[name$="Destination"]');
     var arrivalInput = card.querySelector('input[name$="TimeOfArrival"]');
+    var selectedCarpoolIntent = card.querySelector('input[name$="CarpoolingIntent"]:checked');
+    var selectedCarAvailability = card.querySelector('input[name$="CarAvailability"]:checked');
+    var wantsToCarpool = selectedCarpoolIntent && selectedCarpoolIntent.value === "true";
+    var isDriver = selectedCarAvailability && selectedCarAvailability.value === "true";
 
-    function syncRole() {
-        var carpoolChoice = card.querySelector('input[name$="CarpoolingIntent"]:checked');
-        var wantsToCarpool = carpoolChoice && carpoolChoice.value === "true";
-        var selected = card.querySelector('input[name$="RideRole"]:checked');
-        var isDriver = selected && selected.value === "driver";
+    availabilityInputs.forEach(function (input) {
+        input.disabled = !wantsToCarpool;
+    });
 
-        availabilityInput.value = isDriver && wantsToCarpool ? "true" : "false";
-        seatsInput.disabled = !isDriver || !wantsToCarpool;
+    seatsInput.disabled = !isDriver || !wantsToCarpool;
+    pickupInput.disabled = !wantsToCarpool;
+    destinationInput.disabled = !wantsToCarpool;
+    arrivalInput.disabled = !wantsToCarpool;
 
-        if (!isDriver) {
-            seatsInput.value = "0";
-        }
+    pickupInput.required = wantsToCarpool;
+    destinationInput.required = wantsToCarpool;
+    arrivalInput.required = wantsToCarpool;
+
+    if (!isDriver || !wantsToCarpool) {
+        seatsInput.value = "0";
     }
 
-    function syncCarpoolIntent() {
-        var selected = card.querySelector('input[name$="CarpoolingIntent"]:checked');
-        var wantsToCarpool = selected && selected.value === "true";
+    if (!wantsToCarpool) {
+        pickupInput.value = "";
+        destinationInput.value = "";
+        arrivalInput.value = "";
+        card.classList.add("day-card--not-carpooling");
+    } else {
+        card.classList.remove("day-card--not-carpooling");
+    }
+}
 
-        roleInputs.forEach(function (input) {
-            input.disabled = !wantsToCarpool;
+function syncProfileRoleCards() {
+    document.querySelectorAll("[data-role-card]").forEach(syncRoleCard);
+}
+
+document.querySelectorAll("[data-role-card]").forEach(function (card) {
+    var availabilityInputs = card.querySelectorAll('input[name$="CarAvailability"]');
+    var carpoolInputs = card.querySelectorAll('input[name$="CarpoolingIntent"]');
+
+    availabilityInputs.forEach(function (input) {
+        input.addEventListener("change", function () {
+            syncRoleCard(card);
         });
-
-        pickupInput.disabled = !wantsToCarpool;
-        destinationInput.disabled = !wantsToCarpool;
-        arrivalInput.disabled = !wantsToCarpool;
-
-        pickupInput.required = wantsToCarpool;
-        destinationInput.required = wantsToCarpool;
-        arrivalInput.required = wantsToCarpool;
-
-        if (!wantsToCarpool) {
-            seatsInput.value = "0";
-            pickupInput.value = "";
-            destinationInput.value = "";
-            arrivalInput.value = "";
-            card.classList.add("day-card--not-carpooling");
-        } else {
-            card.classList.remove("day-card--not-carpooling");
-        }
-
-        syncRole();
-    }
-
-    roleInputs.forEach(function (input) {
-        input.addEventListener("change", syncRole);
     });
 
     carpoolInputs.forEach(function (input) {
-        input.addEventListener("change", syncCarpoolIntent);
+        input.addEventListener("change", function () {
+            syncRoleCard(card);
+        });
     });
 
-    syncCarpoolIntent();
-    syncRole();
+    syncRoleCard(card);
+});
+
+window.addEventListener("DOMContentLoaded", function () {
+    if (!profileForm || !editButton || !saveButton) {
+        return;
+    }
+
+    profileForm.querySelectorAll("input, select, textarea").forEach(function (field) {
+        field.disabled = true;
+    });
+
+    editButton.disabled = false;
+    saveButton.disabled = true;
+
+    editButton.addEventListener("click", function () {
+        profileForm.querySelectorAll("input, select, textarea").forEach(function (field) {
+            field.disabled = false;
+        });
+
+        editButton.disabled = true;
+        saveButton.disabled = false;
+        syncProfileRoleCards();
+    });
 });

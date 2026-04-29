@@ -24,7 +24,7 @@
                     </div>
                 </div>
                 <div class="profile-hero-copy">
-                    <div class="title title--left">Welcome John Doe</div>
+                    <div class="title title--left">Welcome Back</div>
                     <p class="form-intro" style="text-align: center;">Manage your personal information and carpooling preferences.</p>
                 </div>
             </section>
@@ -43,7 +43,7 @@
                         </div>
                         <div class="input-box">
                             <label class="details" for="profilePhone">Phone</label>
-                            <input type="tel" id="profilePhone" name="phone" required pattern="[0-9]{8}">
+                            <input type="tel" id="profilePhone" name="phoneNumber" required pattern="[0-9]{8}">
                         </div>
                     </div>
                 </fieldset>
@@ -92,15 +92,14 @@
                                 <span class="details">Passenger or Driver</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="mondayPassenger">
-                                        <input type="radio" id="mondayPassenger" name="mondayRideRole" required value="passenger" checked>
+                                        <input type="radio" id="mondayPassenger" name="mondayCarAvailability" required value="false" checked>
                                         <span>Passenger</span>
                                     </label>
                                     <label class="radio-option" for="mondayDriver">
-                                        <input type="radio" id="mondayDriver" name="mondayRideRole" required value="driver">
+                                        <input type="radio" id="mondayDriver" name="mondayCarAvailability" required value="true">
                                         <span>Driver</span>
                                     </label>
                                 </div>
-                                <input type="hidden" name="mondayCarAvailability" value="false">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="mondaySeats">Seats Available</label>
@@ -139,15 +138,14 @@
                                 <span class="details">Passenger or Driver</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="tuesdayPassenger">
-                                        <input type="radio" id="tuesdayPassenger" name="tuesdayRideRole" required value="passenger" checked>
+                                        <input type="radio" id="tuesdayPassenger" name="tuesdayCarAvailability" required value="false" checked>
                                         <span>Passenger</span>
                                     </label>
                                     <label class="radio-option" for="tuesdayDriver">
-                                        <input type="radio" id="tuesdayDriver" name="tuesdayRideRole" required value="driver">
+                                        <input type="radio" id="tuesdayDriver" name="tuesdayCarAvailability" required value="true">
                                         <span>Driver</span>
                                     </label>
                                 </div>
-                                <input type="hidden" name="tuesdayCarAvailability" value="false">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="tuesdaySeats">Seats Available</label>
@@ -186,15 +184,14 @@
                                 <span class="details">Passenger or Driver</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="wednesdayPassenger">
-                                        <input type="radio" id="wednesdayPassenger" name="wednesdayRideRole" required value="passenger" checked>
+                                        <input type="radio" id="wednesdayPassenger" name="wednesdayCarAvailability" required value="false" checked>
                                         <span>Passenger</span>
                                     </label>
                                     <label class="radio-option" for="wednesdayDriver">
-                                        <input type="radio" id="wednesdayDriver" name="wednesdayRideRole" required value="driver">
+                                        <input type="radio" id="wednesdayDriver" name="wednesdayCarAvailability" required value="true">
                                         <span>Driver</span>
                                     </label>
                                 </div>
-                                <input type="hidden" name="wednesdayCarAvailability" value="false">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="wednesdaySeats">Seats Available</label>
@@ -233,15 +230,14 @@
                                 <span class="details">Passenger or Driver</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="thursdayPassenger">
-                                        <input type="radio" id="thursdayPassenger" name="thursdayRideRole" required value="passenger" checked>
+                                        <input type="radio" id="thursdayPassenger" name="thursdayCarAvailability" required value="false" checked>
                                         <span>Passenger</span>
                                     </label>
                                     <label class="radio-option" for="thursdayDriver">
-                                        <input type="radio" id="thursdayDriver" name="thursdayRideRole" required value="driver">
+                                        <input type="radio" id="thursdayDriver" name="thursdayCarAvailability" required value="true">
                                         <span>Driver</span>
                                     </label>
                                 </div>
-                                <input type="hidden" name="thursdayCarAvailability" value="false">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="thursdaySeats">Seats Available</label>
@@ -280,15 +276,14 @@
                                 <span class="details">Passenger or Driver</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="fridayPassenger">
-                                        <input type="radio" id="fridayPassenger" name="fridayRideRole" required value="passenger" checked>
+                                        <input type="radio" id="fridayPassenger" name="fridayCarAvailability" required value="false" checked>
                                         <span>Passenger</span>
                                     </label>
                                     <label class="radio-option" for="fridayDriver">
-                                        <input type="radio" id="fridayDriver" name="fridayRideRole" required value="driver">
+                                        <input type="radio" id="fridayDriver" name="fridayCarAvailability" required value="true">
                                         <span>Driver</span>
                                     </label>
                                 </div>
-                                <input type="hidden" name="fridayCarAvailability" value="false">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="fridaySeats">Seats Available</label>
@@ -310,8 +305,8 @@
                     </div>
                 </fieldset>
                 <div class="button-row">
-                    <button id="editProfile" type="submit">Edit</button>
-                    <button id="saveProfile" class="button-secondary" type="button">Save</button>
+                    <button id="editProfile" type="button">Edit</button>
+                    <button id="saveProfile" class="button-secondary" type="submit" disabled>Save</button>
                 </div>
             </form>
         </div>

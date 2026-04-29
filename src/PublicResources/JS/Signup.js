@@ -12,14 +12,8 @@ function buildDayPayload(form, dayName) {
         carAvailability: form.get("signup" + dayName + "CarAvailability") === "true",
         seatsOffered: Number(seatsValue || 0),
         carpoolingIntent: form.get("signup" + dayName + "CarpoolingIntent") === "true",
-        pickupPoint: {
-            address: pickupAddress,
-            coordinates: [0, 0]
-        },
-        destination: {
-            address: destinationAddress,
-            coordinates: [0, 0]
-        },
+        pickupPoint: pickupAddress,
+        destination:  destinationAddress,
         timeOfArrival: arrivalTime
     };
 }
@@ -71,8 +65,7 @@ document.querySelectorAll("[data-day-picker]").forEach(function (dayGrid) {
 });
 
 document.querySelectorAll("[data-role-card]").forEach(function (card) {
-    var roleInputs = card.querySelectorAll('input[name$="RideRole"]');
-    var availabilityInput = card.querySelector('input[name$="CarAvailability"]');
+    var availabilityInputs = card.querySelectorAll('input[name$="CarAvailability"]');
     var seatsInput = card.querySelector('input[name$="SeatsOffered"]');
     var carpoolInputs = card.querySelectorAll('input[name$="CarpoolingIntent"]');
     var pickupInput = card.querySelector('input[name$="PickupPoint"]');
@@ -82,10 +75,9 @@ document.querySelectorAll("[data-role-card]").forEach(function (card) {
     function syncRole() {
         var carpoolChoice = card.querySelector('input[name$="CarpoolingIntent"]:checked');
         var wantsToCarpool = carpoolChoice && carpoolChoice.value === "true";
-        var selected = card.querySelector('input[name$="RideRole"]:checked');
-        var isDriver = selected && selected.value === "driver";
+        var selected = card.querySelector('input[name$="CarAvailability"]:checked');
+        var isDriver = selected && selected.value === "true";
 
-        availabilityInput.value = isDriver && wantsToCarpool ? "true" : "false";
         seatsInput.disabled = !isDriver || !wantsToCarpool;
 
         if (!isDriver) {
@@ -97,7 +89,7 @@ document.querySelectorAll("[data-role-card]").forEach(function (card) {
         var selected = card.querySelector('input[name$="CarpoolingIntent"]:checked');
         var wantsToCarpool = selected && selected.value === "true";
 
-        roleInputs.forEach(function (input) {
+        availabilityInputs.forEach(function (input) {
             input.disabled = !wantsToCarpool;
         });
 
@@ -122,7 +114,7 @@ document.querySelectorAll("[data-role-card]").forEach(function (card) {
         syncRole();
     }
 
-    roleInputs.forEach(function (input) {
+    availabilityInputs.forEach(function (input) {
         input.addEventListener("change", syncRole);
     });
 
