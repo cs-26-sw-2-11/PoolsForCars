@@ -4,6 +4,7 @@
 // Create a summed temporal compatibility score for all respective drivers and sort the drivers according to this score.
 
 
+import * as calenderModel from '../models/calendar.model.js';
 import type { CalendarDay } from '../models/calendar_day.model.js';
 import { convertToDayname, setCompatibility, sortCompatibilityAccumulator, type WeeklyCompatibilityIndex } from '../models/compatibility.model.js';
 import { type User, type Users, readUsers } from '../models/user.model.js';
@@ -29,18 +30,25 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
 
     const users: Users = await readUsers();
 
-    for (let week in user.calendar) {
+    const todaysDate: Date = await calenderModel.getTodaysDate();
+    const todaysWeek: number = await calenderModel.getTodaysWeek();
+
+    for (const week of Object.entries(user.calendar)) {
+        if (Number(week[0]) < todaysWeek) continue; // Skip current iteration if week is in the past
+
         for (let sub_user of users.values()) {
             if (user.id === sub_user.id) {
                 continue;
             }
-            if (!sub_user.calendar[week]) {
+            if (!sub_user.calendar[Number(week[0])]) {
                 continue;
             }
 
-            for (let day in user.calendar[week]?.days) {
-                const userDay: CalendarDay = user.calendar[week].days[day] as CalendarDay;
-                const subUserDay: CalendarDay = sub_user.calendar[week].days[day] as CalendarDay;
+            for (const day of Object.entries(week[1].days)) {
+                if (day[1].date.getDay() < todaysDate.getDay()) continue; // Skip current iteration if the day is in the past
+
+                const userDay: CalendarDay = day[1];
+                const subUserDay: CalendarDay = sub_user.calendar[Number(week[0])]?.days[day[0]] as CalendarDay;
 
                 // both user and sub user wants to carpool on this day
                 if (!(userDay.carpoolingIntent && subUserDay.carpoolingIntent)) {
@@ -62,8 +70,8 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
                 if (compatibility !== 0 && compatibility <= 1) {
                     setCompatibility(
                         compatibilityMap,
-                        Number(week),
-                        convertToDayname(day),
+                        Number(week[0]),
+                        convertToDayname(day[0]),
                         sub_user.id,
                         compatibility
                     );
