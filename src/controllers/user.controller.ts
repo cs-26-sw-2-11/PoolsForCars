@@ -101,6 +101,7 @@ export const loginHandling = async (req: express.Request, res: express.Response,
     console.log("user doesnt match");
    } else{
     console.log(`The users ID is ${user}`);
+    res.status(400)
    }
 }
 

@@ -4,13 +4,19 @@
     // File Layout
     "rootDir": "./src",
     "outDir": "./dist",
+    //"paths": { "@/*": ["./src/*"] },
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
     "moduleResolution": "NodeNext",
     "target": "esnext",
-    "types": ["node"],
+    "types": [
+      "node",
+      
+      // Making vitest functions available, globally
+       "vitest/globals" 
+    ],
 
     // For nodejs:
     // "lib": ["esnext"],
@@ -25,6 +31,7 @@
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
+
 
     // Style Options
     // "noImplicitReturns": true,
@@ -46,5 +53,6 @@
     // Custom set options
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    }
+    },
+    "exclude": ["dist","**/*.test.ts", "vitest.config.ts"]
 }
