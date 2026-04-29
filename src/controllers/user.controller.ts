@@ -1,7 +1,7 @@
 import express from "express";
 import * as userModel from '../models/user.model.js';
 import * as uservice from '../services/user.service.js'
-import { warn } from "console";
+import * as calendarModel from '../models/calendar.model.js';
 
 
 // ───────────────────────────────────────────────────────────────
@@ -10,7 +10,25 @@ import { warn } from "console";
 // Creates the user
 export const createUser = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
-        const user: userModel.User = await userModel.createUser(req.body as userModel.User); // Create a new user in the database
+        const recievedUser: userModel.User = req.body as userModel.User; // Recieve user object and convert it to User type
+
+        const currentDate: Date = new Date();
+        const currentWeek: number = await calendarModel.dateToWeek(currentDate);
+
+        recievedUser.schedule.startDate = await calendarModel.getFirstDayOfWeek(currentDate);
+        recievedUser.schedule.endDate = await calendarModel.getLastWorkdayOfWeek(currentDate);
+
+        const tempDate: Date = new Date(recievedUser.schedule.startDate.valueOf());
+        for (const dayEntry of Object.entries(recievedUser.schedule.days)) {
+            // set the correct dates for the week
+            dayEntry[1].date = new Date(tempDate.valueOf());
+            tempDate.setDate(tempDate.getDate() + 1);
+        }
+
+        recievedUser.calendar[currentWeek] = JSON.parse(JSON.stringify(recievedUser.schedule)); // Copy the users schedule into its calendar under the current week
+
+        const user: userModel.User = await userModel.createUser(recievedUser); // Create a new user in the database
+
         res.status(200).json(user);
     } catch (err) {
         console.log(err);

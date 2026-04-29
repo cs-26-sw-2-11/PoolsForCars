@@ -66,6 +66,15 @@ export const initUsers = async (): Promise<void> => {
                 .map(line => JSON.parse(line)) as User[];
 
             parsedUsers.forEach(user => {
+                // Make sure all Dates are Date objects
+                for (const weekEntry of Object.entries(user.calendar)) {
+                    weekEntry[1].startDate = new Date(weekEntry[1].startDate);
+                    weekEntry[1].endDate = new Date(weekEntry[1].endDate);
+
+                    for (const dayEntry of Object.entries(weekEntry[1].days)) {
+                        dayEntry[1].date = new Date(dayEntry[1].date);
+                    }
+                }
                 USERS.set(user.id, user);
             });
         } catch (error) {
@@ -77,6 +86,16 @@ export const initUsers = async (): Promise<void> => {
 // ====== CREATE USER (SAFE) ======
 export const createUser = async (user: User): Promise<User> => {
     return enqueue(async () => {
+        // Make sure all Dates are Date objects
+        for (const weekEntry of Object.entries(user.calendar)) {
+            weekEntry[1].startDate = new Date(weekEntry[1].startDate);
+            weekEntry[1].endDate = new Date(weekEntry[1].endDate);
+
+            for (const dayEntry of Object.entries(weekEntry[1].days)) {
+                dayEntry[1].date = new Date(dayEntry[1].date);
+            }
+        }
+
         user.id = meta.lastId++;
 
         // update memory
