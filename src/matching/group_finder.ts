@@ -1,5 +1,3 @@
-
-
 // import type { CalendarDay } from "../models/calendar_day.model.js";
 // import { convertToDayname, type WeeklyCompatibilityIndex } from "../models/compatibility.model.js";
 // import { createGroup, initGroups, readGroup, type Group } from "../models/group.model.js";
@@ -18,6 +16,12 @@
 
 // const ACCEPTED_DETOUR: number = 10 * 60;
 
+//
+//
+//
+//
+//
+//
 // /* findCompatibleCandidates:
 //  * Recieve user as input
 //  * Loops over all weeks in users calender as week
@@ -71,8 +75,8 @@
 //  *
 //  *
 // */
-
-
+//
+//
 // export const findGroups = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 //     try {
 //         const user: userModel.User = await userModel.readUser(Number(req.params['userId']));
@@ -86,6 +90,10 @@
 // }
 
 
+//
+// }
+//
+//
 // export const searchForGroups = async (user: User, compatibility: WeeklyCompatibilityIndex) => {
 //     for (let weekNumber in user.calender) {
 //         const userWeek: Week = user.calender[weekNumber] as Week;
@@ -95,7 +103,7 @@
 //                 if (compatibility.weeks[weekNumber] === undefined) continue; // checks if the week is undefined
 //                 if (!compatibility.weeks[weekNumber][convertToDayname(dayString)][candidate[0]]) continue; // checks if the candidate is
 //                 // compatible with the user on this day
-
+//
 //                 const candidateUser: User = await readUser(candidate[0]);
 //                 const candidateDay: CalenderDay = candidateUser.calender[weekNumber]?.days[dayString] as CalenderDay;
 //                 await testGroup(user.id, userDay, candidateUser.id, candidateDay);
@@ -105,6 +113,8 @@
 // }
 
 
+//
+//
 // /*
 //  * testGroup:
 //  * Make a new temporary group
@@ -129,8 +139,8 @@
 //  *  - A group will always have actual all 3 parameters of the cost object filled out for all users in route
 //  *  - A group will always have an average secsPerKm and kmPerEuclideanDist
 //  */
-
-
+//
+//
 // const testGroup = async (userId: number, userDay: CalenderDay, candidateId: number, candidateDay: CalenderDay) => {
 //     const candidateGroups: [number | null, number | null] = candidateDay.groups as [number | null, number | null];
 //     if (candidateGroups[0] === null && candidateGroups[1] === null) {
@@ -139,6 +149,9 @@
 
 //     const candidateMorningGroup: Group = await readGroup(Number(candidateGroups[0])) as Group;
 
+//
+//     const candidateMorningGroup: Group = await readGroup(Number(candidateGroups[0])) as Group;
+//
 //     // [[[userId, [LAN, LON]], distance]]
 //     const userDistancesToDestination: [[number, [number, number]], number][] = [
 //         [
@@ -153,6 +166,13 @@
 
 //     userDistancesToDestination.sort((a, b) => a[1] - b[1]); // check how its sorted (ascending or descending)
 
+//
+//     for (let user of candidateMorningGroup.row_labels) {
+//         userDistancesToDestination.push([user, euclideanDistance(user[1], candidateDay.destination.coordinates)])
+//     }
+//
+//     userDistancesToDestination.sort((a, b) => a[1] - b[1]); // check how its sorted (ascending or descending)
+//
 //     let userIndex: number = 0;
 //     for (const item of userDistancesToDestination.entries()) {
 //         const index = item[0];
@@ -161,14 +181,14 @@
 //             userIndex = index;
 //         break;
 //     }
-
+//
 //     if (userDistancesToDestination[userIndex - 1] === undefined) return;
 //     const previousUser: [number, [number, number]] = userDistancesToDestination[userIndex - 1]?.[0] as [number, [number, number]];
 //     const currentUser: [number, [number, number]] = userDistancesToDestination[userIndex]?.[0] as [number, [number, number]];
 //     const nextUser: [number, [number, number]] = userDistancesToDestination[userIndex + 1]?.[0] as [number, [number, number]];
 //     const distanceFromPreviousToCurrentUser: number = euclideanDistance(previousUser[1], currentUser[1]);
 //     const distanceFromCurrentToNextUser: number = euclideanDistance(currentUser[1], nextUser[1]);
-
+//
 //     const travelTimePreviousToCurrentUser: number =
 //         distanceFromPreviousToCurrentUser *
 //         candidateMorningGroup.kmPerEuclideanDistAverage *
@@ -177,19 +197,22 @@
 //         distanceFromCurrentToNextUser *
 //         candidateMorningGroup.kmPerEuclideanDistAverage *
 //         candidateMorningGroup.secsPerKmAverage;
-
+//
 //     let previousUserIndex: number = 0;
 //     let nextUserIndex: number = 0;
 //     for (const item of candidateMorningGroup.row_labels.entries()) {
 //         if (previousUser[0] === item[1][0]) previousUserIndex = item[0];
 //         if (nextUser[0] === item[1][0]) nextUserIndex = item[0];
 //     }
-
-
 //     let totalTravelTime: number = candidateMorningGroup.totalTravelTimeSeconds;
 //     const oldEdge: Cost[] = findEdge(candidateMorningGroup.values, previousUserIndex, nextUserIndex);
 //     totalTravelTime -= (oldEdge[previousUserIndex] as Cost).travelTimeSeconds;
-
+//
+//
+//     let totalTravelTime: number = candidateMorningGroup.totalTravelTimeSeconds;
+//     const oldEdge: Cost[] = findEdge(candidateMorningGroup.values, previousUserIndex, nextUserIndex);
+//     totalTravelTime -= (oldEdge[previousUserIndex] as Cost).travelTimeSeconds;
+//
 //     const driverToDestEdge: Cost[] = findEdge(candidateMorningGroup.values, 0, 1);
 //     if (
 //         Math.abs(
@@ -207,6 +230,14 @@
 
 
 
+//
+//
+//     console.log("Detour is acceptable");
+//
+//
+//
+//
+//
 //     // let groupCandidate: Group;
 //     // if (candidateGroups[0] == null) {
 //     //     groupCandidate = await makeNewGroup(candidate, week, day);
@@ -246,6 +277,38 @@
 // }
 
 
+//
+//     // check if candidate is already in a group on this day.
+//     // if no: make new group for driver on this day.
+//
+//
+// }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// const findEdge = (matrix: Cost[][], index1: number, index2: number): Cost[] => {
+//     for (const edge of matrix) {
+//         if (JSON.stringify(edge[index1]) !== JSON.stringify(edge[index2])) continue;
+//         return edge;
+//     }
+//     return {} as Cost[];
+// }
+//
+//
+//
+// const euclideanDistance = (vector1: [number, number], vector2: [number, number]): number => {
+//     return Math.sqrt(Math.pow((vector2[0] - vector1[0]), 2) + Math.pow((vector2[1] - vector1[1]), 2));
+// }
+//
+//
 // const makeNewGroup = async (user: User, week: number, day: string) => {
 //     const group: Group = {
 //         id: 0,
@@ -260,7 +323,7 @@
 //         secsPerKmAverage: 0,
 //         kmPerEuclideanDistAverage: 0,
 //     };
-
+//
 //     const userDay = user.calender[week]?.days[day];
 //     const v1: number = addGroupVertex(group, user.id, userDay?.pickupPoint.coordinates as [number, number]);
 //     const v2: number = addGroupVertex(group, user.id, userDay?.destination.coordinates as [number, number]);
@@ -270,6 +333,11 @@
 //     const vertex1 = group.row_labels[v1] ?? [0, [0, 0]];
 //     const vertex2 = group.row_labels[v2] ?? [0, [0, 0]];
 
+//
+//
+//     const vertex1 = group.row_labels[v1] ?? [0, [0, 0]];
+//     const vertex2 = group.row_labels[v2] ?? [0, [0, 0]];
+//
 //     const route = await getRoute(vertex1[1], vertex2[1]);
 //     const routeTravelTime: number = route.routes[0]?.summary.duration as number;
 //     const routeTravelDistance: number = route.routes[0]?.summary.distance as number;
@@ -277,7 +345,7 @@
 //     console.log("TRAVEL TIME:", routeTravelTime);
 //     //
 //     // const routeTravelTime: number = 20;
-
+//
 //     if (group.values[e1] !== undefined) {
 //         console.log("Writing travel times");
 //         const v1Cost: Cost = group.values[e1][v1] as Cost;
@@ -289,7 +357,7 @@
 //         v1Cost.distanceEuclidean = distanceEuclidean;
 //         v2Cost.distanceEuclidean = distanceEuclidean;
 //     }
-
+//
 //     const newGroup = await createGroup(group);
 //     user.groups[0] = newGroup.id;
 //     if (userDay?.groups !== undefined) {
@@ -300,6 +368,8 @@
 // }
 
 
+//
+//
 // function addGroupVertex(group: Group, userId: number, coordinates: [number, number]) {
 //     group.row_labels.push([userId, coordinates]);
 //     return group.rows++;
@@ -309,6 +379,11 @@
 //     // add a column label for the new column
 //     group.column_labels.push(group.columns++);
 
+//
+// function addGroupEdge(group: Group, v1_index: number, v2_index: number) {
+//     // add a column label for the new column
+//     group.column_labels.push(group.columns++);
+//
 //     let newColumn: Cost[] = [];
 //     for (let i = 0; i < group.rows; i++) {
 //         let cost: Cost = {
@@ -322,12 +397,17 @@
 //     let row1: [number, [number, number]] = group.row_labels[v1_index] ?? [0, [0, 0]];
 //     let row2: [number, [number, number]] = group.row_labels[v2_index] ?? [0, [0, 0]];
 
+//
+//
+//     let row1: [number, [number, number]] = group.row_labels[v1_index] ?? [0, [0, 0]];
+//     let row2: [number, [number, number]] = group.row_labels[v2_index] ?? [0, [0, 0]];
+//
 //     let v1v2straghtLineDistance =
 //         Math.sqrt(
 //             Math.pow(row2[1][0] - row1[1][0], 2) +
 //             Math.pow(row2[1][1] - row1[1][1], 2)
 //         );
-
+//
 //     if (newColumn[v1_index] !== undefined &&
 //         newColumn[v2_index] !== undefined) {
 //         newColumn[v1_index].straightLineDistance = v1v2straghtLineDistance;
@@ -394,6 +474,63 @@
 
 
 
+//
+//
+//
+// await findGroups(user);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 // // // check if candidate is already in a group on this day.
 // // // if no: make new group for driver on this day.
 // //
