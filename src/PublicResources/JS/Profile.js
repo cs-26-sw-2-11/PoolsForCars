@@ -1,3 +1,21 @@
+async function getData (){ 
+    const url = "/users/0";
+    try {
+         const response = await fetch(url); 
+         if (!response.ok) {
+            throw new Error(`respone status ${response.status}`)
+         
+         }
+         const result = await response.json();
+         console.log(result);
+    }
+
+        catch (error) {
+            console.error(error.message);
+        }
+}
+
+getData();
 
 var profileForm = document.getElementById("profileForm");
 var editButton = document.getElementById("editProfile");
