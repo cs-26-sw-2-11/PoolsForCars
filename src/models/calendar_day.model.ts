@@ -11,4 +11,3 @@ export interface CalendarDay {
     timeOfArrival: string;
     groups: [number | null, number | null];
 }
-

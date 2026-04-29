@@ -78,3 +78,11 @@ export const getLastWorkdayOfWeek = async (date: Date): Promise<Date> => {
     lastDay.setDate(date.getDate() + (4 - dayNum));
     return lastDay;
 }
+
+export const getTodaysDate = async () => {
+    return new Date();
+}
+
+export const getTodaysWeek = async () => {
+    return await dateToWeek(await getTodaysDate());
+}
