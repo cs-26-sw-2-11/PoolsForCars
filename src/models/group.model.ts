@@ -3,6 +3,7 @@ import type { Cost } from './cost.model.js';
 
 import * as fs from 'fs';
 import { asyncAppendLineToFile, asyncReadFile, asyncWriteFile, DATABASE_DIRNAME } from '../database/helper-functions.js'
+import type { Location } from './location.model.js';
 
 // ====== TYPES ======
 // export interface Group {
@@ -21,10 +22,14 @@ import { asyncAppendLineToFile, asyncReadFile, asyncWriteFile, DATABASE_DIRNAME 
 
 export interface Group {
     id: number;
+    totalCarSeats: number;
     members: GroupMember[];
+    destination: Location;
     route: number[]; // optimized order
     totalTravelTimeSeconds: number;
     totalDetourTimeSeconds: number;
+    totalTravelDistanceMeters: number;
+    totalTravelDistanceEuclidiean: number;
     secsPerMeterAverage: number;
     metersPerEuclideanDistAverage: number;
 }
