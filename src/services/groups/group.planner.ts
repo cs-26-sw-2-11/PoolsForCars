@@ -1,4 +1,4 @@
-import { getRoute, type Route } from "../../openrouteservice.js";
+import { getRoute, type Route } from "../ors.service.js";
 import { type AppendPassengerDTO } from "./dto/appendPassenger.dto.js"
 import type { Group, GroupMember } from "./group.service.js";
 

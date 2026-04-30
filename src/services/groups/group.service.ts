@@ -1,4 +1,4 @@
-import { getRoute, type DirectionsResponse, type Route } from "../../openrouteservice.js";
+import { getRoute, type DirectionsResponse, type Route } from "../ors.service.js";
 import * as calendarDayModel from "../../models/calendar_day.model.js";
 import * as groupModel from "../../models/group.model.js";
 import * as costModel from "../../models/cost.model.js";
