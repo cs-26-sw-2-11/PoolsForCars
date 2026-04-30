@@ -7,9 +7,6 @@ import type { Location } from '../models/location.model.js';
 import type { Week } from '../models/week.model.js';
 import { createUser, readUsers } from '../models/user.model.js';
 
-import { OpenRouteService } from "ors-client";
-
-import dotenv from 'dotenv';
 
 // ───────────────────────────────────────────────────────────────
 //  :::::: SEEDING CONTROL PANEL ::::::
@@ -94,6 +91,7 @@ export const createRandomUser = async (): Promise<User> => {
         calendar: {},
         lookingForGroups: false,
         groups: [],
+        pendingGroups: [],
 
     };
 };

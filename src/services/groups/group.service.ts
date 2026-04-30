@@ -4,10 +4,9 @@ import * as groupModel from "../../models/group.model.js";
 import * as costModel from "../../models/cost.model.js";
 import * as compatibilityModel from "../../models/compatibility.model.js";
 import * as userModel from "../../models/user.model.js";
-import * as notificationModel from "../../models/notification.model.js"
 import { type AppendPassengerDTO } from "./dto/appendPassenger.dto.js"
 import * as groupPlanner from "./group.planner.js";
-import * as calenderModel from "../../models/calendar.model.js";
+import * as calendarModel from "../../models/calendar.model.js";
 
 export type GroupMember = groupModel.GroupMember;
 export type Group = groupModel.Group;
@@ -15,9 +14,25 @@ export type Group = groupModel.Group;
 const ACCEPTED_DETOUR: number = 10 * 60;
 
 
+export const getGroup = async (id: number): Promise<groupModel.Group> => {
+    return await groupModel.readGroup(id);
+}
+
+
+export const getAllUserGroups = async (userId: number): Promise<groupModel.Group[]> => {
+    const user: userModel.User = await userModel.readUser(userId);
+    const groups: groupModel.Group[] = [];
+    user.groups.forEach(
+        async (groupId) => {
+            groups.push(await groupModel.readGroup(groupId));
+        }
+    );
+    return groups;
+}
+
 
 // ====== MAKE A NEW EMPTY GROUP ======
-export const makeNewGroup = async (userId: number, day: calendarDayModel.CalendarDay): Promise<Group> => {
+export const makeNewGroup = async (userId: number, day: calendarDayModel.CalendarDay, dayString: string, weekNumber: number): Promise<Group> => {
     const routeToDest: DirectionsResponse = await getRoute(day.pickupPoint.coordinates, day.destination.coordinates);
     const firstRouteToDest: Route = routeToDest.routes[0] as Route;
 
@@ -38,8 +53,11 @@ export const makeNewGroup = async (userId: number, day: calendarDayModel.Calenda
 
     const group: groupModel.Group = {
         id: 0,
-        totalCarSeats: day.seatsOffered + 1,
+        day: dayString,
+        week: weekNumber,
+        seatsOffered: day.seatsOffered,
         members: [groupMember],
+        pendingMembers: {},
         destination: day.destination,
         route: [userId],
         totalTravelTimeSeconds: costToDestination.travelTimeSeconds as number,
@@ -61,11 +79,9 @@ export const makeNewGroup = async (userId: number, day: calendarDayModel.Calenda
 
 // ====== Given a user and a compatibility map, search for all groups ======
 export const searchForGroups = async (user: userModel.User, compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex) => {
+    // Get todays day (monday, tuesday, ..., friday) and week number
     const todaysDate: Date = new Date();
-    const todaysWeek: number = await calenderModel.dateToWeek(todaysDate);
-
-    // Premake a list of potential matches (list of notifications to make)
-    let potentialMatches: AppendPassengerDTO[] = [];
+    const todaysWeek: number = await calendarModel.dateToWeek(todaysDate);
 
     // Loop over all weeks in the users calender
     for (const week of Object.entries(user.calendar)) {
@@ -75,44 +91,42 @@ export const searchForGroups = async (user: userModel.User, compatibilityMap: co
         for (const day of Object.entries(week[1].days)) {
             if (day[1].date.getDay() < todaysDate.getDay()) continue; // Skip current iteration if the day is in the past
 
-
             // Loop over all temporally compatible users from most to least overall compatible
-            for (let candidate of compatibilityMap.sortedAccumulator ?? []) {
+            for (const compatibleMatch of compatibilityMap.sortedAccumulator ?? []) {
                 // Skip candidate if they and is not compatible on this exact day
-                if (!compatibilityMap.weeks[Number(week[0])]?.[compatibilityModel.convertToDayname(day[0])][candidate.id]) continue;
+                if (!compatibilityMap.weeks[Number(week[0])]?.[compatibilityModel.convertToDayname(day[0])][compatibleMatch.id]) continue;
 
                 // Fetch user and day objects for candidate
-                const candidateUser: userModel.User = await userModel.readUser(candidate.id);
-                const candidateDay: calendarDayModel.CalendarDay = candidateUser.calendar[Number(week[0])]?.days[day[0]] as calendarDayModel.CalendarDay;
-                console.log(`Candidate ${candidateUser.id}'s day:`, JSON.stringify(candidateDay, null, 2));
+                const peerUser: userModel.User = await userModel.readUser(compatibleMatch.id);
+                const peerUserDay: calendarDayModel.CalendarDay = peerUser.calendar[Number(week[0])]?.days[day[0]] as calendarDayModel.CalendarDay;
 
-                // Fetch the correct group depending on whos the driver
-                const group: groupModel.Group = await groupModel.readGroup(
-                    Number(
-                        candidateDay.carAvailability
-                            ? candidateDay.groups[0]
-                            : day[1].groups[0]
-                    )
-                );
+                // Assign user and peer users days to more clearly named variables
+                const driverDay: calendarDayModel.CalendarDay = day[1].carAvailability ? day[1] : peerUserDay;
+                const passengerDay: calendarDayModel.CalendarDay = day[1].carAvailability ? peerUserDay : day[1];
+                const passengerUser: userModel.User = day[1].carAvailability ? peerUser : user;
+                console.log(`Candidate ${peerUser.id}'s day:`, JSON.stringify(peerUserDay, null, 2));
+
+                // Fetch the drivers group
+                const group: groupModel.Group = await groupModel.readGroup(Number(driverDay.groups[0]));
                 console.log("Testing group:", JSON.stringify(group, null, 2));
 
                 // Skip if all seats in the car are already filled
-                if (group.members.length === group.totalCarSeats) continue;
+                if (group.members.length === group.seatsOffered + 1) continue;
 
-                // Test candidate in group
-                const testResponse: { valid: boolean, reason: string, dto: AppendPassengerDTO | null } = await testGroup(candidateUser.id, candidateDay, group);
+                // Test passenger in drivers group
+                const testResponse: { valid: boolean, reason: string, dto: AppendPassengerDTO | null } = await testGroup(passengerUser.id, passengerDay, group);
                 console.log(testResponse);
 
                 // Push the test response (notification) to potential-matches if its valid
-                if (testResponse.valid && testResponse.dto !== null) potentialMatches.push(testResponse.dto);
+                if (testResponse.valid && testResponse.dto !== null) {
+                    group.pendingMembers[passengerUser.id] = testResponse.dto;
+                    await groupModel.updateGroup(group.id, group);
+
+                    passengerUser.pendingGroups.push(group.id);
+                    await userModel.updateUser(passengerUser.id, passengerUser);
+                }
             }
         }
-    }
-
-    for (const dto of potentialMatches) {
-        console.log(JSON.stringify(dto, null, 2));
-        const notification: notificationModel.Notification = await notificationModel.createNotification(dto);
-        console.log(JSON.stringify(notification, null, 2));
     }
 }
 
@@ -222,10 +236,6 @@ export const testGroup = async (userId: number, day: calendarDayModel.CalendarDa
 }
 
 
-export const testPassenger = async () => {
-
-}
-
 
 export const appendPassengerToGroup = async (dto: AppendPassengerDTO) => {
     const group = await groupModel.readGroup(dto.groupId);
@@ -237,7 +247,9 @@ export const appendPassengerToGroup = async (dto: AppendPassengerDTO) => {
         coordinates: dto.candidateMember.coordinates,
         toNext: dto.isNextDestination ? null : dto.candToNext,
         toDestination: dto.candToDest,
-    }
+    };
+
+    const candidateUser: userModel.User = await userModel.readUser(candidateMember.userId);
 
     previousMember.toNext = dto.prevToCand;
 
@@ -250,7 +262,27 @@ export const appendPassengerToGroup = async (dto: AppendPassengerDTO) => {
     group.secsPerMeterAverage = dto.secsPerMeterAverage;
     group.metersPerEuclideanDistAverage = dto.metersPerEuclideanDistAverage;
 
+    if (group.members.length === group.seatsOffered + 1) {
+        group.pendingMembers = {};
+    } else {
+        delete group.pendingMembers[candidateMember.userId];
+    }
+
+    candidateUser.groups.push(group.id);
+    candidateUser.pendingGroups.splice(candidateUser.pendingGroups.findIndex(x => x === group.id), 1);
+
     await groupModel.updateGroup(group.id, group);
+    await userModel.updateUser(candidateUser.id, candidateUser);
+
+    await refreshPendingMembers(group);
+}
+
+const refreshPendingMembers = async (group: groupModel.Group) => {
+    for (const pendingMember of Object.entries(group.pendingMembers)) {
+        const pendingMemberUser: userModel.User = await userModel.readUser(Number(pendingMember[0]));
+        const pendingMemberDay: calendarDayModel.CalendarDay = pendingMemberUser.calendar[group.week]?.days[group.day] as calendarDayModel.CalendarDay;
+        await testGroup(pendingMemberUser.id, pendingMemberDay, group);
+    }
 }
 
 const euclideanDistance = (vector1: [number, number], vector2: [number, number]): number => {

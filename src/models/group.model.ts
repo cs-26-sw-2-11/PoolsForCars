@@ -4,6 +4,7 @@ import type { Cost } from './cost.model.js';
 import * as fs from 'fs';
 import { asyncAppendLineToFile, asyncReadFile, asyncWriteFile, DATABASE_DIRNAME } from '../database/helper-functions.js'
 import type { Location } from './location.model.js';
+import type { AppendPassengerDTO } from '../services/groups/dto/appendPassenger.dto.js';
 
 // ====== TYPES ======
 // export interface Group {
@@ -22,8 +23,11 @@ import type { Location } from './location.model.js';
 
 export interface Group {
     id: number;
-    totalCarSeats: number;
+    day: string;
+    week: number;
+    seatsOffered: number;
     members: GroupMember[];
+    pendingMembers: Record<number, AppendPassengerDTO> // userid: AppendPassengerDTO
     destination: Location;
     route: number[]; // optimized order
     totalTravelTimeSeconds: number;
