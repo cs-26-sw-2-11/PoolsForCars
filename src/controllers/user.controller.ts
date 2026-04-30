@@ -82,7 +82,8 @@ export const deleteUserById = async (req: express.Request, res: express.Response
             res.status(500).json("Couldn't delete user");
         }
     } catch(err){
-        console.log(err)
+
+        //console.log(err)
     }
 }
 
@@ -96,13 +97,16 @@ export const deleteUserById = async (req: express.Request, res: express.Response
 
 // LOGIN Handling
 export const loginHandling = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-   const user = await uservice.loginHandler(req)
-   if (Number(user)===-1){
-    console.log("user doesnt match");
-   } else{
-    console.log(`The users ID is ${user}`);
-    res.status(400)
-   }
+   try{
+       const user = await uservice.loginHandler(req)
+        if (Number(user)===-1){
+        res.status(401).json("Couldn't match user credentials");
+        } else{
+        res.status(200).json("User credentials found");
+        }
+    } catch (err){
+        next(err);
+    }
 }
 
 export const enableGroupSearching = async (req: express.Request, res: express.Response, next: express.NextFunction) => {

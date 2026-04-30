@@ -1,10 +1,10 @@
-import express from "express";
+import express, { type NextFunction } from "express";
 import * as userModel from '../models/user.model.js';
 import type { Week } from '../models/week.model.js';
 import type { Location } from "../models/location.model.js";
 import type { CalendarDay } from "../models/calendar_day.model.js";
 import { createUser } from "../models/user.model.js";
-
+import * as uservices from "./user.service.js";
 
 const startDate: Date = new Date();
 
@@ -28,29 +28,37 @@ type userPreferences = Record<string, {
 
 // Helper function to get all users.
 export const getUsersService = async () => {
+    try{
     const users: userModel.usersJSON = await userModel.readUsersJSON();
     return users
+    } catch(err){
+        console.log(err)
+    }
 }
 
 // Handles logins
 export const loginHandler = async (req: express.Request) => {
-    // Gets the "sanitized" last name and phone number
-    let { lastName, phone } = req.body;
-    // Loads all the users, using an asynchronous function
-    const users = await getUsersService();
-
-    // Sorts through all the users, using the object from the key value paired users, since the user is the value.
-    Object.entries(users);
-    for (const [key, value] of Object.entries(users)) {
-        if(value.lastName === lastName && value.phoneNumber === phone){
-            // Return the user id, if the user exists in the database.
-            return value.id;
+    try{
+        // Gets the "sanitized" last name and phone number
+        let { lastName, phone } = req.body;
+        // Loads all the users, using an asynchronous function
+        const users = await uservices.getUsersService();
+        // Returns early if database is unpopulated.
+        if (!users) return -1;
+        // Sorts through all the users, using the object from the key value paired users, since the user is the value.
+        for (const [key, value] of Object.entries(users)) {
+            if(value.lastName === lastName && value.phoneNumber === phone){
+                // Return the user id, if the user exists in the database.
+                return value.id;
+            }
         }
-    }
-    // Returns -1, an id not found in the database, if login doesnt match an user.
-    return -1;
-}
-
+        // Returns -1, an id not found in the database, if login doesnt match an user.
+        return -1;
+    } catch(err){
+        console.log(err)
+        return -1;
+    }      
+};
 
 // Unpack and reformat preferences
 export const unpackUser = async (req: express.Request) => {

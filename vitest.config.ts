@@ -8,5 +8,6 @@ export default defineConfig({
       'packages/template/*',
       '**/dist/**'
     ],
+    reporters: 'verbose'
   },
 })
