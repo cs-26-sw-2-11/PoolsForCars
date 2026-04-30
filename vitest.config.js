@@ -7,6 +7,7 @@ export default defineConfig({
             'packages/template/*',
             '**/dist/**'
         ],
+        reporters: 'verbose'
     },
 });
 //# sourceMappingURL=vitest.config.js.map
