@@ -100,6 +100,7 @@ export const unpackUser = async (req: express.Request) => {
         calendar: {},
         lookingForGroups: false,
         groups: [],
+        pendingGroups: [],
     };
 
 }
