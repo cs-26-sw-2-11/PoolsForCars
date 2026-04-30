@@ -195,33 +195,54 @@ function checkRoleandGo() {
 
 // Initialize current date and week
 let currentDate = new Date();
-let currentWeekStart = getWeekStart(currentDate);
+let currentWeekStart = getFirstDayOfWeek(currentDate);
 
-// Function to get the start of the week (Monday)
-function getWeekStart(date) {
-    const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Sunday
-    return new Date(d.setDate(diff));
+function getDateWeek(date) {
+    const tempDate = new Date(date.valueOf());
+    const dayNum = (date.getDay() + 6) % 7;
+    tempDate.setDate(tempDate.getDate() - dayNum + 3);
+    const firstThursday = tempDate.valueOf();
+    
+    tempDate.setMonth(0, 1);
+    if (tempDate.getDay() !== 4) {
+        tempDate.setMonth(0, 1 + ((4 - tempDate.getDay()) + 7) % 7);
+    }
+    return 1 + Math.ceil((firstThursday - tempDate.valueOf()) / 604800000);
 }
 
+
+// Function to get the start of the week (Monday)
+function getFirstDayOfWeek(date) {
+    const dayNum = (date.getDay() + 6) % 7;
+    const firstDay = new Date(date);
+    firstDay.setDate(date.getDate() - dayNum);
+    return firstDay;
+}
+
+function getLastDayOfWeek(date) {
+    const dayNum = (date.getDay() + 6) % 7;
+    const lastDay = new Date(date);
+    lastDay.setDate(date.getDate() + (4 - dayNum));
+    return lastDay;
+}
 // Function to format date as "Mon DD, YYYY"
 function formatDate(date) {
-    const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    const options = { weekday: 'long', month: 'short', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 }
 
 // Function to format week range
 function formatWeek(weekStart) {
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekStart.getDate() + 6);
+    const weekEnd = getLastDayOfWeek(weekStart);
     return `${formatDate(weekStart)} - ${formatDate(weekEnd)}`;
 }
 
 // Update the display of current date and week
 function Display() {
     document.getElementById('current-date').textContent = formatDate(currentDate);
-    document.getElementById('current-week').textContent = formatWeek(currentWeekStart);
+    document.getElementById('current-week').textContent = 
+        `Week ${getDateWeek(currentDate)}: ${formatWeek(currentWeekStart)}`;
+    
 }
 
 // Navigate to previous week
@@ -241,21 +262,16 @@ function nextWeek() {
 // Navigate to previous date
 function previousDate() {
     currentDate.setDate(currentDate.getDate() - 1);
-    // If we've gone to a previous week, update the week start
-    if (currentDate < currentWeekStart) {
-        currentWeekStart = getWeekStart(currentDate);
-    }
+    currentDate = WannaSkipWeekend(currentDate, -1);
+    currentWeekStart = getFirstDayOfWeek(currentDate);
     Display();
 }
 
 // Navigate to next date
 function nextDay() {
     currentDate.setDate(currentDate.getDate() + 1);
-    // If we've gone to a next week, update the week start
-    const nextWeekStart = getWeekStart(currentDate);
-    if (nextWeekStart > currentWeekStart) {
-        currentWeekStart = nextWeekStart;
-    }
+    currentDate = WannaSkipWeekend(currentDate, 1);
+    currentWeekStart = getFirstDayOfWeek(currentDate);
     Display();
 }
 
@@ -264,3 +280,13 @@ document.addEventListener('DOMContentLoaded', function() {
     Display();
 });
 
+function WannaSkipWeekend(date, MoveDayForward) {
+    let day = date.getDay();
+    if (day === 6) {
+        date.setDate(date.getDate() + (MoveDayForward === 1 ? 2 : -1)); // This means that we dont want saturday, and now we are gonna do the same to sunday
+    } else if (day === 0) {
+        date.setDate(date.getDate() + (MoveDayForward === 1 ? 1 : -2));
+
+    }
+    return date;
+}
