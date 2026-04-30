@@ -56,6 +56,7 @@ describe('Login controller + services', () => {
         })
 
         // If it throws an error
+        // This is the structure for a one off test
         test('Test response for incorrect login', async () => {
             vi.spyOn(uservices, 'loginHandler').mockRejectedValue(new Error("db error"));
             await controller.loginHandling(req as Request, res as Response, next as NextFunction);
@@ -107,7 +108,6 @@ describe('Login controller + services', () => {
             }
         )
     })
-
 
 /*
     // An example for a one off test
