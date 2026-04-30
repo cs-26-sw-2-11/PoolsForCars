@@ -34,10 +34,6 @@ router.get("/", (req, res) => {
     res.sendFile(filePath + "/Login.html");
 })
 
-// Error handler middleware,
-router.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.log(err);
-    res.status(500).json("Internal server error");
-})
+
 
 export default router;
