@@ -15,6 +15,7 @@ export interface User {
     calendar: Calendar;
     lookingForGroups: boolean;
     groups: number[];
+    pendingGroups: number[];
 }
 
 export type Users = Map<number, User>;

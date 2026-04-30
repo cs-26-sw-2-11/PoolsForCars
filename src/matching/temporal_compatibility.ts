@@ -50,17 +50,17 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
                 const userDay: CalendarDay = day[1];
                 const subUserDay: CalendarDay = sub_user.calendar[Number(week[0])]?.days[day[0]] as CalendarDay;
 
-                // both user and sub user wants to carpool on this day
+                // continue if either user or subuser doesnt want to carpool on this day
                 if (!(userDay.carpoolingIntent && subUserDay.carpoolingIntent)) {
                     continue;
                 }
 
-                // if user wants to drive on this day, only show compatible passengers
+                // continue if both user and subuser wants to driver on this day
                 if (userDay.carAvailability && subUserDay.carAvailability) {
                     continue;
                 }
 
-                // if user wants to be a passenger on this day, only show compatible drivers 
+                // continue if neither user or subuser wants to driver on this day
                 if (!userDay.carAvailability && !subUserDay.carAvailability) {
                     continue;
                 }
