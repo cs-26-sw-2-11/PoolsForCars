@@ -8,7 +8,6 @@ import * as notificationModel from "../../models/notification.model.js"
 import { type AppendPassengerDTO } from "./dto/appendPassenger.dto.js"
 import * as groupPlanner from "./group.planner.js";
 import * as calenderModel from "../../models/calendar.model.js";
-import { group } from "node:console";
 
 export type GroupMember = groupModel.GroupMember;
 export type Group = groupModel.Group;

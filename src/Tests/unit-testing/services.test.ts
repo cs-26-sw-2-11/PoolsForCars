@@ -1,7 +1,7 @@
 import { describe, expect, vi, beforeEach,test,afterEach } from 'vitest'
 import type { User } from '../../models/user.model'
 import * as uservices from "../../services/user.service"
-import * as gservices from "../../services/group.service"
+import * as gservices from "../../services/groups/group.service"
 import * as controller from "../../controllers/user.controller"
 import type { Request, Response, NextFunction } from 'express'
 
