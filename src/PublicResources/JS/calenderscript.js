@@ -13,6 +13,7 @@ let bookingInfo = {
 
 let currentStep = 1;
 
+getData();
 
 // ===== CHANGE BETWEEN STEPS =====
 function goToStep(stepNumber) {
@@ -289,4 +290,18 @@ function WannaSkipWeekend(date, MoveDayForward) {
 
     }
     return date;
+}
+function getData() {
+    const url = "/calendar/0";
+    try { 
+        const repsonse = fetch(url);
+        if (!repsonse.ok) {
+            throw new Error("Calender get request failed");
+        }
+        const result = repsonse.json();
+        console.log(result);
+    } catch (error) {
+        console.error("Error fetching calendar data:", error);
+        
+    }
 }
