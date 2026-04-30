@@ -1,3 +1,8 @@
+const userId = document.cookie.split('userId=')[1];
+if (!userId) {
+    window.location.href = "/login";
+}
+
 // ===== SIMPLE GLOBAL VARIABLES TO STORE USER DATA =====
 let bookingInfo = {
     pickup: "",
@@ -13,12 +18,7 @@ let bookingInfo = {
 
 let currentStep = 1;
 
-const userId = document.cookie.split('userId=')[1];
-if (!userId) {
-    window.location.href = "/login";
-}
-console.log(userId);
-
+getData();
 
 // ===== CHANGE BETWEEN STEPS =====
 function goToStep(stepNumber) {
@@ -295,4 +295,18 @@ function WannaSkipWeekend(date, MoveDayForward) {
 
     }
     return date;
+}
+function getData() {
+    const url = "/calendar/0";
+    try { 
+        const repsonse = fetch(url);
+        if (!repsonse.ok) {
+            throw new Error("Calender get request failed");
+        }
+        const result = repsonse.json();
+        console.log(result);
+    } catch (error) {
+        console.error("Error fetching calendar data:", error);
+        
+    }
 }
