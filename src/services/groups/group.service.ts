@@ -135,7 +135,7 @@ interface Candidate {
     destination: Coord;
 }
 
-interface InsertionPlan {
+export interface InsertionPlan {
     previousUserId: number;
     nextUserId: number | null;
     routeOrder: number[];
