@@ -21,11 +21,8 @@ export const getGroup = async (id: number): Promise<groupModel.Group> => {
 
 export const getAllUserGroups = async (userId: number): Promise<groupModel.Group[]> => {
     const user: userModel.User = await userModel.readUser(userId);
-    const groups: groupModel.Group[] = [];
-    user.groups.forEach(
-        async (groupId) => {
-            groups.push(await groupModel.readGroup(groupId));
-        }
+    const groups: groupModel.Group[] = await Promise.all(
+        user.groups.map(groupId => groupModel.readGroup(groupId))
     );
     return groups;
 }
@@ -172,7 +169,7 @@ export const testGroup = async (userId: number, day: calendarDayModel.CalendarDa
 
     // 
     // let nextNode: [number, number] = day.destination.coordinates as [number, number];
-    const nextNode: groupModel.GroupMember | null = previousMember.toNext ? group.members.find(x => x.userId === userIndex + 1) as groupModel.GroupMember : null;
+    const nextNode: groupModel.GroupMember | null = previousMember.toNext ? group.members.find(x => x.userId === distsToDest[userIndex + 1]?.id) as groupModel.GroupMember : null;
     const nextCoords: [number, number] = nextNode ? nextNode.coordinates : group.destination.coordinates;
 
     const prevToCurrUserDist: number = euclideanDistance(previousMember.coordinates, candidateMember.coordinates);
@@ -240,7 +237,7 @@ export const testGroup = async (userId: number, day: calendarDayModel.CalendarDa
 export const appendPassengerToGroup = async (dto: AppendPassengerDTO) => {
     const group = await groupModel.readGroup(dto.groupId);
 
-    const previousMember: groupModel.GroupMember = group.members[dto.previousIndex] as groupModel.GroupMember;
+    const previousMember: groupModel.GroupMember = group.members.find(member => member.userId === dto.previousIndex) as groupModel.GroupMember;
 
     const candidateMember: groupModel.GroupMember = {
         userId: dto.candidateMember.userId,
