@@ -127,111 +127,156 @@ export const searchForGroups = async (user: userModel.User, compatibilityMap: co
     }
 }
 
+type Coord = [number, number];
 
-export const testGroup = async (userId: number, day: calendarDayModel.CalendarDay, group: groupModel.Group) => {
+interface Candidate {
+    userId: number;
+    coordinates: Coord;
+    destination: Coord;
+}
+
+interface InsertionPlan {
+    previousUserId: number;
+    nextUserId: number | null;
+    routeOrder: number[];
+
+    prevToCurrDistance: number;
+    currToNextDistance: number;
+
+    newTotalTravelTime: number;
+    addedDetour: number;
+    totalDetour: number;
+}
+
+export const planInsertion = (
+    group: groupModel.Group,
+    candidate: Candidate,
+    ACCEPTED_DETOUR: number
+): InsertionPlan | null => {
+
     // Contruct array of user ids and distance to destination
     // Append user to this array and sort it
-    const distsToDest: { id: number, distance: number }[] = group.members.map<{ id: number, distance: number }>(
-        (member) => ({
-            id: member.userId,
-            distance: member.toDestination.distanceEuclidean
-        }));
-    distsToDest.push({ id: userId, distance: euclideanDistance(day.pickupPoint.coordinates, day.destination.coordinates) });
+    const distsToDest: { id: number, distance: number }[] = group.members.map(member => ({
+        id: member.userId,
+        distance: member.toDestination.distanceEuclidean
+    }));
 
+    const candidateDistanceToDestination: number = euclideanDistance(
+        candidate.coordinates,
+        candidate.destination
+    );
+
+    distsToDest.push({ id: candidate.userId, distance: candidateDistanceToDestination });
+
+    // descending: farthest first
     distsToDest.sort((a, b) => b.distance - a.distance);
+
     // --------------------------
 
     console.log("Dists To Dest:", distsToDest);
 
+    const driverId = group.members[0]?.userId;
     // If candidate is longer from destination than the driver
-    if (distsToDest[0]?.id !== group.members[0]?.userId) {
-        return { valid: false, reason: "too far from driver", dto: null };
+    if (distsToDest[0]?.id !== driverId) {
+        return null;
     }
-    // --------------------------
+
 
     // Find the current users index in the sorted array
-    const userIndex: number = distsToDest.findIndex(x => x.id === userId);
-    console.log("User Index", userIndex);
+    const candidateIndex: number = distsToDest.findIndex(x => x.id === candidate.userId);
+    console.log("User Index", candidateIndex);
 
-    const previousMember: groupModel.GroupMember = group.members.find(x => x.userId === distsToDest[userIndex - 1]?.id) as groupModel.GroupMember;
+    // Early returns
+    if (candidateIndex === -1) return null;
+    if (candidateIndex === 0) return null;
+
+    const previousId: number | null = distsToDest[candidateIndex - 1]?.id ?? null;
+    const nextId: number | null = distsToDest[candidateIndex + 1]?.id ?? null;
+
+    if (previousId === null) return null;
+
+    const previousMember = group.members.find(member => member.userId === previousId);
+    if (!previousMember) return null;
     console.log("Previous member", previousMember);
 
-    const candidateMember: groupModel.GroupMember = {
-        userId: userId,
-        coordinates: day.pickupPoint.coordinates,
-        toNext: null,
-        toDestination: {
-            distanceEuclidean: distsToDest[userIndex]?.distance as number,
-            travelTimeSeconds: null,
-            travelDistanceMeters: null
-        }
-    };
+    const nextMember = nextId
+        ? group.members.find(members => members.userId === nextId)
+        : null;
 
-    // 
-    // let nextNode: [number, number] = day.destination.coordinates as [number, number];
-    const nextNode: groupModel.GroupMember | null = previousMember.toNext ? group.members.find(x => x.userId === distsToDest[userIndex + 1]?.id) as groupModel.GroupMember : null;
-    const nextCoords: [number, number] = nextNode ? nextNode.coordinates : group.destination.coordinates;
-
-    const prevToCurrUserDist: number = euclideanDistance(previousMember.coordinates, candidateMember.coordinates);
-    const currToNextUserDist: number = euclideanDistance(candidateMember.coordinates, nextCoords);
-
-    const prevToCurrUserTT: number = prevToCurrUserDist * group.metersPerEuclideanDistAverage * group.secsPerMeterAverage;
-    const currToNextUserTT: number = currToNextUserDist * group.metersPerEuclideanDistAverage * group.secsPerMeterAverage;
+    const nextCoords: Coord = nextMember
+        ? nextMember.coordinates
+        : group.destination.coordinates;
 
 
-    console.log(`Testing user ${userId} on day ${day.date} against group`, JSON.stringify(group, null, 2));
+    const prevToCurrDistance: number = euclideanDistance(
+        previousMember.coordinates,
+        candidate.coordinates
+    );
+
+    const currToNextDistance: number = euclideanDistance(
+        candidate.coordinates,
+        nextCoords
+    );
+
+
+    const prevToCurrTT: number =
+        prevToCurrDistance * 
+        group.metersPerEuclideanDistAverage *
+        group.secsPerMeterAverage;
+
+    const currToNextTT: number =
+        currToNextDistance *
+        group.metersPerEuclideanDistAverage *
+        group.secsPerMeterAverage;
+
+
+    console.log(`Testing user ${candidate.userId} against group`, JSON.stringify(group, null, 2));
     console.log(distsToDest);
-    console.log("previous:", previousMember, "current:", candidateMember, "next:", nextNode ? nextNode : nextCoords, "dest:", group.destination);
+    console.log("previous:", previousMember, "current:", candidate, "next:", nextMember ? nextMember : nextCoords, "dest:", group.destination);
 
-    console.log("prevToCurrUserDist:", prevToCurrUserDist, "currToNextUserDist:", currToNextUserDist, "prevToCurrUserTT:", prevToCurrUserTT, "currToNextUserTT:", currToNextUserTT);
+    console.log("prevToCurrUserDist:", prevToCurrDistance, "currToNextUserDist:", currToNextDistance, "prevToCurrUserTT:", prevToCurrTT, "currToNextUserTT:", currToNextTT);
 
 
 
-    const OGtotalTravelTime: number = group.totalTravelTimeSeconds;
-    console.log("OG totalTravelTime:", OGtotalTravelTime);
+    let removedTime: number;
+    if (previousMember.toNext) {
+        removedTime = previousMember.toNext.travelTimeSeconds ?? 0;
+    } else {
+        removedTime = previousMember.toDestination.travelTimeSeconds ?? 0;
+    }
 
-    const trimmedTotalTravelTime = OGtotalTravelTime - (previousMember.toNext?.travelTimeSeconds ?? (previousMember.toDestination.travelTimeSeconds ?? 0));
-    console.log("totalTravelTime - link:", trimmedTotalTravelTime);
+    console.log("OG totalTravelTime:", group.totalTravelTimeSeconds);
 
-    const newTotalTravelTime = trimmedTotalTravelTime + prevToCurrUserTT + currToNextUserTT;
+    const trimmedTotal: number = group.totalTravelTimeSeconds - removedTime;
+    console.log("totalTravelTime - link:", trimmedTotal);
+
+    const newTotalTravelTime: number = trimmedTotal + prevToCurrTT + currToNextTT;
     console.log("totalTravelTime + new links:", newTotalTravelTime);
 
     const driverToDestTT: number = group.members[0]?.toDestination.travelTimeSeconds ?? 0;
     console.log("driverToDestTT:", driverToDestTT);
 
     const totalDetour: number = newTotalTravelTime - driverToDestTT;
+
     if (totalDetour > ACCEPTED_DETOUR) {
-        return { valid: false, reason: "detour too large", dto: null };
+        return null;
     }
 
-    return {
-        valid: true,
-        reason: "detour is acceptable",
-        dto: await groupPlanner.buildAppendPassengerDTO(
-            group,
-            previousMember,
-            candidateMember,
-            nextNode,
-            nextCoords,
-            userIndex - 1,
-            userIndex + 1,
-            prevToCurrUserDist,
-            currToNextUserDist,
-            totalDetour,
-            newTotalTravelTime,
-            distsToDest.map(x => x.id)
-        )
-    };
-
-
+    const routeOrder: number[] = distsToDest.map(x => x.id);
 
     // console.log("Detour is acceptable");
     // console.log("Google maps link:");
     // console.log(`https://www.google.com/maps/dir/?api=1&origin=${group.members[0]?.coordinates[0]}%2C${group.members[0]?.coordinates[1]}&destination=${day.destination?.coordinates[0]}%2C${day.destination?.coordinates[1]}&travelmode=driving&waypoints=${currentUser.coordinates[0]}%2C${currentUser.coordinates[1]}`);
-
-
-}
-
+    return {
+        previousUserId: previousId,
+        nextUserId: nextId,
+        routeOrder: routeOrder,
+        prevToCurrDistance: prevToCurrDistance,
+        currToNextDistance: currToNextDistance,
+        newTotalTravelTime: newTotalTravelTime,
+        totalDetour: totalDetour
+    } as InsertionPlan;
+};
 
 
 export const appendPassengerToGroup = async (dto: AppendPassengerDTO) => {
