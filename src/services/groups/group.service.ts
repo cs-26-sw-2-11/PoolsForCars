@@ -330,7 +330,7 @@ export const planInsertion = (
 
 
     const prevToCurrTT: number =
-        prevToCurrDistance * 
+        prevToCurrDistance *
         group.metersPerEuclideanDistAverage *
         group.secsPerMeterAverage;
 
@@ -374,63 +374,139 @@ export const planInsertion = (
 
     const routeOrder: number[] = distsToDest.map(x => x.id);
 
-    // console.log("Detour is acceptable");
-    // console.log("Google maps link:");
-    // console.log(`https://www.google.com/maps/dir/?api=1&origin=${group.members[0]?.coordinates[0]}%2C${group.members[0]?.coordinates[1]}&destination=${day.destination?.coordinates[0]}%2C${day.destination?.coordinates[1]}&travelmode=driving&waypoints=${currentUser.coordinates[0]}%2C${currentUser.coordinates[1]}`);
-    return {
+    const insertionPlan: InsertionPlan = {
+        insertionCandidate: candidate,
         previousUserId: previousId,
+        currentUserId: candidate.userId,
         nextUserId: nextId,
         routeOrder: routeOrder,
         prevToCurrDistance: prevToCurrDistance,
         currToNextDistance: currToNextDistance,
         newTotalTravelTime: newTotalTravelTime,
-        totalDetour: totalDetour
-    } as InsertionPlan;
+        estimatedAddedDetour: (prevToCurrTT + currToNextTT) - removedTime,
+        totalDetour: totalDetour,
+        mapsLink: "",
+    };
+    insertionPlan.mapsLink = makeGroupMapsLink(group, insertionPlan);
+
+    return insertionPlan;
 };
 
+export const makeGroupMapsLink = (group: Group, plan?: InsertionPlan): string => {
+    let link: string = `https://www.google.com/maps/dir/?api=1&origin=${group.members[0]?.coordinates[0]}%2C${group.members[0]?.coordinates[1]}&destination=${group.destination?.coordinates[0]}%2C${group.destination?.coordinates[1]}&travelmode=driving&waypoints=`;
 
-export const appendPassengerToGroup = async (dto: AppendPassengerDTO) => {
-    const group = await groupModel.readGroup(dto.groupId);
+    for (const [memberIndex, member] of Object.entries(group.members)) {
+        if (Number(memberIndex) === 0) continue;
 
-    const previousMember: groupModel.GroupMember = group.members.find(member => member.userId === dto.previousIndex) as groupModel.GroupMember;
+        if (typeof plan !== 'undefined') {
+            if (group.members[Number(memberIndex) - 1]?.userId === plan.previousUserId
+                && group.members[Number(memberIndex) + 1]?.userId === plan.nextUserId) {
 
-    const candidateMember: groupModel.GroupMember = {
-        userId: dto.candidateMember.userId,
-        coordinates: dto.candidateMember.coordinates,
-        toNext: dto.isNextDestination ? null : dto.candToNext,
-        toDestination: dto.candToDest,
-    };
+                link += `${plan.insertionCandidate.coordinates[0]}%2C${plan.insertionCandidate.coordinates[1]}%7C`;
+            }
+        }
 
-    const candidateUser: userModel.User = await userModel.readUser(candidateMember.userId);
-
-    previousMember.toNext = dto.prevToCand;
-
-    group.members.push(candidateMember);
-
-    group.route = dto.routeOrder;
-
-    group.totalTravelTimeSeconds = dto.newTotalTravelTime;
-    group.totalDetourTimeSeconds = dto.totalDetour;
-    group.secsPerMeterAverage = dto.secsPerMeterAverage;
-    group.metersPerEuclideanDistAverage = dto.metersPerEuclideanDistAverage;
-
-    if (group.members.length === group.seatsOffered + 1) {
-        group.pendingMembers = {};
-    } else {
-        delete group.pendingMembers[candidateMember.userId];
+        link += `${member.coordinates[0]}%2C${member.coordinates[1]}%7C`;
     }
 
-    candidateUser.groups.push(group.id);
-    candidateUser.pendingGroups.splice(candidateUser.pendingGroups.findIndex(x => x === group.id), 1);
+    return link;
+}
+
+const buildRoutesForPlan = async (
+    group: groupModel.Group,
+    plan: InsertionPlan,
+    candidate: Candidate
+): Promise<groupExecutor.Routes> => {
+
+    const previousMember: groupModel.GroupMember = group.members.find(
+        x => x.userId === plan.previousUserId
+    ) as groupModel.GroupMember;
+    const currentMember: groupModel.GroupMember = group.members.find(
+        x => x.userId === plan.currentUserId
+    ) as groupModel.GroupMember;
+    const nextMember: groupModel.GroupMember | null = plan.nextUserId
+        ? group.members.find(x => x.userId === plan.currentUserId) as groupModel.GroupMember
+        : null;
+
+    const prevToCurrRoute: DirectionsResponse = await getRoute(previousMember?.coordinates, currentMember?.coordinates);
+    const prevToCurrSummary: RouteSummary = prevToCurrRoute.routes[0]?.summary as RouteSummary;
+
+    const currToNextRoute: DirectionsResponse | null = plan.nextUserId ? await getRoute(currentMember?.coordinates, nextMember?.coordinates as [number, number]) : null;
+    const currToNextSummary: RouteSummary | null = currToNextRoute ? currToNextRoute.routes[0]?.summary as RouteSummary : null;
+
+    const currToDestRoute: DirectionsResponse = await getRoute(currentMember?.coordinates, group.destination.coordinates);
+    const currToDestSummary: RouteSummary = currToDestRoute.routes[0]?.summary as RouteSummary;
+
+    const routes: groupExecutor.Routes = {
+        prevToCurr: {
+            travelDistanceMeters: prevToCurrSummary.distance,
+            travelTimeSeconds: prevToCurrSummary.duration,
+            distanceEuclidean: plan.prevToCurrDistance,
+        },
+        currToNext: currToNextRoute && currToNextSummary ? {
+            travelDistanceMeters: currToNextSummary.distance,
+            travelTimeSeconds: currToNextSummary.duration,
+            distanceEuclidean: plan.currToNextDistance,
+        } : null,
+        currToDest: {
+            travelDistanceMeters: currToDestSummary.distance,
+            travelTimeSeconds: currToDestSummary.duration,
+            distanceEuclidean: euclideanDistance(candidate.coordinates, group.destination.coordinates),
+        },
+        isDestination: currToNextRoute ? false : true,
+    };
+
+    return routes;
+}
+
+
+export const appendPassengerToGroup = async (
+    groupId: number,
+    candidate: Candidate,
+) => {
+    const group: groupModel.Group = await groupModel.readGroup(groupId);
+
+    const plan = planInsertion(group, {
+        userId: candidate.userId,
+        coordinates: candidate.coordinates,
+        destination: group.destination.coordinates,
+    }, ACCEPTED_DETOUR);
+
+    if (!plan) return;
+
+    const routes = await buildRoutesForPlan(group, plan, candidate);
+
+    const updatedGroup: groupModel.Group = groupExecutor.applyInsertion({
+        group,
+        plan,
+        routes,
+        candidate
+    });
+
+    await groupModel.updateGroup(group.id, updatedGroup);
+}
+
+export const denyPassengerFromGroup = async (
+    groupId: number,
+    candidate: Candidate,
+): Promise<Group> => {
+
+    const group: groupModel.Group = await groupModel.readGroup(groupId);
+
+    delete group.pendingMembers[candidate.userId];
 
     await groupModel.updateGroup(group.id, group);
-    await userModel.updateUser(candidateUser.id, candidateUser);
 
-    await refreshPendingMembers(group);
+    return group;
 }
 
 const refreshPendingMembers = async (group: groupModel.Group) => {
-    for (const pendingMember of Object.entries(group.pendingMembers)) {
+    for (const [mKey, member] of Object.entries(group.pendingMembers)) {
+
+
+        searchForGroups
+        member.insertionCandidate.userId
+
         const pendingMemberUser: userModel.User = await userModel.readUser(Number(pendingMember[0]));
         const pendingMemberDay: calendarDayModel.CalendarDay = pendingMemberUser.calendar[group.week]?.days[group.day] as calendarDayModel.CalendarDay;
         await testGroup(pendingMemberUser.id, pendingMemberDay, group);
