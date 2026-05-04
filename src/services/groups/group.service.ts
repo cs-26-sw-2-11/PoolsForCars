@@ -52,30 +52,23 @@ export const getGroup = async (id: number): Promise<groupModel.Group> => {
     return await groupModel.readGroup(id);
 }
 
-
-export const getAllUserGroups = async (userId: number): Promise<groupModel.Group[]> => {
+export const getAllUserGroupsAsDriver = async (userId: number): Promise<groupModel.Group[]> => {
     const user: userModel.User = await userModel.readUser(userId);
     const groups: groupModel.Group[] = await Promise.all(
-        user.groups.map(groupId => groupModel.readGroup(groupId))
+        user.driverInGroups.map(groupId => groupModel.readGroup(groupId))
     );
     return groups;
 }
 
+const buildNewGroup = (
+    userId: number,
+    day: calendarDayModel.CalendarDay,
+    costToDestination: costModel.Cost,
+    dayString: string,
+    weekNumber: number,
+): groupModel.Group => {
 
-// ====== MAKE A NEW EMPTY GROUP ======
-export const makeNewGroup = async (userId: number, day: calendarDayModel.CalendarDay, dayString: string, weekNumber: number): Promise<Group> => {
-    const routeToDest: DirectionsResponse = await getRoute(day.pickupPoint.coordinates, day.destination.coordinates);
-    const firstRouteToDest: Route = routeToDest.routes[0] as Route;
-
-    if (typeof firstRouteToDest === 'undefined') throw "No route found";
-
-    const costToDestination: costModel.Cost = {
-        travelTimeSeconds: firstRouteToDest.summary.duration,
-        travelDistanceMeters: firstRouteToDest.summary.distance,
-        distanceEuclidean: euclideanDistance(day.pickupPoint.coordinates, day.destination.coordinates),
-    }
-
-    const groupMember: groupModel.GroupMember = {
+    const member: groupModel.GroupMember = {
         userId: userId,
         coordinates: day.pickupPoint.coordinates,
         toNext: null,
@@ -83,11 +76,11 @@ export const makeNewGroup = async (userId: number, day: calendarDayModel.Calenda
     }
 
     const group: groupModel.Group = {
-        id: 0,
+        id: 0, // placeholder
         day: dayString,
         week: weekNumber,
         seatsOffered: day.seatsOffered,
-        members: [groupMember],
+        members: [member],
         pendingMembers: {},
         destination: day.destination,
         route: [userId],
