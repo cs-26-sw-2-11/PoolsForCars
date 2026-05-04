@@ -13,7 +13,7 @@ import { findEligbleDrivers } from "../matching/temporal_compatibility.js";
 
 export const getGroups = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.log("getting groups");
-    const groups: groupService.Group[] = await groupService.getAllUserGroups(Number(req.params['userId']));
+    const groups: groupService.Group[] = await groupService.getAllUserGroupsAsDriver(Number(req.params['userId']));
     res.status(200).json(groups);
 }
 

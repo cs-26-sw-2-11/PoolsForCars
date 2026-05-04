@@ -500,18 +500,18 @@ export const denyPassengerFromGroup = async (
     return group;
 }
 
-const refreshPendingMembers = async (group: groupModel.Group) => {
-    for (const [mKey, member] of Object.entries(group.pendingMembers)) {
-
-
-        searchForGroups
-        member.insertionCandidate.userId
-
-        const pendingMemberUser: userModel.User = await userModel.readUser(Number(pendingMember[0]));
-        const pendingMemberDay: calendarDayModel.CalendarDay = pendingMemberUser.calendar[group.week]?.days[group.day] as calendarDayModel.CalendarDay;
-        await testGroup(pendingMemberUser.id, pendingMemberDay, group);
-    }
-}
+// const refreshPendingMembers = async (group: groupModel.Group) => {
+//     for (const [mKey, member] of Object.entries(group.pendingMembers)) {
+//
+//
+//         searchForGroups
+//         member.insertionCandidate.userId
+//
+//         const pendingMemberUser: userModel.User = await userModel.readUser(Number(pendingMember[0]));
+//         const pendingMemberDay: calendarDayModel.CalendarDay = pendingMemberUser.calendar[group.week]?.days[group.day] as calendarDayModel.CalendarDay;
+//         await testGroup(pendingMemberUser.id, pendingMemberDay, group);
+//     }
+// }
 
 const euclideanDistance = (vector1: [number, number], vector2: [number, number]): number => {
     return Math.sqrt(Math.pow((vector2[0] - vector1[0]), 2) + Math.pow((vector2[1] - vector1[1]), 2));

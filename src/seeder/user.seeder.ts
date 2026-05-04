@@ -90,8 +90,8 @@ export const createRandomUser = async (): Promise<User> => {
         schedule: schedule,
         calendar: {},
         lookingForGroups: false,
-        groups: [],
-        pendingGroups: [],
+        driverInGroups: [],
+        passengerInGroups: [],
 
     };
 };
