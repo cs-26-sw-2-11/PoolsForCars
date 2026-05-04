@@ -14,8 +14,8 @@ export interface User {
     schedule: Week;
     calendar: Calendar;
     lookingForGroups: boolean;
-    groups: number[];
-    pendingGroups: number[];
+    driverInGroups: number[];
+    passengerInGroups: number[];
 }
 
 export type Users = Map<number, User>;
