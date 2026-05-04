@@ -1,15 +1,18 @@
 import * as costModel from "../../models/cost.model.js";
 import * as groupService from "./group.service.js";
 
+
+export interface Routes {
+    prevToCurr: costModel.Cost;
+    currToNext: costModel.Cost | null;
+    currToDest: costModel.Cost;
+    isDestination: boolean;
+}
+
 interface ApplyInsertionInput {
     group: groupService.Group;
     plan: groupService.InsertionPlan;
-    routes: {
-        prevToCurr: costModel.Cost;
-        currToNext: costModel.Cost | null;
-        currToDest: costModel.Cost;
-        isDestination: boolean;
-    };
+    routes: Routes;
     candidate: {
         userId: number;
         coordinates: [number, number];
@@ -68,8 +71,10 @@ export const applyInsertion = ({
     updatedGroup.secsPerMeterAverage =
         updatedGroup.totalTravelTimeSeconds / totalTravel;
 
-    updatedGroup.metersPerEuclideanDistAverage = 
+    updatedGroup.metersPerEuclideanDistAverage =
         totalTravel / totalEuclid;
+
+    updatedGroup.mapsLink = groupService.makeGroupMapsLink(updatedGroup);
 
     return updatedGroup;
 }
