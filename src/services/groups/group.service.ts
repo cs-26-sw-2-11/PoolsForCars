@@ -88,92 +88,175 @@ const buildNewGroup = (
         totalDetourTimeSeconds: 0,
         totalTravelDistanceMeters: costToDestination.travelDistanceMeters as number,
         totalTravelDistanceEuclidiean: costToDestination.distanceEuclidean,
-        secsPerMeterAverage: Number(costToDestination.travelTimeSeconds) / Number(costToDestination.travelDistanceMeters),
-        metersPerEuclideanDistAverage: Number(costToDestination.travelDistanceMeters) / costToDestination.distanceEuclidean,
-
+        metersPerEuclideanDistAverage:
+            Number(costToDestination.travelDistanceMeters) /
+            costToDestination.distanceEuclidean,
+        secsPerMeterAverage:
+            Number(costToDestination.travelTimeSeconds) /
+            Number(costToDestination.travelDistanceMeters),
+        mapsLink: "",
     };
 
-
-    const newGroup: groupModel.Group = await groupModel.createGroup(group);
-    day.groups[0] = newGroup.id;
-
-    return newGroup;
+    return group;
 }
 
+const makeNewGroup = async (
+    userId: number,
+    day: calendarDayModel.CalendarDay,
+    dayString: string,
+    weekNumber: number,
+) => {
 
-// ====== Given a user and a compatibility map, search for all groups ======
-export const searchForGroups = async (user: userModel.User, compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex) => {
-    // Get todays day (monday, tuesday, ..., friday) and week number
-    const todaysDate: Date = new Date();
-    const todaysWeek: number = await calendarModel.dateToWeek(todaysDate);
+    const routeToDestination: DirectionsResponse = await getRoute(
+        day.pickupPoint.coordinates,
+        day.destination.coordinates
+    );
 
-    // Loop over all weeks in the users calender
-    for (const week of Object.entries(user.calendar)) {
-        if (Number(week[0]) < todaysWeek) continue; // Skip current iteration if week is in the past
+    const summary: RouteSummary = routeToDestination.routes[0]?.summary as RouteSummary;
+    if (!summary) throw new Error("No route");
 
-        // Loop over all days in the week
-        for (const day of Object.entries(week[1].days)) {
-            if (day[1].date.getDay() < todaysDate.getDay()) continue; // Skip current iteration if the day is in the past
+    const costToDestination: costModel.Cost = {
+        travelTimeSeconds: summary.duration,
+        travelDistanceMeters: summary.distance,
+        distanceEuclidean: euclideanDistance(
+            day.pickupPoint.coordinates,
+            day.destination.coordinates
+        ),
+    };
 
-            // Loop over all temporally compatible users from most to least overall compatible
-            for (const compatibleMatch of compatibilityMap.sortedAccumulator ?? []) {
-                // Skip candidate if they and is not compatible on this exact day
-                if (!compatibilityMap.weeks[Number(week[0])]?.[compatibilityModel.convertToDayname(day[0])][compatibleMatch.id]) continue;
+    const group: groupModel.Group = buildNewGroup(
+        userId,
+        day,
+        costToDestination,
+        dayString,
+        weekNumber,
+    );
 
-                // Fetch user and day objects for candidate
-                const peerUser: userModel.User = await userModel.readUser(compatibleMatch.id);
-                const peerUserDay: calendarDayModel.CalendarDay = peerUser.calendar[Number(week[0])]?.days[day[0]] as calendarDayModel.CalendarDay;
+    const saved: groupModel.Group = await groupModel.createGroup(group);
 
-                // Assign user and peer users days to more clearly named variables
-                const driverDay: calendarDayModel.CalendarDay = day[1].carAvailability ? day[1] : peerUserDay;
-                const passengerDay: calendarDayModel.CalendarDay = day[1].carAvailability ? peerUserDay : day[1];
-                const passengerUser: userModel.User = day[1].carAvailability ? peerUser : user;
-                console.log(`Candidate ${peerUser.id}'s day:`, JSON.stringify(peerUserDay, null, 2));
+    return saved;
+}
 
-                // Fetch the drivers group
-                const group: groupModel.Group = await groupModel.readGroup(Number(driverDay.groups[0]));
-                console.log("Testing group:", JSON.stringify(group, null, 2));
+export const makeNewGroups = async (user: userModel.User): Promise<number[]> => {
 
-                // Skip if all seats in the car are already filled
-                if (group.members.length === group.seatsOffered + 1) continue;
+    const userDriverGroups: number[] = []
 
-                // Test passenger in drivers group
-                const testResponse: { valid: boolean, reason: string, dto: AppendPassengerDTO | null } = await testGroup(passengerUser.id, passengerDay, group);
-                console.log(testResponse);
+    for (const [weekNum, week] of Object.entries(user.calendar)) {
 
-                // Push the test response (notification) to potential-matches if its valid
-                if (testResponse.valid && testResponse.dto !== null) {
-                    group.pendingMembers[passengerUser.id] = testResponse.dto;
-                    await groupModel.updateGroup(group.id, group);
+        for (const [dayKey, day] of Object.entries(week.days)) {
 
-                    passengerUser.pendingGroups.push(group.id);
-                    await userModel.updateUser(passengerUser.id, passengerUser);
-                }
-            }
+            if (!(day.carpoolingIntent && day.carAvailability)) continue;
+
+            const group: Group = await makeNewGroup(user.id, day, dayKey, Number(weekNum));
+
+            userDriverGroups.push(group.id);
         }
+    }
+
+    return userDriverGroups;
+}
+
+export const findCandidatePairs = (
+    user: userModel.User,
+    compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex,
+): CandidatePair[] => {
+    const pairs: CandidatePair[][] = [];
+
+    for (const [weekNum, week] of Object.entries(user.calendar)) {
+        for (const dayKey in week.days) {
+            pairs.push(findCompatibleCandidatePairs(user, compatibilityMap, Number(weekNum), dayKey));
+        }
+    }
+
+    return pairs.flat();
+}
+
+export const findCompatibleCandidatePairs = (
+    user: userModel.User,
+    compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex,
+    weekNum: number,
+    dayKey: string,
+): CandidatePair[] => {
+
+    const day: calendarDayModel.CalendarDay = user.calendar[weekNum]?.days[dayKey] as calendarDayModel.CalendarDay;
+
+    const pairs: CandidatePair[] = [];
+
+    for (const match of compatibilityMap.sortedAccumulator ?? []) {
+
+        if (!compatibilityMap.weeks[Number(weekNum)]?.[
+            compatibilityModel.convertToDayname(dayKey)
+        ][match.id]) continue;
+
+
+        pairs.push({
+            day: dayKey,
+            week: weekNum,
+            driver: day.carAvailability ? user : match.id,
+            passenger: day.carAvailability ? match.id : user,
+            driverDay: day.carAvailability ? day : null,
+            passengerDay: day.carAvailability ? null : day,
+        });
+    }
+
+    return pairs;
+}
+
+export const searchForGroups = async (
+    user: userModel.User,
+    compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex,
+) => {
+
+    const pairs: CandidatePair[] = findCandidatePairs(user, compatibilityMap);
+
+    for (const pair of pairs) {
+
+        if (typeof pair.driver !== "object" && pair.driver !== null) {
+            pair.driver = await userModel.readUser(pair.driver);
+        }
+        if (!pair.driver) throw new Error("Could not read candidate driver");
+
+
+        if (typeof pair.passenger !== "object" && pair.passenger !== null) {
+            pair.passenger = await userModel.readUser(pair.passenger);
+        }
+        if (!pair.passenger) throw new Error("Could not read candidate passenger");
+
+
+        pair.driverDay = pair.driver.calendar[pair.week]?.days[pair.day] as calendarDayModel.CalendarDay;
+        if (!pair.driverDay) throw new Error("Could not read candidate drivers calendar day");
+        pair.passengerDay = pair.passenger.calendar[pair.week]?.days[pair.day] as calendarDayModel.CalendarDay;
+        if (!pair.passengerDay) throw new Error("Could not read candidate passengers calendarday");
+
+
+        const group: groupModel.Group = await groupModel.readGroup(Number(pair.driverDay.groups[0]));
+
+        if (group.members.length >= group.seatsOffered + 1) continue;
+
+        const plan: InsertionPlan | null = planInsertion(
+            group,
+            {
+                userId: pair.passenger.id,
+                coordinates: pair.passengerDay.pickupPoint.coordinates,
+                destination: group.destination.coordinates,
+            },
+            ACCEPTED_DETOUR
+        );
+
+        if (!plan) continue;
+
+
+        group.pendingMembers[pair.passenger.id] = plan;
+
+        await groupModel.updateGroup(group.id, group);
+
+
+        pair.passengerDay.pendingGroups.push(group.id);
+
+        await userModel.updateUser(pair.passenger.id, pair.passenger);
     }
 }
 
-type Coord = [number, number];
-
-interface Candidate {
-    userId: number;
-    coordinates: Coord;
-    destination: Coord;
-}
-
-export interface InsertionPlan {
-    previousUserId: number;
-    nextUserId: number | null;
-    routeOrder: number[];
-
-    prevToCurrDistance: number;
-    currToNextDistance: number;
-
-    newTotalTravelTime: number;
-    addedDetour: number;
-    totalDetour: number;
-}
 
 export const planInsertion = (
     group: groupModel.Group,
