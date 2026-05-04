@@ -50,6 +50,11 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
                 const userDay: CalendarDay = day[1];
                 const subUserDay: CalendarDay = sub_user.calendar[Number(week[0])]?.days[day[0]] as CalendarDay;
 
+                // TEMPORARY MEASURE: Disallow drivers from finding passengers. Fixes passengers with incomplete schedules.
+                if (userDay.carAvailability) {
+                    continue;
+                }
+
                 // continue if either user or subuser doesnt want to carpool on this day
                 if (!(userDay.carpoolingIntent && subUserDay.carpoolingIntent)) {
                     continue;
