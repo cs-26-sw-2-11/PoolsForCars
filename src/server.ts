@@ -1,7 +1,6 @@
 import express from "express";
 import routes from "./routes/index.js";
-
-
+import cookieParser from "cookie-parser"
 
 //=== VARIABLES ===//
 
@@ -10,6 +9,7 @@ const port = 3410;
 
 const hostname = '127.0.0.1';
 const app = express();
+
 // const filePath = path.resolve(process.cwd());
 
 // makes files found in public resources accessible for serving, such as serving an js file requested by an html file.
@@ -22,6 +22,7 @@ app.use(express.json());
 
 // Enable receiving and working with req.body in express. Vital for the program.
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser('idk'))
 
 // app.use("/ScriptsForUsers", express.static(filePath + "/dist/html_scripts"));
 
@@ -32,4 +33,4 @@ app.use(routes);
 
 //=== STARTS SERVER ===///
 app.listen(port)
-console.log(`Server running at http://${hostname}:${port}/signup`);
+console.log(`Server running at http://${hostname}:${port}`);

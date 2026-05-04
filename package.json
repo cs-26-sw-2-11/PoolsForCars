@@ -4,7 +4,15 @@
   "description": "This is a P2 project by AAU students. Thank you for reading this :)",
   "main": "index.js",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest",
+    "start": "nodemon"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/test/**",
+      "**/docs/**"
+    ],
+    "delay": 2500
   },
   "repository": {
     "type": "git",
@@ -20,18 +28,20 @@
   "homepage": "https://github.com/cs-26-sw-2-11/PoolsForCars#readme",
   "devDependencies": {
     "@faker-js/faker": "^10.4.0",
+    "@types/cookie-parser": "^1.4.10",
     "@types/dotenv": "^6.1.1",
     "@types/express": "^5.0.6",
     "@types/node": "^25.6.0",
+    "nodemon": "^3.1.14",
     "typescript": "^6.0.2",
     "vitest": "^4.1.5"
   },
   "dependencies": {
     "@jridgewell/sourcemap-codec": "^1.5.5",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
     "express-validator": "^7.3.2",
-    "ors-client": "^1.0.6",
-    "ts-node": "^10.9.2"
+    "ors-client": "^1.0.6"
   }
 }

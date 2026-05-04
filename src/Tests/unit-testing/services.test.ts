@@ -26,6 +26,8 @@ describe('Login controller + services', () => {
         res = {
             status: vi.fn().mockReturnThis(),
             json: vi.fn().mockReturnThis(),
+            send: vi.fn().mockReturnThis(),
+            cookie: vi.fn().mockReturnThis()
         }
         next = vi.fn()
     })
@@ -49,10 +51,11 @@ describe('Login controller + services', () => {
             }
         ])
         ("returns $expected for $label", async ({ mockResolve, expected }) => {
-        vi.spyOn(uservices, 'loginHandler').mockResolvedValue(mockResolve as number);
-        // await uservices.loginHandler(req as Request);
-        await controller.loginHandling(req as Request, res as Response, next as NextFunction)
-        expect(res.status).toHaveBeenCalledWith(expected);
+            vi.spyOn(uservices, 'loginHandler').mockResolvedValue(mockResolve as number);
+            // await uservices.loginHandler(req as Request);
+            console.log(res.status)
+            await controller.loginHandling(req as Request, res as Response, next as NextFunction)
+            expect(res.status).toHaveBeenCalledWith(expected);
         })
 
         // If it throws an error
@@ -69,7 +72,7 @@ describe('Login controller + services', () => {
             {
                 label: "valid credentials",
                 mockUser: { 0: { id: 0, lastName: "Johnsen", phoneNumber: "12345678" } },
-                body: { lastName: "Johnsen", phone: "12345678" },
+                body: { lastName: "Johnsen", phoneNumber: "12345678" },
                 expected: 0
             }, {
                 label: "Empty body",
@@ -79,35 +82,38 @@ describe('Login controller + services', () => {
             }, {
                 label: "missing lastName or phone",
                 mockUser: { 0: { id: 0, lastName: "Johnsen"} },
-                body: { lastName: "Johnsen", phone: "12345678" },
+                body: { lastName: "Johnsen", phoneNumber: "12345678" },
                 expected: -1
             }, {
                 label: "getUsersService returns undefined",
                 mockUsers: undefined,
-                body: { lastName: "Johnsen", phone: "12345678" },
+                body: { lastName: "Johnsen", phoneNumber: "12345678" },
                 expected: -1
             }, {
                 label: "getUsersService returns empty object {}",
                 mockUsers: {},
-                body: { lastName: "Johnsen", phone: "12345678" },
+                body: { lastName: "Johnsen", phoneNumber: "12345678" },
                 expected: -1
             }, {
                 label: "Credentials with wrong case",
                 mockUser: { 0: { id: 0, lastName: "Johnsen"} },
-                body: { lastName: "johnsen", phone: "12345678" },
+                body: { lastName: "johnsen", phoneNumber: "12345678" },
                 expected: -1
             }]
         )
-        (
-            "returns $expected for $label", async ({ mockUser, body, expected}) => {
-                vi.spyOn(uservices, 'getUsersService').mockResolvedValue(mockUser as any);
-                // await uservices.loginHandler(req as Request);
-                req.body = body;
-                const result = await uservices.loginHandler(req as Request);
-                expect(result).toBe(expected);
-            }
-        )
+        ("returns $expected for $label", async ({ mockUser, body, expected}) => {
+            vi.spyOn(uservices, 'getUsersService').mockResolvedValue(mockUser as any);
+            // await uservices.loginHandler(req as Request);
+            req.body = body;
+            const result = await uservices.loginHandler(req as Request);
+            expect(result).toBe(expected);
+        })
+
+
     })
+    // need to have test on signup
+
+    // Integration test on both signup and login
 
 /*
     // An example for a one off test
@@ -122,6 +128,56 @@ describe('Login controller + services', () => {
 */
 })
 
+describe("Signup controller + services", () => {
+    // makes the necessary input variables available
+    let req: Partial<Request>;
+    let res: Partial<Response>;
+    let next: NextFunction;
+
+    // Sets the variables to be a specific value before each test.
+    beforeEach( () => {
+        req = {
+            body: {
+                lastName: "Johnsen",
+                phone: "12345678"
+            }
+        }
+
+        res = {
+            status: vi.fn().mockReturnThis(),
+            json: vi.fn().mockReturnThis(),
+            send: vi.fn().mockReturnThis(),
+            cookie: vi.fn().mockReturnThis()
+        }
+        next = vi.fn()
+    })
+
+    // Needed to cleanup vi.spyOn
+    afterEach(() => {
+        vi.restoreAllMocks()
+    })
+
+    describe("Signup controller", () => {
+        test.each([
+            {
+                label: "Valid data",
+            },{
+                label: "Invalid data",
+            },{
+                label: "Empty data",
+            },{
+                label: "Already used data",
+            },{
+                
+            }
+        ])
+
+    })
+})
+
+describe ("Database services", () => {
+
+})
 
 
 
