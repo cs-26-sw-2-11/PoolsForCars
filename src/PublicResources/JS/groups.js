@@ -1,3 +1,51 @@
+// Things to do with modes
+
+function setMode(mode) {
+  const allowedModes = ["driver","passenger"];
+  if (!allowedModes.includes(mode)) {
+    console.warn("Invalid mode detected");
+    return;
+  }
+
+/// Changing of the title
+
+  document.body.classList.remove("mode-driver", "mode-passenger");
+  document.body.classList.add(`mode-${mode}`);
+
+  const title = document.getElementById("page-title");
+  if (mode === "driver") {
+    title.textContent = "My Groups - Driver";
+  } else {
+    title.textContent = "My Groups - Passenger";
+  }
+}
+
+/// Beeg toggle
+const modeToggle = document.querySelector(".switch input");
+
+modeToggle.addEventListener("change", () => {
+  
+  let mode;
+
+  if (modeToggle.checked) {
+     mode = "passenger";
+  } else {
+    mode = "driver";
+  }
+  setMode(mode);
+});
+
+let initialMode;
+
+if (modeToggle.checked) {
+  initialMode = "passenger";
+} else {
+  initialMode = "driver";
+}
+
+setMode(initialMode);
+
+
 // Grab all weekday items
 const dayItems = document.querySelectorAll(".day-list li");
 
