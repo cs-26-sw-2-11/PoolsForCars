@@ -4,3 +4,4 @@ dist/*
 src/database/users/
 src/database/groups/
 src/database/notifications/
+node_modules/.vite/vitest/*/results.json
