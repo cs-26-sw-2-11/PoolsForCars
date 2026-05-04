@@ -40,14 +40,17 @@ export const getUsersService = async () => {
 export const loginHandler = async (req: express.Request) => {
     try{
         // Gets the "sanitized" last name and phone number
-        let { lastName, phone } = req.body;
+        let { lastName, phoneNumber } = req.body;
+        console.log(`${lastName} and ${phoneNumber}`);
         // Loads all the users, using an asynchronous function
         const users = await uservices.getUsersService();
         // Returns early if database is unpopulated.
         if (!users) return -1;
+        
         // Sorts through all the users, using the object from the key value paired users, since the user is the value.
         for (const [key, value] of Object.entries(users)) {
-            if(value.lastName === lastName && value.phoneNumber === phone){
+            if(value.lastName === lastName && value.phoneNumber === phoneNumber){
+                console.log(value.id)
                 // Return the user id, if the user exists in the database.
                 return value.id;
             }
@@ -110,5 +113,21 @@ export const doSignup = async (req: express.Request) => {
     // Unpacks all the information send through the form found on the signup page.
     const user:userModel.User = await unpackUser(req);
     createUser(user);
+    // Loads all the users, using an asynchronous function
+    const users = await uservices.getUsersService();
+    let match: Number = -1;
+        // Returns early if database is unpopulated.
+    if (!users) return match;
+        
+        // Sorts through all the users, using the object from the key value paired users, since the user is the value.
+        for (const [key, value] of Object.entries(users)) {
+            if(value === user){
+                // Return the user id, if the user exists in the database.
+                match = user.id;
+            }
+        }
+    console.log(match)
+    return match;
+    
     // Needs to do something to let the user know their profile has been created.
 }

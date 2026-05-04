@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Dev",
+      "dependsOn": ["tsc watch", "npm test", "npm start"],
+      "dependsOrder": "parallel",
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "tsc watch",
+      "type": "shell",
+      "command": "npx tsc --watch --strict true",
+      "presentation": { "panel": "new" }
+    },
+    {
+        "label": "npm test",
+        "type": "shell",
+        "command": "npm test",
+        "presentation": { "panel": "new"}
+    },
+    {
+      "label": "npm start",
+      "type": "shell",
+      "command": "sleep 1.5 && npm start",
+      "presentation": { "panel": "new" }
+    }
+  ]
+}

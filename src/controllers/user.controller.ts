@@ -4,14 +4,13 @@ import * as uservice from '../services/user.service.js'
 import * as calendarModel from '../models/calendar.model.js';
 
 
-// ───────────────────────────────────────────────────────────────
-//  :::::: MAIN CRUD FUNCTIONS ::::::
-// ───────────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────────────────────
+//  :::::: MAIN CRUD FUNCTIONS :::::: ## NEEDS TO BE REFACTORED ##  
+// ──────────────────────────────────────────────────────────────────
 // Creates the user
 export const createUser = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    try {
+    try { 
         const recievedUser: userModel.User = req.body as userModel.User; // Recieve user object and convert it to User type
-
         const currentDate: Date = new Date();
         const currentWeek: number = await calendarModel.dateToWeek(currentDate);
 
@@ -101,12 +100,29 @@ export const loginHandling = async (req: express.Request, res: express.Response,
        const user = await uservice.loginHandler(req)
         if (Number(user)===-1){
         res.status(401).json("Couldn't match user credentials");
-        } else{
-        res.status(200).json("User credentials found");
+        } else {
+        res.cookie('user',user,{signed: true, maxAge: 1000*60*60, httpOnly: true});
+        res.status(200).json("Found user");
+        res.send();
         }
     } catch (err){
         next(err);
     }
+}
+
+// Signup Handler
+export const signUp = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    try{
+        const signUp = await uservice.doSignup(req)
+        if (signUp != -1){
+            res.status(200).json("Succesfully created user")
+        } else {
+            res.status(401).json("couldn't create user")
+        }
+    } catch(err){
+        next(err);
+    }
+
 }
 
 export const enableGroupSearching = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
