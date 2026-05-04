@@ -1,0 +1,201 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #1f2933;
+}
+.top-bar {
+  height: 60px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #d1d5db;
+}
+
+/* Nifty lil' toggle button */
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 16px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(13px);
+}
+
+/* Makes sliders round, duh */
+.slider.round {
+  border-radius: 18px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+/* Modes */
+
+.mode-driver {
+  outline: 10px yellow;
+}
+
+.mode-passenger {
+  outline: 4px green
+}
+
+.app-layout {
+  display: flex;
+  height: calc(100vh - 60px);
+}
+.sidebar {
+  width: 220px;
+  border-right: 1px solid #d1d5db;
+  padding: 16px;
+}
+.main-content {
+  flex: 1;
+  padding: 24px;
+}
+.day-list {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+}
+.day-list li {
+  padding: 12px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.day-list li:hover {
+  background-color: #f3f4f6;
+}
+.day-list li.active {
+  background-color: #1a6fb0;
+  color: #fff;
+  font-weight: bold;
+}
+.schedule {
+  margin-top: 24px;
+}
+.schedule-row {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 8px 0;
+}
+.time {
+  width: 60px;
+  font-weight: bold;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    max-width: 1200x;
+    margin: 0 auto;
+    padding: 0 20px;
+    overflow: hidden;
+}
+
+.members {
+  display: inline-block;
+}
+
+/* Navigation Bar */
+
+header {
+    background-color: #1a6fb0;
+    color: #fff;
+    padding: 10px 0;
+}
+
+#logo {
+    float: left;
+    font-size: 1.5em;
+}
+
+nav {
+    float: right;
+}
+
+.nav-links {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links li {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.nav-links li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+.nav-links li a:hover {
+    background-color: #1e80ca;
+}
+
+.content {
+    padding: 50px 0;
+    text-align: center;
+}
+
+@media (min-width: 600px) {
+  
+}
