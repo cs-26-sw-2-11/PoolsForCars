@@ -1,15 +1,49 @@
-import { getRoute, type DirectionsResponse, type Route } from "../ors.service.js";
+import { getRoute, type DirectionsResponse, type Route, type RouteSummary } from "../ors.service.js";
 import * as calendarDayModel from "../../models/calendar_day.model.js";
 import * as groupModel from "../../models/group.model.js";
 import * as costModel from "../../models/cost.model.js";
 import * as compatibilityModel from "../../models/compatibility.model.js";
 import * as userModel from "../../models/user.model.js";
-import { type AppendPassengerDTO } from "./dto/appendPassenger.dto.js"
-import * as groupPlanner from "./group.planner.js";
-import * as calendarModel from "../../models/calendar.model.js";
+import * as groupExecutor from "./group.executor.js";
 
 export type GroupMember = groupModel.GroupMember;
 export type Group = groupModel.Group;
+
+
+interface CandidatePair {
+    day: string;
+    week: number;
+    driver: userModel.User | number;
+    passenger: userModel.User | number;
+    driverDay: calendarDayModel.CalendarDay | null;
+    passengerDay: calendarDayModel.CalendarDay | null;
+}
+
+type Coord = [number, number];
+
+export interface Candidate {
+    userId: number;
+    coordinates: Coord;
+    destination: Coord;
+}
+
+export interface InsertionPlan {
+    insertionCandidate: Candidate;
+
+    previousUserId: number;
+    currentUserId: number;
+    nextUserId: number | null;
+    routeOrder: number[];
+
+    prevToCurrDistance: number;
+    currToNextDistance: number;
+
+    newTotalTravelTime: number;
+    estimatedAddedDetour: number;
+    totalDetour: number;
+
+    mapsLink: string;
+}
 
 const ACCEPTED_DETOUR: number = 10 * 60;
 
