@@ -4,7 +4,7 @@ import type { Cost } from './cost.model.js';
 import * as fs from 'fs';
 import { asyncAppendLineToFile, asyncReadFile, asyncWriteFile, DATABASE_DIRNAME } from '../database/helper-functions.js'
 import type { Location } from './location.model.js';
-import type { AppendPassengerDTO } from '../services/groups/dto/appendPassenger.dto.js';
+import type { InsertionPlan } from '../services/groups/group.service.js';
 
 // ====== TYPES ======
 // export interface Group {
@@ -27,7 +27,7 @@ export interface Group {
     week: number;
     seatsOffered: number;
     members: GroupMember[];
-    pendingMembers: Record<number, AppendPassengerDTO> // userid: AppendPassengerDTO
+    pendingMembers: Record<number, InsertionPlan> // userid: InsertionPlan
     destination: Location;
     route: number[]; // optimized order
     totalTravelTimeSeconds: number;
@@ -36,6 +36,7 @@ export interface Group {
     totalTravelDistanceEuclidiean: number;
     secsPerMeterAverage: number;
     metersPerEuclideanDistAverage: number;
+    mapsLink: string;
 }
 
 export interface GroupMember {

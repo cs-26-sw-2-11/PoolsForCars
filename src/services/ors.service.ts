@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-import type { DirectionsResponse, GeocodingResponse, Route } from "ors-client";
-export type { DirectionsResponse, Route };
+import type { DirectionsResponse, GeocodingResponse, Route, RouteSummary } from "ors-client";
+export type { DirectionsResponse, Route, RouteSummary};
 
 dotenv.config();
 const apiKey: string = process.env.ORS_API_KEY || "";

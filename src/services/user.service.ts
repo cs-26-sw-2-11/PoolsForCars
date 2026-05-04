@@ -102,16 +102,16 @@ export const unpackUser = async (req: express.Request) => {
         schedule: schedule,
         calendar: {},
         lookingForGroups: false,
-        groups: [],
-        pendingGroups: [],
-    };
+        driverInGroups: [],
+        passengerInGroups: [],
+    } as userModel.User;
 
 }
 
 // The actual called function responsible for the signup
 export const doSignup = async (req: express.Request) => {
     // Unpacks all the information send through the form found on the signup page.
-    const user:userModel.User = await unpackUser(req);
+    const user: userModel.User = await unpackUser(req);
     createUser(user);
     // Loads all the users, using an asynchronous function
     const users = await uservices.getUsersService();

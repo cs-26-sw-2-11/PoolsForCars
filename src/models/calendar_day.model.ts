@@ -10,4 +10,5 @@ export interface CalendarDay {
     destination: Location;
     timeOfArrival: string;
     groups: [number | null, number | null];
+    pendingGroups: number[];
 }
