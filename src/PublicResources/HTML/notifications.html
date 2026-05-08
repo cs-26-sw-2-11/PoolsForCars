@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="../CSS/Frontendstyle.css">
+  <title>Carpool Join Requests</title>
+</head>
+
+<body>
+
+    <div class="notification-page">
+
+        <div class="Header Header--notifications">
+
+            <nav class="menu-bar menu-bar--inside" aria-label="Top navigation">
+                <ul class="topbarmenu">
+                    <li><a href="Signup.html">Calendar</a></li>
+                    <li><a href="Profile.html">Profile</a></li>
+                    <li><a href="Login.html">Group</a></li>
+                    <li><a href="Notifications.html">Notifications</a></li>
+                    <li><a href="https://media.newyorker.com/photos/59095bb86552fa0be682d9d0/master/pass/Monkey-Selfie.jpg">Logout</a></li>
+                </ul>
+            </nav>
+
+            <!-- BOXED CONTENT AREA -->
+            <section class="notification-card">
+
+                <div class="title title--center">
+                    Incoming Join Requests
+                </div>
+
+                <div id="groups-container"></div>
+
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        // =========================
+        // TEST DATA
+        // =========================
+
+        const groups = [
+            {
+                groupId: 1,
+                groupName: "Fuck ALG",
+                day: "Wednesday",
+                totalDetourTime: 20,
+                joinRequests: [
+                    {
+                        userId: 101,
+                        firstName: "John",
+                        lastName: "Doe",
+                        addedDetourTime: 5
+                    },
+                    {
+                        userId: 102,
+                        firstName: "Will",
+                        lastName: "Smith",
+                        addedDetourTime: 8
+                    }
+                ]
+            },
+
+            {
+                groupId: 2,
+                groupName: "Supervisor Meeting",
+                day: "Monday",
+                totalDetourTime: 12,
+                joinRequests: [
+                    {
+                        userId: 201,
+                        firstName: "Nice",
+                        lastName: "Cock",
+                        addedDetourTime: 4
+                    }
+                ]
+            }
+        ];
+
+        // =========================
+        // RENDER FUNCTION
+        // =========================
+
+        function renderGroups(groups) {
+
+            const container = document.getElementById("groups-container");
+            container.innerHTML = "";
+
+            groups.forEach(group => {
+
+                const table = document.createElement("table");
+                table.border = "1";
+
+                // HEADER ROW
+                const headerRow = document.createElement("tr");
+
+                headerRow.innerHTML = `
+                    <th>${group.groupName}</th>
+                    <th>${group.day}</th>
+                    <th>Total Detour: ${group.totalDetourTime} min</th>
+                `;
+
+                table.appendChild(headerRow);
+
+                // REQUEST ROWS
+                group.joinRequests.forEach(req => {
+
+                    const row = document.createElement("tr");
+
+                    const nameCell = document.createElement("td");
+                    nameCell.textContent =
+                        `${req.firstName} ${req.lastName}`;
+
+                    const detourCell = document.createElement("td");
+                    detourCell.textContent =
+                        `${req.addedDetourTime} min`;
+
+                    const actionCell = document.createElement("td");
+
+                    const acceptBtn = document.createElement("button");
+                    acceptBtn.textContent = "Accept";
+
+                    acceptBtn.onclick = () => {
+                        console.log("Accepted:", group.groupId, req.userId);
+                    };
+
+                    const denyBtn = document.createElement("button");
+                    denyBtn.textContent = "Deny";
+
+                    denyBtn.onclick = () => {
+                        console.log("Denied:", group.groupId, req.userId);
+                    };
+
+                    actionCell.appendChild(acceptBtn);
+                    actionCell.appendChild(denyBtn);
+
+                    row.appendChild(nameCell);
+                    row.appendChild(detourCell);
+                    row.appendChild(actionCell);
+
+                    table.appendChild(row);
+                });
+
+                container.appendChild(table);
+                container.appendChild(document.createElement("br"));
+            });
+        }
+
+        // =========================
+        // INIT
+        // =========================
+
+        renderGroups(groups);
+
+    </script>
+
+</body>
+</html>
