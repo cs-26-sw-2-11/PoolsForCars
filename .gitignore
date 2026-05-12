@@ -2,5 +2,7 @@
 dist/*
 src/database/users/
 src/database/groups/
-
 node_modules/
+.vscode/
+src/.DS_Store
+src/PublicResources/.DS_Store
