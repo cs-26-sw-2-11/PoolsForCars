@@ -13,10 +13,6 @@ interface ApplyInsertionInput {
     group: groupService.Group;
     plan: groupService.InsertionPlan;
     routes: Routes;
-    candidate: {
-        userId: number;
-        coordinates: [number, number];
-    };
 };
 
 
@@ -24,7 +20,6 @@ export const applyInsertion = ({
     group,
     plan,
     routes,
-    candidate,
 }: ApplyInsertionInput): groupService.Group => {
 
     // clone to avoid mutation
@@ -37,8 +32,8 @@ export const applyInsertion = ({
 
     // build new member
     const newMember: groupService.GroupMember = {
-        userId: candidate.userId,
-        coordinates: candidate.coordinates,
+        userId: plan.insertionCandidate.userId,
+        coordinates: plan.insertionCandidate.coordinates,
         toNext: routes.isDestination ? null : routes.currToNext,
         toDestination: routes.currToDest,
     };
