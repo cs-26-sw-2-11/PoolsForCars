@@ -28,6 +28,7 @@ export interface Group {
     seatsOffered: number;
     members: GroupMember[];
     pendingMembers: Record<number, InsertionPlan> // userid: InsertionPlan
+    bannedMembers: number[];
     destination: Location;
     route: number[]; // optimized order
     totalTravelTimeSeconds: number;
