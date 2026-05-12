@@ -4,8 +4,19 @@ import * as groupController from '../controllers/group.controller.js';
 
 const router = express.Router();
 
+// GET
+
 router.route("/:userId")
     .get(groupController.getGroups);
+
+router.route("/:userId/driver")
+    .get(groupController.getGroupsAsDriver);
+
+router.route("/:userId/passenger")
+    .get(groupController.getGroupsAsPassenger);
+
+// ----------------------------------------
+
 
 router.route("/:userId/make")
     .post(groupController.makeAllGroups);

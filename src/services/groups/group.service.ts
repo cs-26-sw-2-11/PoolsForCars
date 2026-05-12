@@ -5,6 +5,7 @@ import * as costModel from "../../models/cost.model.js";
 import * as compatibilityModel from "../../models/compatibility.model.js";
 import * as userModel from "../../models/user.model.js";
 import * as groupExecutor from "./group.executor.js";
+import { findEligbleDrivers } from "../../matching/temporal_compatibility.js";
 
 export type GroupMember = groupModel.GroupMember;
 export type Group = groupModel.Group;
@@ -52,10 +53,30 @@ export const getGroup = async (id: number): Promise<groupModel.Group> => {
     return await groupModel.readGroup(id);
 }
 
-export const getAllUserGroupsAsDriver = async (userId: number): Promise<groupModel.Group[]> => {
+export const getAllUserGroups = async (userId: number): Promise<groupModel.Group[]> => {
     const user: userModel.User = await userModel.readUser(userId);
+    const groupIds: number[] = user.driverInGroups.concat(user.passengerInGroups);
+    const groups: groupModel.Group[] = await Promise.all(
+        groupIds.map(groupId => groupModel.readGroup(groupId))
+    );
+    return groups;
+}
+
+export const getAllUserGroupsAsDriver = async (userId: number): Promise<groupModel.Group[]> => {
+
+    const user: userModel.User = await userModel.readUser(userId);
+
     const groups: groupModel.Group[] = await Promise.all(
         user.driverInGroups.map(groupId => groupModel.readGroup(groupId))
+    );
+
+    return groups;
+}
+
+export const getAllUserGroupsAsPassenger = async (userId: number): Promise<groupModel.Group[]> => {
+    const user: userModel.User = await userModel.readUser(userId);
+    const groups: groupModel.Group[] = await Promise.all(
+        user.passengerInGroups.map(groupId => groupModel.readGroup(groupId))
     );
     return groups;
 }
@@ -82,6 +103,7 @@ const buildNewGroup = (
         seatsOffered: day.seatsOffered,
         members: [member],
         pendingMembers: {},
+        bannedMembers: [],
         destination: day.destination,
         route: [userId],
         totalTravelTimeSeconds: costToDestination.travelTimeSeconds as number,
@@ -205,9 +227,15 @@ export const findCompatibleCandidatePairs = (
 export const searchForGroups = async (
     user: userModel.User,
     compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex,
+    dayInfo?: {
+        week: number;
+        day: string;
+    } | null,
 ) => {
 
-    const pairs: CandidatePair[] = findCandidatePairs(user, compatibilityMap);
+    const pairs: CandidatePair[] = dayInfo
+        ? findCompatibleCandidatePairs(user, compatibilityMap, dayInfo.week, dayInfo.day)
+        : findCandidatePairs(user, compatibilityMap);
 
     for (const pair of pairs) {
 
@@ -415,7 +443,6 @@ export const makeGroupMapsLink = (group: Group, plan?: InsertionPlan): string =>
 const buildRoutesForPlan = async (
     group: groupModel.Group,
     plan: InsertionPlan,
-    candidate: Candidate
 ): Promise<groupExecutor.Routes> => {
 
     const previousMember: groupModel.GroupMember = group.members.find(
@@ -451,7 +478,7 @@ const buildRoutesForPlan = async (
         currToDest: {
             travelDistanceMeters: currToDestSummary.distance,
             travelTimeSeconds: currToDestSummary.duration,
-            distanceEuclidean: euclideanDistance(candidate.coordinates, group.destination.coordinates),
+            distanceEuclidean: euclideanDistance(plan.insertionCandidate.coordinates, group.destination.coordinates),
         },
         isDestination: currToNextRoute ? false : true,
     };
@@ -462,25 +489,28 @@ const buildRoutesForPlan = async (
 
 export const appendPassengerToGroup = async (
     groupId: number,
-    candidate: Candidate,
+    plan: InsertionPlan,
+    // candidate: Candidate,
 ) => {
+
+    // Read the group from the database
     const group: groupModel.Group = await groupModel.readGroup(groupId);
 
-    const plan = planInsertion(group, {
-        userId: candidate.userId,
-        coordinates: candidate.coordinates,
-        destination: group.destination.coordinates,
-    }, ACCEPTED_DETOUR);
+    // // Convert insertionplan
+    // const plan = planInsertion(group, {
+    //     userId: candidate.userId,
+    //     coordinates: candidate.coordinates,
+    //     destination: group.destination.coordinates,
+    // }, ACCEPTED_DETOUR);
 
-    if (!plan) return;
+    // if (!plan) return;
 
-    const routes = await buildRoutesForPlan(group, plan, candidate);
+    const routes = await buildRoutesForPlan(group, plan);
 
     const updatedGroup: groupModel.Group = groupExecutor.applyInsertion({
         group,
         plan,
         routes,
-        candidate
     });
 
     await groupModel.updateGroup(group.id, updatedGroup);
@@ -491,27 +521,46 @@ export const denyPassengerFromGroup = async (
     candidate: Candidate,
 ): Promise<Group> => {
 
+    // Read the group from the database
     const group: groupModel.Group = await groupModel.readGroup(groupId);
 
+    // Delete element of member from pendingMembers Record
     delete group.pendingMembers[candidate.userId];
 
+    // Add users id to banned members - they cant be added again.
+    group.bannedMembers.push(candidate.userId);
+
+    // Persist to database
     await groupModel.updateGroup(group.id, group);
 
     return group;
 }
 
-// const refreshPendingMembers = async (group: groupModel.Group) => {
-//     for (const [mKey, member] of Object.entries(group.pendingMembers)) {
-//
-//
-//         searchForGroups
-//         member.insertionCandidate.userId
-//
-//         const pendingMemberUser: userModel.User = await userModel.readUser(Number(pendingMember[0]));
-//         const pendingMemberDay: calendarDayModel.CalendarDay = pendingMemberUser.calendar[group.week]?.days[group.day] as calendarDayModel.CalendarDay;
-//         await testGroup(pendingMemberUser.id, pendingMemberDay, group);
-//     }
-// }
+export const refreshPendingMembers = async (
+    groupId: number,
+): Promise<Group> => {
+
+    const group: Group = await groupModel.readGroup(groupId);
+
+    for (const memberKey in group.pendingMembers) {
+
+        const user: userModel.User
+            = await userModel.readUser(Number(memberKey));
+
+        const memberCompatibilityMap: compatibilityModel.WeeklyCompatibilityIndex
+            = await findEligbleDrivers(user);
+
+        searchForGroups(
+            user,
+            memberCompatibilityMap,
+            {
+                week: group.week,
+                day: group.day,
+            });
+    }
+
+    return group;
+}
 
 const euclideanDistance = (vector1: [number, number], vector2: [number, number]): number => {
     return Math.sqrt(Math.pow((vector2[0] - vector1[0]), 2) + Math.pow((vector2[1] - vector1[1]), 2));
