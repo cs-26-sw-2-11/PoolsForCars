@@ -98,6 +98,7 @@ export const unpackUser = async (req: express.Request) => {
         phoneNumber: phoneNumber,
         schedule: schedule,
         calendar: {},
+        editedCalendarWeeks: [],
         lookingForGroups: false,
         driverInGroups: [],
         passengerInGroups: [],
