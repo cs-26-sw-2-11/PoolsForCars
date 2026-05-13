@@ -13,6 +13,7 @@ export interface User {
     phoneNumber: string;
     schedule: Week;
     calendar: Calendar;
+    editedCalendarWeeks: number[];
     lookingForGroups: boolean;
     driverInGroups: number[];
     passengerInGroups: number[];

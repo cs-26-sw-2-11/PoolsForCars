@@ -55,12 +55,20 @@ export const getUserById = async (req: express.Request, res: express.Response, n
 // Update a specific user, by finding them using their id
 export const updateUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try{
+        console.log(JSON.stringify(req.body, null, 2));
         let user: userModel.User = await userModel.readUser(Number(req.params['userId']));
-        const { firstName, lastName, phoneNumber, lookingForGroups } = req.body;
+        const { firstName, lastName, phoneNumber, lookingForGroups, schedule } = req.body;
         user.firstName = firstName;
         user.lastName = lastName;
         user.phoneNumber = phoneNumber;
         user.lookingForGroups = lookingForGroups;
+        user.schedule = schedule;
+
+        for (const weekNumber in user.calendar) {
+            if (user.editedCalendarWeeks.find((week) => week === Number(weekNumber))) continue;
+            user.calendar[weekNumber] = JSON.parse(JSON.stringify(user.schedule));
+        }
+
         userModel.updateUser(Number(req.params['userId']), user);
         res.status(200).json(user);
     } catch(err){
