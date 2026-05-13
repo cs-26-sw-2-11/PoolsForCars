@@ -4,8 +4,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../CSS/Frontendstyle.css">
 
-<!-- JS loaded safely -->
-<script type= "module" src="../JS/login_script.js" defer></script>
 
 <title>HTML Login Form</title>
 </head>
@@ -15,7 +13,7 @@
 <div class="title" style="text-align: center;"><h3>Login</h3></div>
     <fieldset>
     <div class="legend" style="text-align: center;">Welcome</div>
-<form action="login" id="loginForm" method="post">
+<form action="login" id="loginForm">
    <p class="form-intro" style="text-align: center;">Enter your last name and phone number.</p>
    <div class="user-details">
    <div class="input-box">
@@ -31,20 +29,20 @@
     </div>
     </fieldset>
 
-    <!-- ✅ MUST BE INSIDE FORM -->
+    <!-- MUST BE INSIDE FORM -->
     <button id="loginSubmit" type="submit">Login</button>
 
   </form>
-  <!-- ✅ FORM END -->
+  <!-- FORM END -->
 
   <p class="login-text">
     Don't have an account?<br>
-    <a href="https://media.newyorker.com/photos/59095bb86552fa0be682d9d0/master/pass/Monkey-Selfie.jpg">
+    <a href="/signup">
       Create an account
     </a>
   </p>
 
 </div>
-
+<script src="../JS/login_script.js"></script>
 </body>
 </html>
