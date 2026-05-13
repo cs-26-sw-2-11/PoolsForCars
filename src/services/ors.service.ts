@@ -35,10 +35,21 @@ const rateLimitGeocode: number = 100;
 //     }
 // }
 
+
+export const addressToCoordinates = async (address: string ): Promise<[number, number]> => {
+    const response: GeocodingResponse = await getGeocoding(address);
+    const coordinates: [number, number] = [
+        response.features[0]?.geometry.coordinates[1] as number,
+        response.features[0]?.geometry.coordinates[0] as number
+    ]
+    return coordinates;
+
+}
+
 // Get a route
-export const getGeocoding = async (adress: string): Promise<GeocodingResponse> => {
+const getGeocoding = async (address: string): Promise<GeocodingResponse> => {
     return enqueue(async () => {
-        const apiUrl: string = `https://api.heigit.org/pelias/v1/search?api_key=${apiKey}&${adress}`;
+        const apiUrl: string = `https://api.heigit.org/pelias/v1/search?api_key=${apiKey}&text=${address}`;
         try {
             const response: Response = await fetch(apiUrl, {
                 method: 'GET',
