@@ -1,3 +1,5 @@
+
+ 
  BASIC STYLING 
 * {
     margin: 0;
@@ -8,7 +10,7 @@
 body {
      min-height: 100vh;
   margin: 0;
-  display: flex;
+  display: center;
   justify-content: center;
   align-items: center;
   padding: 20px;
@@ -17,7 +19,8 @@ body {
 
 
 .phone-header {
-  width: min(100%, 520px);
+    
+  width: min(100%, 1060px);
   background-color: #fff;
   padding: 30px 20px;
   border: 1px solid #ccc;
@@ -45,7 +48,7 @@ body {
 }
  /* NAVIGATION TABS */
 .nav-tabs {
-    display: flex;
+    display: center;
     background: #f9f9f9;
     border-bottom: 1px solid #ddd;
 }
