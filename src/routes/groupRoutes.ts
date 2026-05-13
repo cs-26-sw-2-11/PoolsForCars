@@ -25,8 +25,8 @@ router.route("/:userId/search")
     .post(groupController.searchForGroups);
 
 
-router.route("/:userId/:groupId/accept")
-    .post(groupController.searchForGroups);
+router.route("/:groupId/:userId/accept")
+    .post(groupController.acceptGroupMember);
 
 
 router.route("/:userId/:groupId/deny")

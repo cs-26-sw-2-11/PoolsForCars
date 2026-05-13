@@ -61,14 +61,16 @@ export const makeAllGroups = async (req: express.Request, res: express.Response,
 
 export const acceptGroupMember = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
-    const groupId: number = Number(req.params['groupId']);
 
-    const insertionPlan: groupService.InsertionPlan = req.body;
+    const group: groupService.Group = await groupService.getGroup(Number(req.params['groupId']));
+    const userId: number = Number(req.params['userId']);
 
-    await groupService.appendPassengerToGroup(groupId, insertionPlan);
+    const insertionPlan: groupService.InsertionPlan | undefined = group.pendingMembers[userId];
+    if (typeof insertionPlan === 'undefined') return; // do something
 
-    const updatedGroup: groupService.Group
-        = await groupService.refreshPendingMembers(groupId);
+    await groupService.appendPassengerToGroup(group.id, insertionPlan);
+
+    const updatedGroup: groupService.Group = await groupService.refreshPendingMembers(group.id);
 
     res.status(200).json(updatedGroup);
 }
