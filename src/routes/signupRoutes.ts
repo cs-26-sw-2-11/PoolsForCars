@@ -3,7 +3,7 @@ import express from "express";
 import { filePath } from "./index.js"
 import * as services from "../services/user.service.js"
 import * as controller from "../controllers/user.controller.js"
-
+import * as validate from "../Validators/formValidators.js";
 
 
 const router = express.Router();
@@ -15,12 +15,10 @@ router.route("")
         res.sendFile(filePath + "/Signup.html");
     })
     .post(
-        [
-        // Input validation / verification needed on form data. i.e. firstName, lastName, phone, and on subcategories of preferences
-        // Don't know how to do it on subcategories tho 🤷‍♂️
-        ],
+        validate.login, validate.signup, validate.validate,
         (req: express.Request, res:express.Response, next: express.NextFunction) =>{
         // calls the service responsible for the signup, should probably be moved to a controller function instead of a body function.
+        //controller.createUser(req, res, next);
         controller.signUp(req, res, next);
     });
 

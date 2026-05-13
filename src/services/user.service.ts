@@ -28,12 +28,10 @@ type userPreferences = Record<string, {
 
 // Helper function to get all users.
 export const getUsersService = async () => {
-    try{
     const users: userModel.usersJSON = await userModel.readUsersJSON();
-    return users
-    } catch(err){
-        console.log(err)
-    }
+    if (!users) throw new Error ("db error");
+    return users;
+
 }
 
 // Handles logins
@@ -41,93 +39,114 @@ export const loginHandler = async (req: express.Request) => {
     try{
         // Gets the "sanitized" last name and phone number
         let { lastName, phoneNumber } = req.body;
-        console.log(`${lastName} and ${phoneNumber}`);
+        //console.log(`${lastName} and ${phoneNumber}`);
         // Loads all the users, using an asynchronous function
         const users = await uservices.getUsersService();
         // Returns early if database is unpopulated.
-        if (!users) return -1;
+        if (!users) return -2;
         
         // Sorts through all the users, using the object from the key value paired users, since the user is the value.
         for (const [key, value] of Object.entries(users)) {
             if(value.lastName === lastName && value.phoneNumber === phoneNumber){
-                console.log(value.id)
+                //console.log(value.id)
                 // Return the user id, if the user exists in the database.
-                return value.id;
+                return value.id as number;
             }
         }
         // Returns -1, an id not found in the database, if login doesnt match an user.
         return -1;
     } catch(err){
-        console.log(err)
-        return -1;
+        console.log(err);
+        return -2;
     }      
 };
 
 // Unpack and reformat preferences
-export const unpackUser = async (req: express.Request) => {
-    const { firstName, lastName, phoneNumber, preferences } = req.body
-
-    // Initiates the week
-    let schedule: Week = {
-            startDate: startDate,
-            endDate: startDate,
-            days: {}
+export const unpackUser = async (req: express.Request): Promise<userModel.User> => {
+        const { firstName, lastName, phoneNumber, preferences } = req.body;
+        const userPreferences:userPreferences = preferences as userPreferences;
+        if(!firstName || !lastName || !phoneNumber || !preferences){
+            throw new Error ("invalid user data");
         };
 
-    // Loads preferences into a custom object, so it is easier to get the data from it
-    // Has the same format as our known faker, so the information mirrors what we've been building with
-    const userPreferences:userPreferences = preferences as userPreferences
-    for (const day of Object.entries(userPreferences)){
-        schedule.days[day[1].day] = {
-            carpoolingIntent: day[1].carpoolingIntent,
-            date: startDate,
-            carAvailability: day[1].carAvailability,
-            seatsOffered: day[1].seatsOffered,
-            pickupPoint: {
-                address: day[1].pickupPoint.address,
-                coordinates: day[1].pickupPoint.coordinates,
-            } as Location,
-            destination: centerLocation,
-            timeOfArrival: day[1].timeOfArrival,
-            groups: [null, null],
-        } as CalendarDay;
+        // Initiates the week
+        let schedule: Week = {
+                startDate: startDate,
+                endDate: startDate,
+                days: {}
+            };
+
+        // Loads preferences into a custom object, so it is easier to get the data from it
+        // Has the same format as our known faker, so the information mirrors what we've been building with
+
+        for (const day of Object.entries(userPreferences)){
+            schedule.days[day[1].day] = {
+                carpoolingIntent: day[1].carpoolingIntent,
+                date: startDate,
+                carAvailability: day[1].carAvailability,
+                seatsOffered: day[1].seatsOffered,
+                pickupPoint: {
+                    address: day[1].pickupPoint.address,
+                    coordinates: day[1].pickupPoint.coordinates,
+                } as Location,
+                destination: centerLocation,
+                timeOfArrival: day[1].timeOfArrival,
+                groups: [null, null],
+            } as CalendarDay;
+        }
+
+        // Returns the value in the format known in the user interface.
+        return {
+            id: 0,
+            firstName: firstName,
+            lastName: lastName,
+            phoneNumber: phoneNumber,
+            schedule: schedule,
+            calendar: {},
+            lookingForGroups: false,
+            driverInGroups: [],
+            passengerInGroups: [],
+        } as userModel.User;
+}
+
+export const doUserExist = async (user: userModel.User) => {
+    const allUsers = await uservices.getUsersService();
+    // Returns early if database is unpopulated.
+    for (const [key, value] of Object.entries(allUsers)) {
+        if(value.lastName === user.lastName && value.phoneNumber === user.phoneNumber && value.firstName === user.firstName){
+            return true;
+        }
     }
-
-    // Returns the value in the format known in the user interface.
-    return {
-        id: 0,
-        firstName: firstName,
-        lastName: lastName,
-        phoneNumber: phoneNumber,
-        schedule: schedule,
-        calendar: {},
-        lookingForGroups: false,
-        driverInGroups: [],
-        passengerInGroups: [],
-    } as userModel.User;
-
+    return false;
 }
 
 // The actual called function responsible for the signup
 export const doSignup = async (req: express.Request) => {
     // Unpacks all the information send through the form found on the signup page.
-    const user: userModel.User = await unpackUser(req);
-    createUser(user);
-    // Loads all the users, using an asynchronous function
-    const users = await uservices.getUsersService();
-    let match: Number = -1;
-        // Returns early if database is unpopulated.
-    if (!users) return match;
-        
-        // Sorts through all the users, using the object from the key value paired users, since the user is the value.
-        for (const [key, value] of Object.entries(users)) {
-            if(value === user){
-                // Return the user id, if the user exists in the database.
-                match = user.id;
-            }
-        }
-    console.log(match)
-    return match;
-    
+    const user:userModel.User = await uservices.unpackUser(req);
+    const exists: boolean = await uservices.doUserExist(user);
+    if(exists === false) {
+        await createUser(user);
+        return true;
+    } else {
+        return false;
+    }
     // Needs to do something to let the user know their profile has been created.
+}
+
+export const updateUserInfoById = async (req: express.Request) => {
+    let user: userModel.User = await userModel.readUser(Number(req.params['userId']));
+    const oldUser: userModel.User = user;
+    const { firstName, lastName, phoneNumber, lookingForGroups } = req.body;
+    if(!firstName || !lastName || !phoneNumber || !lookingForGroups) throw new Error("Couldn't get data")
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.phoneNumber = phoneNumber;
+    user.lookingForGroups = lookingForGroups;
+    if(user.firstName === oldUser.firstName && user.lastName === oldUser.lastName && user.phoneNumber === oldUser.phoneNumber && user.lookingForGroups === oldUser.lookingForGroups){
+        return -1;
+    }else {
+    userModel.updateUser(Number(req.params['userId']), user);
+    return 1;
+    };
 }

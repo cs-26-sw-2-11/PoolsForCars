@@ -117,8 +117,10 @@ export const readUser = async (user_id: number): Promise<User> => {
     try {
         return USERS.get(user_id) as User;
     } catch (error) {
-        console.log(error);
-        throw error; // TODO: handle it properly
+        //console.log(error);
+        throw new Error("Couldn't get user")
+        
+        // TODO: handle it properly
     }
 };
 

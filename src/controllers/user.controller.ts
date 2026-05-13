@@ -7,68 +7,53 @@ import * as calendarModel from '../models/calendar.model.js';
 // ──────────────────────────────────────────────────────────────────
 //  :::::: MAIN CRUD FUNCTIONS :::::: ## NEEDS TO BE REFACTORED ##  
 // ──────────────────────────────────────────────────────────────────
-// Creates the user
-export const createUser = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    try { 
-        const recievedUser: userModel.User = req.body as userModel.User; // Recieve user object and convert it to User type
-        const currentDate: Date = new Date();
-        const currentWeek: number = await calendarModel.dateToWeek(currentDate);
 
-        recievedUser.schedule.startDate = await calendarModel.getFirstDayOfWeek(currentDate);
-        recievedUser.schedule.endDate = await calendarModel.getLastWorkdayOfWeek(currentDate);
-
-        const tempDate: Date = new Date(recievedUser.schedule.startDate.valueOf());
-        for (const dayEntry of Object.entries(recievedUser.schedule.days)) {
-            // set the correct dates for the week
-            dayEntry[1].date = new Date(tempDate.valueOf());
-            tempDate.setDate(tempDate.getDate() + 1);
+// Signup. i.e. (Create User)
+export const signUp = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    try{
+        const signUp: boolean = await uservice.doSignup(req)
+        if (signUp === true){
+            res.status(200).json("Succesfully created user")
+        } else{
+            res.status(401).json("couldn't create user")
         }
-
-        recievedUser.calendar[currentWeek] = JSON.parse(JSON.stringify(recievedUser.schedule)); // Copy the users schedule into its calendar under the current week
-
-        const user: userModel.User = await userModel.createUser(recievedUser); // Create a new user in the database
-
-        res.status(200).json(user);
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: 'Error creating a user' });
+    } catch(err){
+        next(err);
     }
 }
 
-// Gets all user from the database
-export const getUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const users: userModel.usersJSON = await userModel.readUsersJSON();
-    res.status(200).json(users);
+// Login i.e. (kinda Read user)
+export const loginHandling = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+   try{
+       const user: Number = await uservice.loginHandler(req)
+        if (user===-1){
+            res.status(401).json("Couldn't match user credentials");
+        } else if (user===-2) {
+            throw new Error("Something went wrong");
+        } else {
+            throw new Error("idk");
+            res.cookie('user',user,{signed: true, maxAge: 1000*60*60, httpOnly: true});
+            res.status(200).json("Found user");
+            res.send();
+        }
+    } catch (err){
+        next(err);
+    }
 }
-
-// Get a specific user, using their id
-export const getUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.log(req.params);
-    const user: userModel.User = await userModel.readUser(Number(req.params['userId']));
-    res.status(200).json(user);
-    // res.send(`NOT YET IMPLEMENTED, getUserById ${req.params}`);
-}
-
-// export const updateUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {}
 
 // Update a specific user, by finding them using their id
 export const updateUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try{
-        let user: userModel.User = await userModel.readUser(Number(req.params['userId']));
-        const { firstName, lastName, phoneNumber, lookingForGroups } = req.body;
-        user.firstName = firstName;
-        user.lastName = lastName;
-        user.phoneNumber = phoneNumber;
-        user.lookingForGroups = lookingForGroups;
-        userModel.updateUser(Number(req.params['userId']), user);
-        res.status(200).json(user);
+        const success: Number = await uservice.updateUserInfoById(req);
+        if (success === 1){
+            res.status(200).json("User updated successfully");
+        } else {
+            res.status(401).json("Something went wrong")
+        }
     } catch(err){
-        console.log(err);
+        next(err);
     }
 }
-
-
-//export const deleteUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {res.send("NOT YET IMPLEMENTED");}
 
 // Delete a user, by finding them using their id
 export const deleteUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -81,10 +66,12 @@ export const deleteUserById = async (req: express.Request, res: express.Response
             res.status(500).json("Couldn't delete user");
         }
     } catch(err){
-
+        next(err);
         //console.log(err)
     }
 }
+
+
 
 // ───────────────────────────────────────────────────────────────
 
@@ -93,37 +80,6 @@ export const deleteUserById = async (req: express.Request, res: express.Response
 // ───────────────────────────────────────────────────────────────
 //  :::::: MISCELLANEOUS ::::::
 // ───────────────────────────────────────────────────────────────
-
-// LOGIN Handling
-export const loginHandling = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-   try{
-       const user = await uservice.loginHandler(req)
-        if (Number(user)===-1){
-        res.status(401).json("Couldn't match user credentials");
-        } else {
-        res.cookie('user',user,{signed: true, maxAge: 1000*60*60, httpOnly: true});
-        res.status(200).json("Found user");
-        res.send();
-        }
-    } catch (err){
-        next(err);
-    }
-}
-
-// Signup Handler
-export const signUp = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    try{
-        const signUp = await uservice.doSignup(req)
-        if (signUp != -1){
-            res.status(200).json("Succesfully created user")
-        } else {
-            res.status(401).json("couldn't create user")
-        }
-    } catch(err){
-        next(err);
-    }
-
-}
 
 export const enableGroupSearching = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     res.send("NOT YET IMPLEMENTED");

@@ -1,4 +1,4 @@
-//=== IMPORTS ===///
+// === IMPORTS === //
 import express from "express";
 import * as path from 'path';
 import loginRoutes from "./login_router.js";
@@ -8,6 +8,7 @@ import { userRoutes } from "./userRoutes.js";
 import { devUserRoutes } from "./devUserRoutes.js";
 import calendarRoutes from "./calendarRoutes.js";
 import groupRoutes from "./groupRoutes.js";
+
 
 
 //=====VARIABLES=====//
@@ -33,6 +34,12 @@ router.use('/dev/users', devUserRoutes);
 router.get("/", (req, res) => {
     res.sendFile(filePath + "/Login.html");
 })
+
+export const errorHandler: express.ErrorRequestHandler = (err: unknown, req: express.Request, res, next: express.NextFunction) => {
+    console.log("error:", { error: err});
+    res.status(500);
+    //res.render('error', { error: err });
+}
 
 
 

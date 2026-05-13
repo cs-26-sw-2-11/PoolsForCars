@@ -107,8 +107,6 @@ function submitBooking() {
         seats_available: bookingInfo.seats,
         booked_at: new Date().toISOString()
     };
-
-    // Send to backend - CHANGE THIS URL TO YOUR BACKEND ADDRESS
     fetch("http://localhost:5000/api/bookings", {
         method: "POST",  // We are sending (POST) not receiving
         headers: {
