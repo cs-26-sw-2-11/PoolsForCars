@@ -13,6 +13,12 @@ let bookingInfo = {
 
 let currentStep = 1;
 
+const userId = document.cookie.split('userId=')[1];
+if (!userId) {
+    window.location.href = "/login";
+}
+console.log(userId);
+
 
 // ===== CHANGE BETWEEN STEPS =====
 function goToStep(stepNumber) {
