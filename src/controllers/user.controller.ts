@@ -54,7 +54,7 @@ export const getUserById = async (req: express.Request, res: express.Response, n
 
 // Update a specific user, by finding them using their id
 export const updateUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    try{
+    try {
         console.log(JSON.stringify(req.body, null, 2));
         let user: userModel.User = await userModel.readUser(Number(req.params['userId']));
         const { firstName, lastName, phoneNumber, lookingForGroups, schedule } = req.body;
@@ -71,7 +71,7 @@ export const updateUserById = async (req: express.Request, res: express.Response
 
         userModel.updateUser(Number(req.params['userId']), user);
         res.status(200).json(user);
-    } catch(err){
+    } catch (err) {
         console.log(err);
     }
 }
@@ -81,15 +81,15 @@ export const updateUserById = async (req: express.Request, res: express.Response
 
 // Delete a user, by finding them using their id
 export const deleteUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    try{
+    try {
         userModel.deleteUser(Number(req.params['userId']));
         let user: userModel.User = await userModel.readUser(Number(req.params['userId']));
-        if(typeof user === "undefined"){
+        if (typeof user === "undefined") {
             res.status(200).json("Deletion Successful");
-        }else {
+        } else {
             res.status(500).json("Couldn't delete user");
         }
-    } catch(err){
+    } catch (err) {
 
         //console.log(err)
     }
@@ -105,14 +105,14 @@ export const deleteUserById = async (req: express.Request, res: express.Response
 
 // LOGIN Handling
 export const loginHandling = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-   try{
-       const user = await uservice.loginHandler(req)
-        if (Number(user)===-1){
-        res.status(401).json("Couldn't match user credentials");
-        } else{
-        res.status(200).json("User credentials found");
+    try {
+        const userId = await uservice.loginHandler(req)
+        if (Number(userId) === -1) {
+            res.status(401).json("Couldn't match user credentials");
+        } else {
+            res.status(200).json({ message: "User credentials found", id: userId, redirect: "/calendar" });
         }
-    } catch (err){
+    } catch (err) {
         next(err);
     }
 }

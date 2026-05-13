@@ -21,6 +21,9 @@ router.route("")
         (req: express.Request, res:express.Response) =>{
         // calls the service responsible for the signup, should probably be moved to a controller function instead of a body function.
         services.doSignup(req);
+        res.status(200).json({
+            redirect: "/login",
+        });
     });
 
 

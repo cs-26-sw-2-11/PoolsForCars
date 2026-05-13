@@ -2,7 +2,7 @@ var dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 
 function buildDayPayload(form, dayName) {
-    var seatsValue = form.get("signup" + dayName + "SeatsOffered" );
+    var seatsValue = form.get("signup" + dayName + "SeatsOffered");
     var pickupAddress = String(form.get("signup" + dayName + "PickupPoint") || "").trim();
     var destinationAddress = String(form.get("signup" + dayName + "Destination") || "").trim();
     var arrivalTime = String(form.get("signup" + dayName + "TimeOfArrival") || "").trim();
@@ -13,7 +13,7 @@ function buildDayPayload(form, dayName) {
         seatsOffered: Number(seatsValue || 0),
         carpoolingIntent: form.get("signup" + dayName + "CarpoolingIntent") === "true",
         pickupPoint: pickupAddress,
-        destination:  destinationAddress,
+        destination: destinationAddress,
         timeOfArrival: arrivalTime
     };
 }
@@ -132,16 +132,22 @@ window.addEventListener("DOMContentLoaded", function () {
     if (!form) {
         return;
     }
-    
-    form.addEventListener("submit", function (event) {
+
+    form.addEventListener("submit", async function (event) {
         event.preventDefault();
         var formData = new FormData(form);
         var userPayload = buildUserPayload(formData);
-        
-        fetch("/signup", {
+
+        const response = await fetch("/signup", {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(userPayload)
         });
+
+        const data = await response.json();
+
+        if (response.status === 200) { // ok
+            window.location.href = data.redirect;
+        }
     });
 });
