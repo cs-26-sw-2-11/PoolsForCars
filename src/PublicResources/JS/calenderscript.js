@@ -13,10 +13,12 @@ let bookingInfo = {
 
 let currentStep = 1;
 
+let calenderData = [];
+
 getData();
 
 // ===== CHANGE BETWEEN STEPS =====
-function goToStep(stepNumber) {
+/*function goToStep(stepNumber) {
     // Hide all steps
     document.getElementById("step-1").style.display = "none";
     document.getElementById("step-2").style.display = "none";
@@ -34,7 +36,7 @@ function goToStep(stepNumber) {
         showSummary();
     }
 }
-
+*/
 // ===== SAVE DATA FROM STEP 1 =====
 function goToStep(stepNumber) {
     if (currentStep === 1) {
@@ -291,17 +293,38 @@ function WannaSkipWeekend(date, MoveDayForward) {
     }
     return date;
 }
-function getData() {
+async function getData() {
     const url = "/calendar/0";
+
     try { 
-        const repsonse = fetch(url);
-        if (!repsonse.ok) {
+        const response = await fetch(url);
+        if (!response.ok) {
             throw new Error("Calender get request failed");
+
         }
-        const result = repsonse.json();
-        console.log(result);
+
+
+        calenderData = await response.json();
+        console.log(calenderData);
+ 
+        fillFromFetch(calenderData[19].days["Wednesday"]);
+
     } catch (error) {
         console.error("Error fetching calendar data:", error);
         
     }
+}
+
+function fillFromFetch(dayData) {
+    if (!dayData) return;
+
+    bookingInfo.pickup = dayData.pickupPoint.address ||"";
+    bookingInfo.destination = dayData.destination.address ||"";
+    bookingInfo.arrivalTime = dayData.timeOfArrival ||"";
+    bookingInfo.seats = dayData.seatsAvailable ||"";
+    
+    document.getElementById("pickup").value = bookingInfo.pickup;
+    document.getElementById("destination").value = bookingInfo.destination;
+    document.getElementById("arrival-time").value = bookingInfo.arrivalTime;
+    document.getElementById("seats").value = bookingInfo.seats;
 }
