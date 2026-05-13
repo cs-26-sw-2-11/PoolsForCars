@@ -12,8 +12,8 @@ function buildDayPayload(form, dayName) {
         carAvailability: form.get("signup" + dayName + "CarAvailability") === "true",
         seatsOffered: Number(seatsValue || 0),
         carpoolingIntent: form.get("signup" + dayName + "CarpoolingIntent") === "true",
-        pickupPoint: pickupAddress,
-        destination: destinationAddress,
+        pickupAddress: pickupAddress,
+        destinationAddress: destinationAddress,
         timeOfArrival: arrivalTime
     };
 }
