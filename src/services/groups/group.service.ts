@@ -36,8 +36,7 @@ export interface InsertionPlan {
     nextUserId: number | null;
     routeOrder: number[];
 
-    prevToCurrDistance: number;
-    currToNextDistance: number;
+    routes: groupExecutor.Routes;
 
     newTotalTravelTime: number;
     estimatedAddedDetour: number;
@@ -168,10 +167,18 @@ export const makeNewGroups = async (user: userModel.User): Promise<number[]> => 
         for (const [dayKey, day] of Object.entries(week.days)) {
 
             if (!(day.carpoolingIntent && day.carAvailability)) continue;
+            if (day.groups[0] !== null) continue;
 
             const group: Group = await makeNewGroup(user.id, day, dayKey, Number(weekNum));
 
             userDriverGroups.push(group.id);
+            if (!day.groups[0]) {
+                day.groups[0] = group.id;
+            } else if (!day.groups[1]) {
+                day.groups[1] = group.id;
+            } else {
+                throw new Error("Error while making group. Both drivers morning and evening group slots are filled");
+            }
         }
     }
 
@@ -261,7 +268,7 @@ export const searchForGroups = async (
 
         if (group.members.length >= group.seatsOffered + 1) continue;
 
-        const plan: InsertionPlan | null = planInsertion(
+        const plan: InsertionPlan | null = await planInsertion(
             group,
             {
                 userId: pair.passenger.id,
@@ -279,6 +286,7 @@ export const searchForGroups = async (
         await groupModel.updateGroup(group.id, group);
 
 
+        console.log(JSON.stringify(pair.passengerDay));
         pair.passengerDay.pendingGroups.push(group.id);
 
         await userModel.updateUser(pair.passenger.id, pair.passenger);
@@ -286,11 +294,11 @@ export const searchForGroups = async (
 }
 
 
-export const planInsertion = (
+export const planInsertion = async (
     group: groupModel.Group,
     candidate: Candidate,
     ACCEPTED_DETOUR: number
-): InsertionPlan | null => {
+): Promise<InsertionPlan | null> => {
 
     // Contruct array of user ids and distance to destination
     // Append user to this array and sort it
@@ -346,27 +354,49 @@ export const planInsertion = (
         : group.destination.coordinates;
 
 
-    const prevToCurrDistance: number = euclideanDistance(
-        previousMember.coordinates,
-        candidate.coordinates
-    );
 
-    const currToNextDistance: number = euclideanDistance(
-        candidate.coordinates,
-        nextCoords
-    );
+    const prevToCurrRoute: RouteSummary | undefined = (
+        await getRoute(
+            previousMember.coordinates,
+            candidate.coordinates
+        )
+    ).routes[0]?.summary;
+    if (typeof prevToCurrRoute === 'undefined') throw new Error("Error calculating route from previous member to candidate.")
 
 
-    const prevToCurrTT: number =
-        prevToCurrDistance *
-        group.metersPerEuclideanDistAverage *
-        group.secsPerMeterAverage;
+    const currToNextRoute: RouteSummary | undefined = (
+        await getRoute(
+            candidate.coordinates,
+            nextCoords
+        )
+    ).routes[0]?.summary;
+    if (typeof currToNextRoute === 'undefined') throw new Error("Error calculating route from candidate to next member.")
 
-    const currToNextTT: number =
-        currToNextDistance *
-        group.metersPerEuclideanDistAverage *
-        group.secsPerMeterAverage;
+    // const prevToCurrDistance: number = euclideanDistance(
+    //     previousMember.coordinates,
+    //     candidate.coordinates
+    // );
+    //
+    // const currToNextDistance: number = euclideanDistance(
+    //     candidate.coordinates,
+    //     nextCoords
+    // );
+    //
+    //
+    // const prevToCurrTT: number =
+    //     prevToCurrDistance *
+    //     group.metersPerEuclideanDistAverage *
+    //     group.secsPerMeterAverage;
+    //
+    // const currToNextTT: number =
+    //     currToNextDistance *
+    //     group.metersPerEuclideanDistAverage *
+    //     group.secsPerMeterAverage;
+    const prevToCurrDistance: number = prevToCurrRoute.distance;
+    const currToNextDistance: number = currToNextRoute.distance;
 
+    const prevToCurrTT: number = prevToCurrRoute.duration;
+    const currToNextTT: number = currToNextRoute.duration;
 
     console.log(`Testing user ${candidate.userId} against group`, JSON.stringify(group, null, 2));
     console.log(distsToDest);
@@ -408,8 +438,30 @@ export const planInsertion = (
         currentUserId: candidate.userId,
         nextUserId: nextId,
         routeOrder: routeOrder,
-        prevToCurrDistance: prevToCurrDistance,
-        currToNextDistance: currToNextDistance,
+        routes: {
+            prevToCurr: {
+                travelTimeSeconds: prevToCurrTT,
+                travelDistanceMeters: prevToCurrDistance,
+                distanceEuclidean: euclideanDistance(
+                    previousMember.coordinates,
+                    candidate.coordinates
+                ),
+            },
+            currToNext: nextMember ? {
+                travelTimeSeconds: currToNextTT,
+                travelDistanceMeters: currToNextDistance,
+                distanceEuclidean: euclideanDistance(
+                    candidate.coordinates,
+                    nextCoords
+                ),
+            } : null,
+            currToDest: {
+                travelTimeSeconds: null,
+                travelDistanceMeters: null,
+                distanceEuclidean: candidateDistanceToDestination,
+            },
+            isDestination: nextMember ? false : true,
+        },
         newTotalTravelTime: newTotalTravelTime,
         estimatedAddedDetour: (prevToCurrTT + currToNextTT) - removedTime,
         totalDetour: totalDetour,
@@ -440,51 +492,57 @@ export const makeGroupMapsLink = (group: Group, plan?: InsertionPlan): string =>
     return link;
 }
 
-const buildRoutesForPlan = async (
-    group: groupModel.Group,
-    plan: InsertionPlan,
-): Promise<groupExecutor.Routes> => {
-
-    const previousMember: groupModel.GroupMember = group.members.find(
-        x => x.userId === plan.previousUserId
-    ) as groupModel.GroupMember;
-    const currentMember: groupModel.GroupMember = group.members.find(
-        x => x.userId === plan.currentUserId
-    ) as groupModel.GroupMember;
-    const nextMember: groupModel.GroupMember | null = plan.nextUserId
-        ? group.members.find(x => x.userId === plan.currentUserId) as groupModel.GroupMember
-        : null;
-
-    const prevToCurrRoute: DirectionsResponse = await getRoute(previousMember?.coordinates, currentMember?.coordinates);
-    const prevToCurrSummary: RouteSummary = prevToCurrRoute.routes[0]?.summary as RouteSummary;
-
-    const currToNextRoute: DirectionsResponse | null = plan.nextUserId ? await getRoute(currentMember?.coordinates, nextMember?.coordinates as [number, number]) : null;
-    const currToNextSummary: RouteSummary | null = currToNextRoute ? currToNextRoute.routes[0]?.summary as RouteSummary : null;
-
-    const currToDestRoute: DirectionsResponse = await getRoute(currentMember?.coordinates, group.destination.coordinates);
-    const currToDestSummary: RouteSummary = currToDestRoute.routes[0]?.summary as RouteSummary;
-
-    const routes: groupExecutor.Routes = {
-        prevToCurr: {
-            travelDistanceMeters: prevToCurrSummary.distance,
-            travelTimeSeconds: prevToCurrSummary.duration,
-            distanceEuclidean: plan.prevToCurrDistance,
-        },
-        currToNext: currToNextRoute && currToNextSummary ? {
-            travelDistanceMeters: currToNextSummary.distance,
-            travelTimeSeconds: currToNextSummary.duration,
-            distanceEuclidean: plan.currToNextDistance,
-        } : null,
-        currToDest: {
-            travelDistanceMeters: currToDestSummary.distance,
-            travelTimeSeconds: currToDestSummary.duration,
-            distanceEuclidean: euclideanDistance(plan.insertionCandidate.coordinates, group.destination.coordinates),
-        },
-        isDestination: currToNextRoute ? false : true,
-    };
-
-    return routes;
-}
+// const buildRoutesForPlan = async (
+//     group: groupModel.Group,
+//     plan: InsertionPlan,
+// ): Promise<groupExecutor.Routes> => {
+//
+//     const previousMember: groupModel.GroupMember = group.members.find(
+//         x => x.userId === plan.previousUserId
+//     ) as groupModel.GroupMember;
+//     const currentMember: groupModel.GroupMember = group.members.find(
+//         x => x.userId === plan.currentUserId
+//     ) as groupModel.GroupMember;
+//     const nextMember: groupModel.GroupMember | null = plan.nextUserId
+//         ? group.members.find(x => x.userId === plan.currentUserId) as groupModel.GroupMember
+//         : null;
+//
+//
+//     const prevToCurrRoute: DirectionsResponse = await getRoute(previousMember?.coordinates, currentMember?.coordinates);
+//     const prevToCurrSummary: RouteSummary = prevToCurrRoute.routes[0]?.summary as RouteSummary;
+//
+//     const currToNextRoute: DirectionsResponse | null = plan.nextUserId
+//         ? await getRoute(
+//             currentMember?.coordinates,
+//             nextMember?.coordinates as [number, number]
+//         )
+//         : null;
+//     const currToNextSummary: RouteSummary | null = currToNextRoute ? currToNextRoute.routes[0]?.summary as RouteSummary : null;
+//
+//     const currToDestRoute: DirectionsResponse = await getRoute(currentMember?.coordinates, group.destination.coordinates);
+//     const currToDestSummary: RouteSummary = currToDestRoute.routes[0]?.summary as RouteSummary;
+//
+//     const routes: groupExecutor.Routes = {
+//         prevToCurr: {
+//             travelDistanceMeters: prevToCurrSummary.distance,
+//             travelTimeSeconds: prevToCurrSummary.duration,
+//             distanceEuclidean: plan.prevToCurrDistance,
+//         },
+//         currToNext: currToNextRoute && currToNextSummary ? {
+//             travelDistanceMeters: currToNextSummary.distance,
+//             travelTimeSeconds: currToNextSummary.duration,
+//             distanceEuclidean: plan.currToNextDistance,
+//         } : null,
+//         currToDest: {
+//             travelDistanceMeters: currToDestSummary.distance,
+//             travelTimeSeconds: currToDestSummary.duration,
+//             distanceEuclidean: euclideanDistance(plan.insertionCandidate.coordinates, group.destination.coordinates),
+//         },
+//         isDestination: currToNextRoute ? false : true,
+//     };
+//
+//     return routes;
+// }
 
 
 export const appendPassengerToGroup = async (
@@ -505,13 +563,13 @@ export const appendPassengerToGroup = async (
 
     // if (!plan) return;
 
-    const routes = await buildRoutesForPlan(group, plan);
+    // const routes = await buildRoutesForPlan(group, plan);
 
-    const updatedGroup: groupModel.Group = groupExecutor.applyInsertion({
+    const updatedGroup: groupModel.Group = groupExecutor.applyInsertion(
         group,
         plan,
-        routes,
-    });
+        // routes,
+    );
 
     await groupModel.updateGroup(group.id, updatedGroup);
 }

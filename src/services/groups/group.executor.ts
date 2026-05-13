@@ -9,18 +9,17 @@ export interface Routes {
     isDestination: boolean;
 }
 
-interface ApplyInsertionInput {
-    group: groupService.Group;
-    plan: groupService.InsertionPlan;
-    routes: Routes;
-};
+// interface ApplyInsertionInput {
+//     group: groupService.Group;
+//     plan: groupService.InsertionPlan;
+//     // routes: Routes;
+// };
 
 
-export const applyInsertion = ({
-    group,
-    plan,
-    routes,
-}: ApplyInsertionInput): groupService.Group => {
+export const applyInsertion = (
+    group: groupService.Group,
+    plan: groupService.InsertionPlan,
+): groupService.Group => {
 
     // clone to avoid mutation
     const updatedGroup: groupService.Group = structuredClone(group);
@@ -34,12 +33,12 @@ export const applyInsertion = ({
     const newMember: groupService.GroupMember = {
         userId: plan.insertionCandidate.userId,
         coordinates: plan.insertionCandidate.coordinates,
-        toNext: routes.isDestination ? null : routes.currToNext,
-        toDestination: routes.currToDest,
+        toNext: plan.routes.isDestination ? null : plan.routes.currToNext,
+        toDestination: plan.routes.currToDest,
     };
 
     // update link from previous to candidate
-    previous.toNext = routes.prevToCurr;
+    previous.toNext = plan.routes.prevToCurr;
 
     // add member
     updatedGroup.members.push(newMember);
