@@ -86,6 +86,8 @@ export const initGroups = async (): Promise<void> => {
         } catch (error) {
             console.warn("Something went wrong, trying to initialize the groups", error);
         }
+    } else {
+        asyncWriteFile(META_FILE, "");
     }
 
     // Load groups
@@ -104,6 +106,8 @@ export const initGroups = async (): Promise<void> => {
         } catch (error) {
             console.warn("Something went wrong, trying to initialize the groups", error);
         }
+    } else {
+        asyncWriteFile(GROUPS_FILE, "");
     }
 }
 

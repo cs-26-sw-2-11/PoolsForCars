@@ -55,6 +55,8 @@ export const initUsers = async (): Promise<void> => {
         } catch (error) {
             console.warn("Something went wrong, trying to initialize the users", error);
         }
+    } else {
+        asyncWriteFile(META_FILE, "");
     }
 
     // Load users
@@ -82,6 +84,8 @@ export const initUsers = async (): Promise<void> => {
         } catch (error) {
             console.warn("Something went wrong, trying to initialize the users", error);
         }
+    } else {
+        asyncWriteFile(USERS_FILE, "");
     }
 }
 
