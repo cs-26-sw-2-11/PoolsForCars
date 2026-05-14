@@ -1,3 +1,15 @@
+var profileForm = document.getElementById("profileForm");
+var editButton = document.getElementById("editProfile");
+var saveButton = document.getElementById("saveProfile");
+var profileIsEditing = false;
+var currentUser = null;
+const userId = document.cookie.split("userId=")[1]?.split(";")[0];
+var currentUserId = userId;
+
+if (!userId) {
+    window.location.href = "/login";
+}
+
 async function getData() {
     var url = "/users/" + currentUserId;
 
@@ -18,13 +30,6 @@ async function getData() {
     }
 }
 
-
-var profileForm = document.getElementById("profileForm");
-var editButton = document.getElementById("editProfile");
-var saveButton = document.getElementById("saveProfile");
-var profileIsEditing = false;
-var currentUser = null;
-var currentUserId = 0;
 
 function setValue(id, value) {
     var input = document.getElementById(id);
@@ -270,6 +275,10 @@ function updateCarpoolFields() {
 }
 
 window.addEventListener("DOMContentLoaded", function () {
+    if (!userId) {
+        return;
+    }
+
     if (!profileForm || !editButton || !saveButton) {
         return;
     }
