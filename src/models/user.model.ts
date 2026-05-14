@@ -13,9 +13,10 @@ export interface User {
     phoneNumber: string;
     schedule: Week;
     calendar: Calendar;
+    editedCalendarWeeks: number[];
     lookingForGroups: boolean;
-    groups: number[];
-    pendingGroups: number[];
+    driverInGroups: number[];
+    passengerInGroups: number[];
 }
 
 export type Users = Map<number, User>;
@@ -54,6 +55,8 @@ export const initUsers = async (): Promise<void> => {
         } catch (error) {
             console.warn("Something went wrong, trying to initialize the users", error);
         }
+    } else {
+        asyncWriteFile(META_FILE, "");
     }
 
     // Load users
@@ -68,6 +71,11 @@ export const initUsers = async (): Promise<void> => {
 
             parsedUsers.forEach(user => {
                 // Make sure all Dates are Date objects
+
+                for (const dayEntry of Object.entries(user.schedule.days)) {
+                    dayEntry[1].date = new Date(dayEntry[1].date);
+                }
+
                 for (const weekEntry of Object.entries(user.calendar)) {
                     weekEntry[1].startDate = new Date(weekEntry[1].startDate);
                     weekEntry[1].endDate = new Date(weekEntry[1].endDate);
@@ -81,6 +89,8 @@ export const initUsers = async (): Promise<void> => {
         } catch (error) {
             console.warn("Something went wrong, trying to initialize the users", error);
         }
+    } else {
+        asyncWriteFile(USERS_FILE, "");
     }
 }
 

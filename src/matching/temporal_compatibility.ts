@@ -19,7 +19,8 @@ const calcLinearDecay = (toa1: string, toa2: string) => {
     const toaDiff: number =
         ((toa1Array[0] ?? 0) * 60 + (toa1Array[1] ?? 0)) -
         ((toa2Array[0] ?? 0) * 60 + (toa2Array[1] ?? 0));
-    return Math.max(0, 1 - toaDiff / tolerance);
+
+    return Math.max(0, Math.min(1, 1 - toaDiff / tolerance));
 }
 
 export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilityIndex> => {
@@ -50,6 +51,11 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
                 const userDay: CalendarDay = day[1];
                 const subUserDay: CalendarDay = sub_user.calendar[Number(week[0])]?.days[day[0]] as CalendarDay;
 
+                // TEMPORARY MEASURE: Disallow drivers from finding passengers. Fixes passengers with incomplete schedules.
+                if (userDay.carAvailability) {
+                    continue;
+                }
+
                 // continue if either user or subuser doesnt want to carpool on this day
                 if (!(userDay.carpoolingIntent && subUserDay.carpoolingIntent)) {
                     continue;
@@ -66,8 +72,10 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
                 }
 
 
-                const compatibility: number = calcLinearDecay(userDay.timeOfArrival, subUserDay.timeOfArrival);
-                if (compatibility !== 0 && compatibility <= 1) {
+                const compatibility: number = userDay.carAvailability
+                    ? calcLinearDecay(subUserDay.timeOfArrival, userDay.timeOfArrival)
+                    : calcLinearDecay(userDay.timeOfArrival, subUserDay.timeOfArrival);
+                if (compatibility !== 0) {
                     setCompatibility(
                         compatibilityMap,
                         Number(week[0]),

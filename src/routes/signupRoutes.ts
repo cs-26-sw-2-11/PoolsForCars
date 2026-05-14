@@ -18,9 +18,12 @@ router.route("")
         // Input validation / verification needed on form data. i.e. firstName, lastName, phone, and on subcategories of preferences
         // Don't know how to do it on subcategories tho 🤷‍♂️
         ],
-        (req: express.Request, res:express.Response) =>{
+        async (req: express.Request, res:express.Response) => {
         // calls the service responsible for the signup, should probably be moved to a controller function instead of a body function.
-        services.doSignup(req);
+        await services.doSignup(req);
+        res.status(200).json({
+            redirect: "/login",
+        });
     });
 
 

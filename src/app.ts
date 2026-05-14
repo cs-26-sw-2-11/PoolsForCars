@@ -3,12 +3,11 @@ import { clearGroups, initGroups } from "./models/group.model.js";
 import * as server from "./server.js";
 import { clearNotifications, initNotifications } from "./models/notification.model.js";
 
-await clearUsers();
+await clearUsers()
 await clearGroups();
-await clearNotifications();
 await initUsers();
 await initGroups();
-await initNotifications();
+// await initNotifications();
 
 //We use EC6 modules
 

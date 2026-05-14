@@ -33,6 +33,26 @@ export const getCalendarWeek = async (req: express.Request, res: express.Respons
     }
 }
 
+// export const updateCalendar = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+//     try {
+//         const user: userModel.User = await userModel.readUser(Number(req.params['userId']));
+//
+//         const Calendar: calendarModel.Calendar = 
+//
+//         const weekNumber: number = Number(req.params['weekNumber']);
+//         let week: weekModel.Week = await calendarModel.readWeek(calendar, weekNumber);
+//
+//         if (typeof week === 'undefined') {
+//             week = await calendarModel.createWeek(calendar, weekNumber, user.schedule);
+//             userModel.updateUser(user.id, user);
+//         }
+//
+//         res.status(200).json(week);
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
+
 
 // export const createWeek = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 //

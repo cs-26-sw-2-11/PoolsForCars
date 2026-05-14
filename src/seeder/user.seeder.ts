@@ -89,9 +89,10 @@ export const createRandomUser = async (): Promise<User> => {
         phoneNumber: faker.phone.number({ style: "national" }).replace(/\D/g, ''),
         schedule: schedule,
         calendar: {},
+        editedCalendarWeeks: [],
         lookingForGroups: false,
-        groups: [],
-        pendingGroups: [],
+        driverInGroups: [],
+        passengerInGroups: [],
 
     };
 };

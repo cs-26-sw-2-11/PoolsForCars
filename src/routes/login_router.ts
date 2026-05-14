@@ -13,7 +13,7 @@ const router = express.Router();
 export const validate = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        //console.log(errors);
+        console.log(errors);
         return res.status(400).json({ errors: errors.array() });
     }
     next(); // continue only if valid
@@ -34,15 +34,14 @@ router.route("")
             //=== TERMINATES THE REQUEST BY NOT RESPONDING IF DATA IS INCORRECT ===//
             // Collects the objects from the HTTP body
 
-
-        const handler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            try {
-                await loginHandling(req, res, next);
-                return res.json({ success: true });
-            } catch (err) {
-                return next(err);
-            }
-        };
+            const handler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+                try {
+                    await loginHandling(req, res, next);
+                } catch (err) {
+                    return next(err);
+                }
+            };
+            handler(req, res, next);
             // Console logs to ensure they match input
             // console.log(` Last name: ${lastName} & Phone number: ${phone} `);
         })

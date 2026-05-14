@@ -8,6 +8,7 @@ import { userRoutes } from "./userRoutes.js";
 import { devUserRoutes } from "./devUserRoutes.js";
 import calendarRoutes from "./calendarRoutes.js";
 import groupRoutes from "./groupRoutes.js";
+import notificationRoutes from "./notificationRoutes.js";
 
 
 //=====VARIABLES=====//
@@ -25,6 +26,7 @@ router.use('/users', userRoutes);
 router.use('/calendar', calendarRoutes);
 router.use('/profile', profileRoutes);
 router.use('/groups', groupRoutes);
+router.use('/notifications', notificationRoutes);
 
 router.use('/dev/users', devUserRoutes);
 
