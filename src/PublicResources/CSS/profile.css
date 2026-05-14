@@ -1,12 +1,6 @@
-.profile-page {
-  width: min(100%, 1180px);
-  margin: 0 auto;
-}
-
-.Header--profile {
-  width: 100%;
-  padding: 24px;
-}
+@import "./base.css";
+@import "./forms.css";
+@import "./day-preferences.css";
 
 .menu-bar {
   margin-bottom: 24px;

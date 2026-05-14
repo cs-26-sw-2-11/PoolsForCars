@@ -10,62 +10,6 @@ form .user-details .input-box {
   width: 100%;
 }
 
-form .input-box .details {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 5px;
-}
-
-.user-details .input-box input {
-  width: 100%;
-  outline: none;
-  font-size: 16px;
-  border-radius: 5px;
-  padding: 12px 15px;
-  border: 1px solid #ccc;
-  border-bottom-width: 2px;
-  transition: all 0.3s ease;
-}
-
-.user-details .input-box input:focus {
-  border-color: #5b8fd9;
-  box-shadow: 0 0 0 3px rgba(91, 143, 217, 0.15);
-}
-
-button,
-.button-secondary {
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 15px;
-  margin-bottom: 15px;
-  border: none;
-  color: white;
-  cursor: pointer;
-  width: 100%;
-  font-size: 16px;
-}
-
-button {
-  background-color: #1AAE9F;
-}
-
-button:hover:not(:disabled),
-.button-secondary:hover:not(:disabled) {
-  opacity: 0.92;
-}
-
-button:disabled,
-.button-secondary:disabled {
-  background-color: #cbd5e1;
-  color: #64748b;
-  cursor: not-allowed;
-  opacity: 1;
-}
-
-#saveProfile:not(:disabled) {
-  background-color: #1AAE9F;
-}
-
 .user-details--stacked .input-box {
   width: 100%;
 }
@@ -86,7 +30,7 @@ button:disabled,
   padding: 10px 12px;
   border-radius: 10px;
   background: #ffffff;
-  border: 1px solid #d7e0ef;
+  border: 1px solid var(--color-border);
   cursor: pointer;
 }
 
