@@ -13,6 +13,7 @@ export const signUp = async (req: express.Request, res: express.Response, next: 
     try{
         const signUp: boolean = await uservice.doSignup(req)
         if (signUp === true){
+            // Needs to call controller for group handling
             res.status(200).json("Succesfully created user")
         } else{
             res.status(401).json("couldn't create user")
