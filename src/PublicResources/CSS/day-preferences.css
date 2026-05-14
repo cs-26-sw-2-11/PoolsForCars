@@ -64,26 +64,14 @@
   color: #18476e;
 }
 
-.day-card__field + .day-card__field {
+.day-card__field{
   margin-top: 12px;
 }
 
 .day-card input[type="text"],
 .day-card input[type="number"],
 .day-card input[type="time"] {
-  width: 100%;
-  outline: none;
   font-size: 15px;
-  border-radius: 5px;
-  padding: 12px 15px;
-  border: 1px solid #ccc;
-  border-bottom-width: 2px;
-  transition: all 0.3s ease;
-}
-
-.day-card input:focus {
-  border-color: #5b8fd9;
-  box-shadow: 0 0 0 3px rgba(91, 143, 217, 0.15);
 }
 
 .day-card--not-carpooling .day-card__field:not(:first-of-type) {

@@ -2,48 +2,45 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="../CSS/Frontendstyle.css">
+<link rel="stylesheet" href="../CSS/login.css">
 
-<!-- JS loaded safely -->
-<script type= "module" src="../JS/login_script.js" defer></script>
+<script type="module" src="../JS/login_script.js" defer></script>
 
 <title>HTML Login Form</title>
 </head>
 
 <body>
-<div class="Header"style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);;">
-<div class="title" style="text-align: center;"><h3>Login</h3></div>
-    <fieldset>
-    <div class="legend" style="text-align: center;">Welcome</div>
-<form action="login" id="loginForm" method="post">
-   <p class="form-intro" style="text-align: center;">Enter your last name and phone number.</p>
-   <div class="user-details">
-   <div class="input-box">
-    <label class="details" for="lastNameInput">Last Name</label>
-    <input type="text" id="lastNameInput" name="lastName"
-        placeholder="Enter your last name" required minlength="1" maxlength="25">
-   </div>
-    <div class="input-box">
-        <label class="details" for="phoneInput">Phone</label>
-        <input type="tel" id="phoneInput" name="phoneNumber"
-            placeholder="Enter your phone number" required pattern="[0-9]{8}">
+<div class="login-page">
+    <div class="Header Header--login">
+        <div class="title"><h3>Login</h3></div>
+        <form action="login" id="loginForm" method="post">
+            <fieldset>
+                <div class="legend">Welcome</div>
+                <p class="form-intro">Enter your last name and phone number.</p>
+                <div class="user-details">
+                    <div class="input-box">
+                        <label class="details" for="lastNameInput">Last Name</label>
+                        <input type="text" id="lastNameInput" name="lastName"
+                            placeholder="Enter your last name" required minlength="1" maxlength="25">
+                    </div>
+                    <div class="input-box">
+                        <label class="details" for="phoneInput">Phone</label>
+                        <input type="tel" id="phoneInput" name="phoneNumber"
+                            placeholder="Enter your phone number" required pattern="[0-9]{8}">
+                    </div>
+                </div>
+            </fieldset>
+
+            <button id="loginSubmit" type="submit">Login</button>
+        </form>
+
+        <p class="login-text">
+            Don't have an account?<br>
+            <a href="/signup">
+                Create an account
+            </a>
+        </p>
     </div>
-    </div>
-    </fieldset>
-
-    <!-- ✅ MUST BE INSIDE FORM -->
-    <button id="loginSubmit" type="submit">Login</button>
-
-  </form>
-  <!-- ✅ FORM END -->
-
-  <p class="login-text">
-    Don't have an account?<br>
-    <a href="https://media.newyorker.com/photos/59095bb86552fa0be682d9d0/master/pass/Monkey-Selfie.jpg">
-      Create an account
-    </a>
-  </p>
-
 </div>
 
 </body>
