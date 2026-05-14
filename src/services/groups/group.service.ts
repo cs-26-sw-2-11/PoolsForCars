@@ -546,24 +546,10 @@ export const makeGroupMapsLink = (group: Group, plan?: InsertionPlan): string =>
 
 
 export const appendPassengerToGroup = async (
-    groupId: number,
+    group: Group,
     plan: InsertionPlan,
     // candidate: Candidate,
-) => {
-
-    // Read the group from the database
-    const group: groupModel.Group = await groupModel.readGroup(groupId);
-
-    // // Convert insertionplan
-    // const plan = planInsertion(group, {
-    //     userId: candidate.userId,
-    //     coordinates: candidate.coordinates,
-    //     destination: group.destination.coordinates,
-    // }, ACCEPTED_DETOUR);
-
-    // if (!plan) return;
-
-    // const routes = await buildRoutesForPlan(group, plan);
+): Promise<Group> => {
 
     const updatedGroup: groupModel.Group = groupExecutor.applyInsertion(
         group,
@@ -571,16 +557,15 @@ export const appendPassengerToGroup = async (
         // routes,
     );
 
-    await groupModel.updateGroup(group.id, updatedGroup);
+    delete group.pendingMembers[plan.insertionCandidate.userId];
+
+    return updatedGroup;
 }
 
 export const denyPassengerFromGroup = async (
-    groupId: number,
+    group: Group,
     candidate: Candidate,
 ): Promise<Group> => {
-
-    // Read the group from the database
-    const group: groupModel.Group = await groupModel.readGroup(groupId);
 
     // Delete element of member from pendingMembers Record
     delete group.pendingMembers[candidate.userId];
@@ -595,10 +580,8 @@ export const denyPassengerFromGroup = async (
 }
 
 export const refreshPendingMembers = async (
-    groupId: number,
+    group: Group,
 ): Promise<Group> => {
-
-    const group: Group = await groupModel.readGroup(groupId);
 
     for (const memberKey in group.pendingMembers) {
 

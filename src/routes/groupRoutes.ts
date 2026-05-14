@@ -29,7 +29,7 @@ router.route("/:groupId/:userId/accept")
     .post(groupController.acceptGroupMember);
 
 
-router.route("/:userId/:groupId/deny")
-    .post(groupController.searchForGroups);
+router.route("/:groupId/:userId/deny")
+    .post(groupController.denyGroupMember);
 
 export default router;

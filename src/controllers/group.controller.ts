@@ -6,6 +6,7 @@ import * as groupExecutor from "../services/groups/group.executor.js";
 import * as compatibilityModel from "../models/compatibility.model.js";
 import { findEligbleDrivers } from "../matching/temporal_compatibility.js";
 import { group } from "console";
+import { updateGroup } from "../models/group.model.js";
 
 
 // ───────────────────────────────────────────────────────────────
@@ -68,21 +69,26 @@ export const acceptGroupMember = async (req: express.Request, res: express.Respo
     const insertionPlan: groupService.InsertionPlan | undefined = group.pendingMembers[userId];
     if (typeof insertionPlan === 'undefined') return; // do something
 
-    await groupService.appendPassengerToGroup(group.id, insertionPlan);
+    const updatedGroup = await groupService.appendPassengerToGroup(group, insertionPlan);
 
-    const updatedGroup: groupService.Group = await groupService.refreshPendingMembers(group.id);
+    const refreshedGroup: groupService.Group = await groupService.refreshPendingMembers(group);
 
-    res.status(200).json(updatedGroup);
+    await updateGroup(group.id, refreshedGroup);
+
+    res.status(200).json(refreshedGroup);
 }
 
 
 export const denyGroupMember = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
-    const groupId: number = Number(req.params['groupId']);
+    const group: groupService.Group = await groupService.getGroup(Number(req.params['groupId']));
+    const userId: number = Number(req.params['userId']);
 
-    const candidate: groupService.Candidate = req.body;
+    const insertionPlan: groupService.InsertionPlan | undefined = group.pendingMembers[userId];
+    if (typeof insertionPlan === 'undefined') return; // do something
 
-    const updatedGroup: groupService.Group = await groupService.denyPassengerFromGroup(groupId, candidate);
+
+    const updatedGroup: groupService.Group = await groupService.denyPassengerFromGroup(group, insertionPlan.insertionCandidate);
 
     res.status(200).json(updatedGroup);
 }
