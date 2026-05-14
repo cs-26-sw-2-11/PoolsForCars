@@ -6,10 +6,6 @@ window.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    console.log("found form");
-    console.log(form);
-
-
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
         const formData = new FormData(form);
@@ -18,7 +14,7 @@ window.addEventListener("DOMContentLoaded", () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 lastName: formData.get("lastName"),
-                phone: formData.get("phoneNumber"),
+                phoneNumber: formData.get("phoneNumber"),
             })
         });
 

@@ -68,14 +68,14 @@ const createUser = async (user: userModel.User): Promise<userModel.User> => {
 export const loginHandler = async (req: express.Request) => {
     try {
         // Gets the "sanitized" last name and phone number
-        let { lastName, phone } = req.body;
+        let { lastName, phoneNumber } = req.body;
         // Loads all the users, using an asynchronous function
         const users = await uservices.getUsersService();
         // Returns early if database is unpopulated.
         if (!users) return -1;
         // Sorts through all the users, using the object from the key value paired users, since the user is the value.
         for (const [key, value] of Object.entries(users)) {
-            if (value.lastName === lastName && value.phoneNumber === phone) {
+            if (value.lastName === lastName && value.phoneNumber === phoneNumber) {
                 // Return the user id, if the user exists in the database.
                 return value.id;
             }
