@@ -92,7 +92,7 @@ function showSummary() {
     document.getElementById("summary-time").textContent = bookingInfo.arrivalTime;
     document.getElementById("summary-role").textContent = bookingInfo.role;
     document.getElementById("summary-seats").textContent = bookingInfo.seats;
-    updateData();
+    
 }
 
 // ===== SEND DATA TO BACKEND =====
@@ -135,7 +135,6 @@ function submitBooking() {
         console.log("ERROR! Something went wrong:", error);
         alert("Error booking ride. Check your backend is running!");
     });
-    updateData();
 }
 
 // ===== SHOW SUCCESS MESSAGE =====
@@ -148,7 +147,7 @@ function showSuccessMessage() {
     
     // Show success message
     document.getElementById("success-message").style.display = "block";
-    updateData();
+
 }
 function goFromStepFour() {
     if (bookingInfo.role === "passenger") {
@@ -157,7 +156,7 @@ function goFromStepFour() {
         goToStep(3);
         
 }
-    updateData();
+
 }
 // ===== START OVER - RESET EVERYTHING =====
 function startOver() {
@@ -191,7 +190,7 @@ function startOver() {
     // Go back to step 1
     goToStep(1);
 
-    updateData();
+    
 }
 
 function checkRoleandGo() {
@@ -204,7 +203,7 @@ function checkRoleandGo() {
     } else {
         goToStep(4);
     }
-    updateData();
+    
 }
 
 // ===== CALENDAR NAVIGATION FUNCTIONALITY =====
@@ -225,7 +224,6 @@ function getDateWeek(date) {
     }
     return 1 + Math.ceil((firstThursday - tempDate.valueOf()) / 604800000);
 
-    updateData();
 }
 
 
@@ -236,7 +234,7 @@ function getFirstDayOfWeek(date) {
     firstDay.setDate(date.getDate() - dayNum);
     return firstDay;
 
-    updateData();
+  
 }
 
 function getLastDayOfWeek(date) {
@@ -245,14 +243,14 @@ function getLastDayOfWeek(date) {
     lastDay.setDate(date.getDate() + (4 - dayNum));
     return lastDay;
 
-    updateData();
+    
 }
 // Function to format date as "Mon DD, YYYY"
 function formatDate(date) {
     const options = { weekday: 'long', month: 'short', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 
-    updateData();
+    
 }
 
 // Function to format week range
@@ -260,7 +258,7 @@ function formatWeek(weekStart) {
     const weekEnd = getLastDayOfWeek(weekStart);
     return `${formatDate(weekStart)} - ${formatDate(weekEnd)}`;
 
-    updateData();
+    
 }
 
 // Update the display of current date and week
@@ -326,7 +324,7 @@ function WannaSkipWeekend(date, MoveDayForward) {
     }
     return date;
 
-    updateData();
+  
 }
 /*async function getData() {
     const url = "/calendar/0";
@@ -412,7 +410,7 @@ function fillFromFetch(dayData) {
     document.getElementById("arrival-time").value = bookingInfo.arrivalTime;
     document.getElementById("seats").value = bookingInfo.seats;
 
-    updateData();
+    
 }
 
 async function loadInitialData() {
@@ -426,7 +424,8 @@ async function loadInitialData() {
     updateData();
 
 }
-/*function findWeekIndexByDate(data, date) {
+/*
+function findWeekIndexByDate(data, date) {
     
     return data.findIndex(week => {
 
