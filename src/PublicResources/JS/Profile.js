@@ -1,9 +1,14 @@
+const userId = document.cookie.split("userId=0")[1]?.split(";")[0];
+
+if (userId === undefined || userId === 'undefined') {
+  window.location.href = "/login";
+}
+
 var profileForm = document.getElementById("profileForm");
 var editButton = document.getElementById("editProfile");
 var saveButton = document.getElementById("saveProfile");
 var profileIsEditing = false;
 var currentUser = null;
-const userId = document.cookie.split("userId=0")[1]?.split(";")[0];
 var currentUserId = userId;
 
 
