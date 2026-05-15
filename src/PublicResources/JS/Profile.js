@@ -3,12 +3,10 @@ var editButton = document.getElementById("editProfile");
 var saveButton = document.getElementById("saveProfile");
 var profileIsEditing = false;
 var currentUser = null;
-const userId = document.cookie.split("userId=")[1]?.split(";")[0];
+const userId = document.cookie.split("userId=0")[1]?.split(";")[0];
 var currentUserId = userId;
 
-if (!userId) {
-    window.location.href = "/login";
-}
+
 
 async function getData() {
     var url = "/users/" + currentUserId;
@@ -199,11 +197,13 @@ function updateScheduleFromForm() {
 
 function setProfileFieldsDisabled(disabled) {
     profileIsEditing = !disabled;
-
     var fields = profileForm.querySelectorAll("input, select, textarea");
-
+    var dayChoices = document.querySelectorAll('input[name="signupSelectedDay"]');
     fields.forEach(function (field) {
         field.disabled = disabled;
+    });
+    dayChoices.forEach(function (choice) {
+        choice.disabled = false;
     });
 
     updateCarpoolFields();
@@ -275,10 +275,6 @@ function updateCarpoolFields() {
 }
 
 window.addEventListener("DOMContentLoaded", function () {
-    if (!userId) {
-        return;
-    }
-
     if (!profileForm || !editButton || !saveButton) {
         return;
     }

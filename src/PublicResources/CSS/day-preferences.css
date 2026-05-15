@@ -40,6 +40,14 @@
   pointer-events: none;
 }
 
+.day-selector__option:has(input:disabled) {
+  background: #eeeeee;
+  color: #64748b;
+  border-color: #d7e0ef;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
 .day-selector__option input:checked + span {
   color: #0f5c99;
 }

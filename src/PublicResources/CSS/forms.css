@@ -38,6 +38,12 @@ form .user-details .input-box {
   margin: 0;
 }
 
+.radio-option:has(input:disabled) {
+  background: #eeeeee;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
 .button-row {
   display: flex;
   gap: 12px;
