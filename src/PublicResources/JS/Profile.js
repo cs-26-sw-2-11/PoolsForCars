@@ -1,8 +1,4 @@
-const userId = document.cookie.split("userId=0")[1]?.split(";")[0];
-
-if (userId === undefined || userId === 'undefined') {
-  window.location.href = "/login";
-}
+var userId = document.cookie.split('userId=')[1];
 
 var profileForm = document.getElementById("profileForm");
 var editButton = document.getElementById("editProfile");
@@ -279,68 +275,73 @@ function updateCarpoolFields() {
     });
 }
 
-window.addEventListener("DOMContentLoaded", function () {
-    if (!profileForm || !editButton || !saveButton) {
-        return;
-    }
 
-    getData();
-    showSelectedDay();
-    setProfileFieldsDisabled(true);
-
-    editButton.disabled = false;
-    saveButton.disabled = true;
-
-    var dayChoices = document.querySelectorAll('input[name="signupSelectedDay"]');
-
-    dayChoices.forEach(function (choice) {
-        choice.addEventListener("change", showSelectedDay);
-    });
-
-    var carpoolChoices = document.querySelectorAll('input[name$="CarpoolingIntent"], input[name$="CarAvailability"]');
-
-    carpoolChoices.forEach(function (choice) {
-        choice.addEventListener("change", updateCarpoolFields);
-    });
-
-    editButton.addEventListener("click", function () {
-        setProfileFieldsDisabled(false);
-        editButton.disabled = true;
-        saveButton.disabled = false;
-    });
-
-    profileForm.addEventListener("submit", async function (event) {
-        event.preventDefault();
-
-        var formData = new FormData(profileForm);
-        var lookingForGroups = false;
-        var schedule = null;
-
-        if (currentUser) {
-            lookingForGroups = currentUser.lookingForGroups;
-            updateScheduleFromForm();
-            schedule = currentUser.schedule;
+if (userId === undefined || userId === 'undefined') {
+    window.location.replace("/login");
+} else {
+    window.addEventListener("DOMContentLoaded", function () {
+        if (!profileForm || !editButton || !saveButton) {
+            return;
         }
 
-        try {
-            await fetch("/profile/" + currentUserId, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    firstName: formData.get("firstName"),
-                    lastName: formData.get("lastName"),
-                    phoneNumber: formData.get("phoneNumber"),
-                    lookingForGroups: lookingForGroups,
-                    schedule: schedule
-                })
-            });
+        getData();
+        showSelectedDay();
+        setProfileFieldsDisabled(true);
 
-            setProfileFieldsDisabled(true);
-            editButton.disabled = false;
-            saveButton.disabled = true;
-        } catch (error) {
-            console.error(error.message);
+        editButton.disabled = false;
+        saveButton.disabled = true;
+
+        var dayChoices = document.querySelectorAll('input[name="signupSelectedDay"]');
+
+        dayChoices.forEach(function (choice) {
+            choice.addEventListener("change", showSelectedDay);
+        });
+
+        var carpoolChoices = document.querySelectorAll('input[name$="CarpoolingIntent"], input[name$="CarAvailability"]');
+
+        carpoolChoices.forEach(function (choice) {
+            choice.addEventListener("change", updateCarpoolFields);
+        });
+
+        editButton.addEventListener("click", function () {
+            setProfileFieldsDisabled(false);
+            editButton.disabled = true;
             saveButton.disabled = false;
-        }
-    });
-});
+        });
+
+        profileForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            var formData = new FormData(profileForm);
+            var lookingForGroups = false;
+            var schedule = null;
+
+            if (currentUser) {
+                lookingForGroups = currentUser.lookingForGroups;
+                updateScheduleFromForm();
+                schedule = currentUser.schedule;
+            }
+
+            try {
+                await fetch("/profile/" + currentUserId, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        firstName: formData.get("firstName"),
+                        lastName: formData.get("lastName"),
+                        phoneNumber: formData.get("phoneNumber"),
+                        lookingForGroups: lookingForGroups,
+                        schedule: schedule
+                    })
+                });
+
+                setProfileFieldsDisabled(true);
+                editButton.disabled = false;
+                saveButton.disabled = true;
+            } catch (error) {
+                console.error(error.message);
+                saveButton.disabled = false;
+            }
+        });
+    })
+};
