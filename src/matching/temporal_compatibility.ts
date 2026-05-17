@@ -71,6 +71,13 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
                     continue;
                 }
 
+                // If user is already a passenger in the sub_users group on this day
+                console.log(subUserDay.groups, userDay.groups);
+                if (subUserDay.groups.some(num => num === null ? false : userDay.groups.includes(num))) {
+                    console.log("no bueno")
+                    continue;
+                }
+
 
                 const compatibility: number = userDay.carAvailability
                     ? calcLinearDecay(subUserDay.timeOfArrival, userDay.timeOfArrival)
