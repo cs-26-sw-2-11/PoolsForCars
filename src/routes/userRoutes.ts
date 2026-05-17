@@ -5,10 +5,10 @@ export const userRoutes = express.Router();
 import * as userController from '../controllers/user.controller.js';
 
 userRoutes.route("")
-    .get(userController.getUsers)
     .post(userController.createUser);
 
 userRoutes.get('/:userId', userController.getUserById);
+userRoutes.get('/all', userController.getUsers)
 
 
 // userRoutes.get('/:userId/calendar', calendarController.getCalendar);

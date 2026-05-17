@@ -1,10 +1,16 @@
 //=== IMPORTS ===///
 import express from 'express';
 import * as groupController from '../controllers/group.controller.js';
+import { filePath } from "./index.js"
 
 const router = express.Router();
 
 // GET
+
+router.route("")
+    .get((req, res) => {
+        res.sendFile(filePath + "/groups.html");
+    })
 
 router.route("/:userId")
     .get(groupController.getGroups);
