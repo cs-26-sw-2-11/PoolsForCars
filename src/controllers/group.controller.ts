@@ -44,7 +44,7 @@ export const searchForGroups = async (req: express.Request, res: express.Respons
     console.log(`Searching for groups for user ${user.id}`);
     console.log(JSON.stringify(compatibilityMap, null, 2));
 
-    groupService.searchForGroups(user, compatibilityMap);
+    await groupService.searchForGroups(user, compatibilityMap);
 
     res.status(200).json(user);
 }
@@ -62,16 +62,32 @@ export const makeAllGroups = async (req: express.Request, res: express.Response,
 
 export const acceptGroupMember = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
 
-
     const group: groupService.Group = await groupService.getGroup(Number(req.params['groupId']));
     const userId: number = Number(req.params['userId']);
+    const user: userModel.User = await userModel.readUser(userId);
 
     const insertionPlan: groupService.InsertionPlan | undefined = group.pendingMembers[userId];
-    if (typeof insertionPlan === 'undefined') return; // do something
+    if (typeof insertionPlan === 'undefined') {
+        res.status(409).json({ message: "User cannot be accpeted into this group." });
+        return;
+    }
+    console.log("\n");
+    console.log("\n");
+    console.log("\n");
+    console.log("\n");
+    console.log("--------------------------------------------------------");
+    console.log(JSON.stringify(insertionPlan, null, 2));
 
     const updatedGroup = await groupService.appendPassengerToGroup(group, insertionPlan);
 
-    const refreshedGroup: groupService.Group = await groupService.refreshPendingMembers(group);
+    user.passengerInGroups.push(updatedGroup.id);
+
+    const userDay = user.calendar[group.week]?.days[group.day];
+    if (userDay) userDay.groups[0] = updatedGroup.id;
+
+    await userModel.updateUser(user.id, user);
+
+    const refreshedGroup: groupService.Group = await groupService.refreshPendingMembers(updatedGroup);
 
     await updateGroup(group.id, refreshedGroup);
 
