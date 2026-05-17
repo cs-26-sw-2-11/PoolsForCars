@@ -6,6 +6,7 @@ import * as compatibilityModel from "../../models/compatibility.model.js";
 import * as userModel from "../../models/user.model.js";
 import * as groupExecutor from "./group.executor.js";
 import { findEligbleDrivers } from "../../matching/temporal_compatibility.js";
+import type { Location } from "../../models/location.model.js";
 
 export type GroupMember = groupModel.GroupMember;
 export type Group = groupModel.Group;
@@ -24,7 +25,8 @@ type Coord = [number, number];
 
 export interface Candidate {
     userId: number;
-    coordinates: Coord;
+    name: string;
+    location: Location;
     destination: Coord;
 }
 
@@ -81,7 +83,7 @@ export const getAllUserGroupsAsPassenger = async (userId: number): Promise<group
 }
 
 const buildNewGroup = (
-    userId: number,
+    user: userModel.User,
     day: calendarDayModel.CalendarDay,
     costToDestination: costModel.Cost,
     dayString: string,
@@ -89,32 +91,44 @@ const buildNewGroup = (
 ): groupModel.Group => {
 
     const member: groupModel.GroupMember = {
-        userId: userId,
-        coordinates: day.pickupPoint.coordinates,
+        userId: user.id,
+        name: user.firstName + " " + user.lastName,
+        location: day.pickupPoint,
         toNext: null,
         toDestination: costToDestination,
     }
 
+    const timeOfArrival: number =
+        day.timeOfArrival
+            .split(":")
+            .map(Number)
+            .reduce((h, m) => (h * 60 + m) * 60);
     const group: groupModel.Group = {
         id: 0, // placeholder
         day: dayString,
         week: weekNumber,
+        timeOfArrival: timeOfArrival,
         seatsOffered: day.seatsOffered,
         members: [member],
         pendingMembers: {},
         bannedMembers: [],
         destination: day.destination,
-        route: [userId],
+        route: [{
+            userId: member.userId,
+            name: member.name,
+            time: timeOfArrival - (member.toDestination.travelTimeSeconds ?? 0),
+            address: member.location.address
+        }],
         totalTravelTimeSeconds: costToDestination.travelTimeSeconds as number,
         totalDetourTimeSeconds: 0,
         totalTravelDistanceMeters: costToDestination.travelDistanceMeters as number,
-        totalTravelDistanceEuclidiean: costToDestination.distanceEuclidean,
-        metersPerEuclideanDistAverage:
-            Number(costToDestination.travelDistanceMeters) /
-            costToDestination.distanceEuclidean,
-        secsPerMeterAverage:
-            Number(costToDestination.travelTimeSeconds) /
-            Number(costToDestination.travelDistanceMeters),
+        // totalTravelDistanceEuclidiean: costToDestination.distanceEuclidean,
+        // metersPerEuclideanDistAverage:
+        //     Number(costToDestination.travelDistanceMeters) /
+        //     costToDestination.distanceEuclidean,
+        // secsPerMeterAverage:
+        //     Number(costToDestination.travelTimeSeconds) /
+        //     Number(costToDestination.travelDistanceMeters),
         mapsLink: "",
     };
 
@@ -122,7 +136,7 @@ const buildNewGroup = (
 }
 
 const makeNewGroup = async (
-    userId: number,
+    user: userModel.User,
     day: calendarDayModel.CalendarDay,
     dayString: string,
     weekNumber: number,
@@ -146,7 +160,7 @@ const makeNewGroup = async (
     };
 
     const group: groupModel.Group = buildNewGroup(
-        userId,
+        user,
         day,
         costToDestination,
         dayString,
@@ -169,7 +183,7 @@ export const makeNewGroups = async (user: userModel.User): Promise<number[]> => 
             if (!(day.carpoolingIntent && day.carAvailability)) continue;
             if (day.groups[0] !== null) continue;
 
-            const group: Group = await makeNewGroup(user.id, day, dayKey, Number(weekNum));
+            const group: Group = await makeNewGroup(user, day, dayKey, Number(weekNum));
 
             userDriverGroups.push(group.id);
             if (!day.groups[0]) {
@@ -272,7 +286,8 @@ export const searchForGroups = async (
             group,
             {
                 userId: pair.passenger.id,
-                coordinates: pair.passengerDay.pickupPoint.coordinates,
+                name: pair.passenger.firstName + " " + pair.passenger.lastName,
+                location: pair.passengerDay.pickupPoint,
                 destination: group.destination.coordinates,
             },
             ACCEPTED_DETOUR
@@ -308,7 +323,7 @@ export const planInsertion = async (
     }));
 
     const candidateDistanceToDestination: number = euclideanDistance(
-        candidate.coordinates,
+        candidate.location.coordinates,
         candidate.destination
     );
 
@@ -350,15 +365,15 @@ export const planInsertion = async (
         : null;
 
     const nextCoords: Coord = nextMember
-        ? nextMember.coordinates
+        ? nextMember.location.coordinates
         : group.destination.coordinates;
 
 
 
     const prevToCurrRoute: RouteSummary | undefined = (
         await getRoute(
-            previousMember.coordinates,
-            candidate.coordinates
+            previousMember.location.coordinates,
+            candidate.location.coordinates
         )
     ).routes[0]?.summary;
     if (typeof prevToCurrRoute === 'undefined') throw new Error("Error calculating route from previous member to candidate.")
@@ -366,7 +381,7 @@ export const planInsertion = async (
 
     const currToNextRoute: RouteSummary | undefined = (
         await getRoute(
-            candidate.coordinates,
+            candidate.location.coordinates,
             nextCoords
         )
     ).routes[0]?.summary;
@@ -443,21 +458,21 @@ export const planInsertion = async (
                 travelTimeSeconds: prevToCurrTT,
                 travelDistanceMeters: prevToCurrDistance,
                 distanceEuclidean: euclideanDistance(
-                    previousMember.coordinates,
-                    candidate.coordinates
+                    previousMember.location.coordinates,
+                    candidate.location.coordinates
                 ),
             },
             currToNext: nextMember ? {
                 travelTimeSeconds: currToNextTT,
                 travelDistanceMeters: currToNextDistance,
                 distanceEuclidean: euclideanDistance(
-                    candidate.coordinates,
+                    candidate.location.coordinates,
                     nextCoords
                 ),
             } : null,
             currToDest: {
-                travelTimeSeconds: null,
-                travelDistanceMeters: null,
+                travelTimeSeconds: nextMember ? null : currToNextTT,
+                travelDistanceMeters: nextMember ? null : currToNextDistance,
                 distanceEuclidean: candidateDistanceToDestination,
             },
             isDestination: nextMember ? false : true,
@@ -473,20 +488,23 @@ export const planInsertion = async (
 };
 
 export const makeGroupMapsLink = (group: Group, plan?: InsertionPlan): string => {
-    let link: string = `https://www.google.com/maps/dir/?api=1&origin=${group.members[0]?.coordinates[0]}%2C${group.members[0]?.coordinates[1]}&destination=${group.destination?.coordinates[0]}%2C${group.destination?.coordinates[1]}&travelmode=driving&waypoints=`;
+    let link: string = `https://www.google.com/maps/dir/?api=1&origin=${group.members[0]?.location.coordinates[0]}%2C${group.members[0]?.location.coordinates[1]}&destination=${group.destination?.coordinates[0]}%2C${group.destination?.coordinates[1]}&travelmode=driving&waypoints=`;
 
-    for (const [memberIndex, member] of Object.entries(group.members)) {
-        if (Number(memberIndex) === 0) continue;
+    for (const [index, member] of Object.entries(group.route)) {
+        const member: GroupMember | undefined = group.members.find(member => member.userId === member.userId);
+        if (typeof member === 'undefined') throw new Error("Error getting member coordinates when creating Maps Link.");
+
+        if (Number(member.userId) === 0) continue;
 
         if (typeof plan !== 'undefined') {
-            if (group.members[Number(memberIndex) - 1]?.userId === plan.previousUserId
-                && group.members[Number(memberIndex) + 1]?.userId === plan.nextUserId) {
+            if (group.route[Number(index) - 1]?.userId === plan.previousUserId
+                && group.route[Number(index) + 1]?.userId === plan.nextUserId) {
 
-                link += `${plan.insertionCandidate.coordinates[0]}%2C${plan.insertionCandidate.coordinates[1]}%7C`;
+                link += `${plan.insertionCandidate.location.coordinates[0]}%2C${plan.insertionCandidate.location.coordinates[1]}%7C`;
             }
         }
 
-        link += `${member.coordinates[0]}%2C${member.coordinates[1]}%7C`;
+        link += `${member.location.coordinates[0]}%2C${member.location.coordinates[1]}%7C`;
     }
 
     return link;
@@ -557,7 +575,7 @@ export const appendPassengerToGroup = async (
         // routes,
     );
 
-    delete group.pendingMembers[plan.insertionCandidate.userId];
+    delete updatedGroup.pendingMembers[plan.insertionCandidate.userId];
 
     return updatedGroup;
 }
@@ -591,7 +609,7 @@ export const refreshPendingMembers = async (
         const memberCompatibilityMap: compatibilityModel.WeeklyCompatibilityIndex
             = await findEligbleDrivers(user);
 
-        searchForGroups(
+        await searchForGroups(
             user,
             memberCompatibilityMap,
             {
