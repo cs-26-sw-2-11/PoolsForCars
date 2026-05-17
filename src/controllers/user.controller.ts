@@ -44,10 +44,8 @@ export const getUsers = async (req: express.Request, res: express.Response, next
 
 // Get a specific user, using their id
 export const getUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.log(req.params);
     const user: userModel.User = await userModel.readUser(Number(req.params['userId']));
     res.status(200).json(user);
-    // res.send(`NOT YET IMPLEMENTED, getUserById ${req.params}`);
 }
 
 // export const updateUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {}
@@ -55,7 +53,6 @@ export const getUserById = async (req: express.Request, res: express.Response, n
 // Update a specific user, by finding them using their id
 export const updateUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try {
-        console.log(JSON.stringify(req.body, null, 2));
         let user: userModel.User = await userModel.readUser(Number(req.params['userId']));
         const { firstName, lastName, phoneNumber, lookingForGroups, schedule } = req.body;
         user.firstName = firstName;
@@ -90,8 +87,7 @@ export const deleteUserById = async (req: express.Request, res: express.Response
             res.status(500).json("Couldn't delete user");
         }
     } catch (err) {
-
-        //console.log(err)
+        console.log(err)
     }
 }
 
@@ -110,6 +106,7 @@ export const loginHandling = async (req: express.Request, res: express.Response,
         if (Number(userId) === -1) {
             res.status(401).json("Couldn't match user credentials");
         } else {
+            console.log("user credentials found");
             res.status(200).json({ message: "User credentials found", id: userId, redirect: "/calendar" });
         }
     } catch (err) {
