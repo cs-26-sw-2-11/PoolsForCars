@@ -145,6 +145,7 @@ function setMode(mode) {
         title.textContent = "My Groups - Passenger";
     }
     renderGroups();
+    renderSchedule();
 }
 
 /// Beeg toggle
@@ -170,7 +171,6 @@ if (modeToggle.checked) {
     initialMode = "driver";
 }
 
-setMode(initialMode);
 
 
 
@@ -250,4 +250,5 @@ dayItems.forEach(day => {
 });
 
 // Initial render
+setMode(initialMode);
 renderWeek(currentWeek);
