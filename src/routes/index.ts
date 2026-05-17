@@ -2,6 +2,7 @@
 import express from "express";
 import * as path from 'path';
 import loginRoutes from "./login_router.js";
+import logoutRoutes from "./logout_router.js";
 import signupRoutes from "./signupRoutes.js";
 import profileRoutes from "./profileRoutes.js";
 import { userRoutes } from "./userRoutes.js";
@@ -21,6 +22,7 @@ export const filePath = path.resolve(process.cwd(), "src", "PublicResources", "H
 
 //=== Request segmenter, filtering all '/name' request so google.dk/login/1 => routes to loginRoutes as /1 ===//
 router.use('/login', loginRoutes);
+router.use('/logout', logoutRoutes);
 router.use('/signup', signupRoutes);
 router.use('/users', userRoutes);
 router.use('/calendar', calendarRoutes);
