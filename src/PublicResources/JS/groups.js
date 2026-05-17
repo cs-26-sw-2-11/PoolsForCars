@@ -196,6 +196,7 @@ const schedules = {
 // Where schedule rows will be rendered
 const scheduleElement = document.querySelector(".schedule");
 
+
 // Render schedule for a given day
 function renderSchedule() {
     scheduleElement.innerHTML = "";
