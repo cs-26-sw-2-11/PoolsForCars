@@ -122,15 +122,13 @@
   padding: 0 18px 16px;
 }
 
-@media (max-width: 980px) {
+@media (max-width: 520px) {
   .landing-section--split,
   .feature-grid,
   .function-grid {
     grid-template-columns: 1fr;
   }
-}
 
-@media (max-width: 640px) {
   .landing-intro {
     padding: 20px;
   }
