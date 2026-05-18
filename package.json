@@ -34,7 +34,6 @@
     "node": "^22.22.3",
     "ors-client": "^1.0.6",
     "ts-node": "^10.9.2",
-    "tsc": "^2.0.4",
     "Typescript": "npm:typescript@^6.0.3"
   }
 }
