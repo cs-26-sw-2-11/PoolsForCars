@@ -1,0 +1,17 @@
+@import "./base.css";
+@import "./forms.css";
+@import "./day-preferences.css";
+
+.signup-page {
+  width: min(100%, var(--form-page-max-width));
+  margin: 0 auto;
+}
+
+.Header--signup {
+  padding: 20px 25px;
+}
+
+.Header--signup .title,
+.Header--signup .legend {
+  text-align: center;
+}

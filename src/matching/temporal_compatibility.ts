@@ -19,7 +19,8 @@ const calcLinearDecay = (toa1: string, toa2: string) => {
     const toaDiff: number =
         ((toa1Array[0] ?? 0) * 60 + (toa1Array[1] ?? 0)) -
         ((toa2Array[0] ?? 0) * 60 + (toa2Array[1] ?? 0));
-    return Math.max(0, 1 - toaDiff / tolerance);
+
+    return Math.max(0, Math.min(1, 1 - toaDiff / tolerance));
 }
 
 export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilityIndex> => {
@@ -70,9 +71,18 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
                     continue;
                 }
 
+                // If user is already a passenger in the sub_users group on this day
+                console.log(subUserDay.groups, userDay.groups);
+                if (subUserDay.groups.some(num => num === null ? false : userDay.groups.includes(num))) {
+                    console.log("no bueno")
+                    continue;
+                }
 
-                const compatibility: number = calcLinearDecay(userDay.timeOfArrival, subUserDay.timeOfArrival);
-                if (compatibility !== 0 && compatibility <= 1) {
+
+                const compatibility: number = userDay.carAvailability
+                    ? calcLinearDecay(subUserDay.timeOfArrival, userDay.timeOfArrival)
+                    : calcLinearDecay(userDay.timeOfArrival, subUserDay.timeOfArrival);
+                if (compatibility !== 0) {
                     setCompatibility(
                         compatibilityMap,
                         Number(week[0]),

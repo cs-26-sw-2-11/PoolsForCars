@@ -25,23 +25,31 @@ export interface Group {
     id: number;
     day: string;
     week: number;
+    timeOfArrival: number;
     seatsOffered: number;
     members: GroupMember[];
     pendingMembers: Record<number, InsertionPlan> // userid: InsertionPlan
+    bannedMembers: number[];
     destination: Location;
-    route: number[]; // optimized order
+    route: {
+        userId: number;
+        name: string;
+        time: number;
+        address: string;
+    }[]; // optimized order
     totalTravelTimeSeconds: number;
     totalDetourTimeSeconds: number;
     totalTravelDistanceMeters: number;
-    totalTravelDistanceEuclidiean: number;
-    secsPerMeterAverage: number;
-    metersPerEuclideanDistAverage: number;
+    // totalTravelDistanceEuclidiean: number;
+    // secsPerMeterAverage: number;
+    // metersPerEuclideanDistAverage: number;
     mapsLink: string;
 }
 
 export interface GroupMember {
     userId: number;
-    coordinates: [number, number];
+    name: string;
+    location: Location;
 
     // cost to next user in chain (null if last)
     toNext: Cost | null;
@@ -85,6 +93,8 @@ export const initGroups = async (): Promise<void> => {
         } catch (error) {
             console.warn("Something went wrong, trying to initialize the groups", error);
         }
+    } else {
+        asyncWriteFile(META_FILE, "");
     }
 
     // Load groups
@@ -103,6 +113,8 @@ export const initGroups = async (): Promise<void> => {
         } catch (error) {
             console.warn("Something went wrong, trying to initialize the groups", error);
         }
+    } else {
+        asyncWriteFile(GROUPS_FILE, "");
     }
 }
 

@@ -9,23 +9,17 @@ export interface Routes {
     isDestination: boolean;
 }
 
-interface ApplyInsertionInput {
-    group: groupService.Group;
-    plan: groupService.InsertionPlan;
-    routes: Routes;
-    candidate: {
-        userId: number;
-        coordinates: [number, number];
-    };
-};
+// interface ApplyInsertionInput {
+//     group: groupService.Group;
+//     plan: groupService.InsertionPlan;
+//     // routes: Routes;
+// };
 
 
-export const applyInsertion = ({
-    group,
-    plan,
-    routes,
-    candidate,
-}: ApplyInsertionInput): groupService.Group => {
+export const applyInsertion = (
+    group: groupService.Group,
+    plan: groupService.InsertionPlan,
+): groupService.Group => {
 
     // clone to avoid mutation
     const updatedGroup: groupService.Group = structuredClone(group);
@@ -37,42 +31,72 @@ export const applyInsertion = ({
 
     // build new member
     const newMember: groupService.GroupMember = {
-        userId: candidate.userId,
-        coordinates: candidate.coordinates,
-        toNext: routes.isDestination ? null : routes.currToNext,
-        toDestination: routes.currToDest,
+        userId: plan.insertionCandidate.userId,
+        name: plan.insertionCandidate.name,
+        location: plan.insertionCandidate.location,
+        toNext: plan.routes.isDestination ? null : plan.routes.currToNext,
+        toDestination: plan.routes.currToDest,
     };
 
     // update link from previous to candidate
-    previous.toNext = routes.prevToCurr;
+    previous.toNext = plan.routes.prevToCurr;
 
     // add member
     updatedGroup.members.push(newMember);
 
+    const newMemberIndex: number
+        = plan.routeOrder.findIndex(id => id === newMember.userId)
+
     // update route
-    updatedGroup.route = plan.routeOrder;
+    updatedGroup.route.splice(newMemberIndex, 0, {
+        userId: newMember.userId,
+        name: newMember.name,
+        time: 0,
+        address: newMember.location.address
+    });
+
+    var workingTime: number = group.timeOfArrival;
+    for (var i = updatedGroup.route.length - 1; i >= 0; --i) {
+        const routeMember = updatedGroup.route[i];
+        if (!routeMember) throw new Error("Could not find route-member while inserting plan into group.");
+
+        const member: groupService.GroupMember | undefined
+            = updatedGroup.members.find(member => member.userId === routeMember.userId);
+        if (!member) throw new Error("Could not find member while inserting plan into group.");
+
+        console.log(routeMember.userId, workingTime);
+        if (member.toNext) {
+            workingTime -= member.toNext.travelTimeSeconds ?? 0;
+        } else {
+            workingTime -= member.toDestination.travelTimeSeconds ?? 0;
+        }
+        console.log(routeMember.userId, workingTime);
+
+        routeMember.time = workingTime;
+    }
+
 
     // update totals
     updatedGroup.totalTravelTimeSeconds = plan.newTotalTravelTime;
     updatedGroup.totalDetourTimeSeconds = plan.totalDetour;
 
     // recompute averages
-    let totalTravel: number = 0;
-    let totalEuclid: number = 0;
+    // let totalTravel: number = 0;
+    // let totalEuclid: number = 0;
 
-    for (const member of updatedGroup.members) {
-        const link: costModel.Cost = member.toNext ?? member.toDestination;
-        if (!link) continue;
-
-        totalTravel += link.travelDistanceMeters ?? 0;
-        totalEuclid += link.distanceEuclidean ?? 0;
-    }
-
-    updatedGroup.secsPerMeterAverage =
-        updatedGroup.totalTravelTimeSeconds / totalTravel;
-
-    updatedGroup.metersPerEuclideanDistAverage =
-        totalTravel / totalEuclid;
+    // for (const member of updatedGroup.members) {
+    //     const link: costModel.Cost = member.toNext ?? member.toDestination;
+    //     if (!link) continue;
+    //
+    //     totalTravel += link.travelDistanceMeters ?? 0;
+    //     totalEuclid += link.distanceEuclidean ?? 0;
+    // }
+    //
+    // updatedGroup.secsPerMeterAverage =
+    //     updatedGroup.totalTravelTimeSeconds / totalTravel;
+    //
+    // updatedGroup.metersPerEuclideanDistAverage =
+    //     totalTravel / totalEuclid;
 
     updatedGroup.mapsLink = groupService.makeGroupMapsLink(updatedGroup);
 

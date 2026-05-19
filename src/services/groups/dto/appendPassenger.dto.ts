@@ -1,10 +1,12 @@
+import type { Location } from "../../../models/location.model.js";
+
 export type AppendPassengerDTO = {
     groupId: number;
 
     // The user being inserted
     candidateMember: {
         userId: number;
-        coordinates: [number, number];
+        location: Location;
     };
 
     // Placement in route
@@ -42,9 +44,9 @@ export type AppendPassengerDTO = {
     routeOrder: number[];
 
     // Updated averages
-    secsPerMeterAverage: number;
-    metersPerEuclideanDistAverage: number;
+    // secsPerMeterAverage: number;
+    // metersPerEuclideanDistAverage: number;
 
     totalTravelDistanceMeters: number;
-    totalTravelDistanceEuclidiean: number;
+    // totalTravelDistanceEuclidiean: number;
 };

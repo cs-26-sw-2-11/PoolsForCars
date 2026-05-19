@@ -1,0 +1,26 @@
+@import "./base.css";
+@import "./forms.css";
+
+.login-page {
+  width: min(100%, var(--form-page-max-width));
+  min-height: calc(100vh - 48px);
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.Header--login {
+  padding: 20px 25px;
+}
+
+.Header--login .title,
+.Header--login .legend,
+.Header--login .form-intro {
+  text-align: center;
+}
+
+@media (max-width: 520px) {
+  .login-page {
+    min-height: calc(100vh - 32px);
+  }
+}

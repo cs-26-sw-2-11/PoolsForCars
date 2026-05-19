@@ -20,6 +20,9 @@ router.route("")
         // calls the service responsible for the signup, should probably be moved to a controller function instead of a body function.
         //controller.createUser(req, res, next);
         controller.signUp(req, res, next);
+        res.status(200).json({
+            redirect: "/login",
+        });
     });
 
 

@@ -16,21 +16,21 @@ export const buildAppendPassengerDTO = async (
     newTotalTravelTime: number,
     routeOrder: number[],
 ): Promise<AppendPassengerDTO> => {
-    const prevToCandRoute: Route = (await getRoute(previousMember.coordinates, candidateMember.coordinates)).routes[0] as Route;
-    const candToNextRoute: Route = (await getRoute(candidateMember.coordinates, nextCoords)).routes[0] as Route;
+    const prevToCandRoute: Route = (await getRoute(previousMember.location.coordinates, candidateMember.location.coordinates)).routes[0] as Route;
+    const candToNextRoute: Route = (await getRoute(candidateMember.location.coordinates, nextCoords)).routes[0] as Route;
     let candToDestRoute: Route;
     if (nextMember === null) {
-        candToDestRoute = (await getRoute(candidateMember.coordinates, group.destination.coordinates)).routes[0] as Route;
+        candToDestRoute = (await getRoute(candidateMember.location.coordinates, group.destination.coordinates)).routes[0] as Route;
     }
 
     let totalDistanceTravel: number = group.totalTravelDistanceMeters + prevToCandRoute.summary.distance + candToNextRoute.summary.distance;
-    let totalDistanceEuclidiean: number = group.totalTravelDistanceEuclidiean + prevToCandMemberDist + candToNextMemberDist;
+    // let totalDistanceEuclidiean: number = group.totalTravelDistanceEuclidiean + prevToCandMemberDist + candToNextMemberDist;
 
     const appendPassengerDTO: AppendPassengerDTO = {
         groupId: group.id,
         candidateMember: {
             userId: candidateMember.userId,
-            coordinates: candidateMember.coordinates,
+            location: candidateMember.location,
         },
         previousIndex: previousIndex,
         nextIndex: nextIndex,
@@ -56,9 +56,9 @@ export const buildAppendPassengerDTO = async (
         totalDetour: totalDetour,
         routeOrder: routeOrder,
         totalTravelDistanceMeters: totalDistanceTravel,
-        totalTravelDistanceEuclidiean: totalDistanceEuclidiean,
-        secsPerMeterAverage: newTotalTravelTime / totalDistanceTravel,
-        metersPerEuclideanDistAverage: totalDistanceTravel / totalDistanceEuclidiean,
+        // totalTravelDistanceEuclidiean: totalDistanceEuclidiean,
+        // secsPerMeterAverage: newTotalTravelTime / totalDistanceTravel,
+        // metersPerEuclideanDistAverage: totalDistanceTravel / totalDistanceEuclidiean,
     }
     return appendPassengerDTO;
 }

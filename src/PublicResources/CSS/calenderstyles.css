@@ -1,4 +1,6 @@
-/* BASIC STYLING */
+
+ 
+ BASIC STYLING 
 * {
     margin: 0;
     padding: 0;
@@ -8,21 +10,23 @@
 body {
      min-height: 100vh;
   margin: 0;
-  display: flex;
+  display: center;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+  padding: 20px;
   background:#87ade1
 }
 
 
 .phone-header {
-  width: min(100%, 520px);
+    
+  width: min(100%, 1060px);
   background-color: #fff;
-  padding: 20px 25px;
+  padding: 30px 20px;
   border: 1px solid #ccc;
   border-radius: 15px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  margin: 0 auto;
 }
 .phone-header .title {
   font-size: 30px;
@@ -42,9 +46,9 @@ body {
   padding: 18px 18px 8px;
   margin: 20px 0 0;
 }
-/* NAVIGATION TABS */
+ /* NAVIGATION TABS */
 .nav-tabs {
-    display: flex;
+    display: center;
     background: #f9f9f9;
     border-bottom: 1px solid #ddd;
 }
@@ -241,6 +245,5 @@ button {
     color: #155724;
     margin-bottom: 10px;
 }
-
 
 

@@ -14,7 +14,9 @@ export const signUp = async (req: express.Request, res: express.Response, next: 
         const signUp: boolean = await uservice.doSignup(req)
         if (signUp === true){
             // Needs to call controller for group handling
-            res.status(200).json("Succesfully created user")
+            res.status(200).json({
+            redirect: "/login",
+            });
         } else{
             res.status(401).json("couldn't create user")
         }
@@ -25,16 +27,17 @@ export const signUp = async (req: express.Request, res: express.Response, next: 
 
 // Login i.e. (kinda Read user)
 export const loginHandling = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-   try{
-       const user: Number = await uservice.loginHandler(req)
-        if (user===-1){
+    try {
+        const userId = await uservice.loginHandler(req)
+        if (Number(userId) === -1) {
             res.status(401).json("Couldn't match user credentials");
-        } else if (user===-2) {
+        } else if (userId === -2) {
             throw new Error("Something went wrong");
         } else {
-            throw new Error("idk");
+            console.log("user credentials found");
+            res.status(200).json({ message: "User credentials found", id: userId, redirect: "/calendar" });
         }
-    } catch (err){
+    } catch (err) {
         next(err);
     }
 }
@@ -55,12 +58,12 @@ export const updateUserById = async (req: express.Request, res: express.Response
 
 // Delete a user, by finding them using their id
 export const deleteUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    try{
+    try {
         userModel.deleteUser(Number(req.params['userId']));
         let user: userModel.User = await userModel.readUser(Number(req.params['userId']));
-        if(typeof user === "undefined"){
+        if (typeof user === "undefined") {
             res.status(200).json("Deletion Successful");
-        }else {
+        } else {
             res.status(500).json("Couldn't delete user");
         }
     } catch(err){
@@ -78,6 +81,8 @@ export const deleteUserById = async (req: express.Request, res: express.Response
 // ───────────────────────────────────────────────────────────────
 //  :::::: MISCELLANEOUS ::::::
 // ───────────────────────────────────────────────────────────────
+
+
 
 export const enableGroupSearching = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     res.send("NOT YET IMPLEMENTED");
