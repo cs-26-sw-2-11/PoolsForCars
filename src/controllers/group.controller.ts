@@ -15,7 +15,37 @@ import { updateGroup } from "../models/group.model.js";
 
 export const getGroups = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     console.log("getting groups");
-    const groups: groupService.Group[] = await groupService.getAllUserGroups(Number(req.params['userId']));
+    const groups: groupService.Group[] = await groupService.getAllUserGroupsAsDriver(Number(req.params['userId']));
+    res.status(200).json(groups);
+}
+
+export const getGroupsAsDriver = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+    console.log("getting driver groups");
+
+    const groups: groupService.Group[] = await groupService.getAllUserGroupsAsDriver(Number(req.params['userId']));
+
+    res.status(200).json(groups);
+}
+
+export const getGroupsAsPassenger = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.log("getting groups");
+    const groups: groupService.Group[] = await groupService.getAllUserGroupsAsPassenger(Number(req.params['userId']));
+    res.status(200).json(groups);
+}
+
+export const getGroupsAsDriver = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+    console.log("getting driver groups");
+
+    const groups: groupService.Group[] = await groupService.getAllUserGroupsAsDriver(Number(req.params['userId']));
+
+    res.status(200).json(groups);
+}
+
+export const getGroupsAsPassenger = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.log("getting groups");
+    const groups: groupService.Group[] = await groupService.getAllUserGroupsAsPassenger(Number(req.params['userId']));
     res.status(200).json(groups);
 }
 

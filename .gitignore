@@ -1,10 +1,12 @@
 .env
 dist/*
+node_modules/.vite/vitest/*/results.json
+.VSCodeCounter/*
+.vscode/*
 src/database/users/*
 !src/database/users/.placeholder
 src/database/groups/*
 !src/database/groups/.placeholder
-node_modules/
-.vscode/
+node_modules/*
 src/.DS_Store
 src/PublicResources/.DS_Store

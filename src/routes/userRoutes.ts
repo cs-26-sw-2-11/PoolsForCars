@@ -5,7 +5,7 @@ export const userRoutes = express.Router();
 import * as userController from '../controllers/user.controller.js';
 
 userRoutes.route("")
-    .post(userController.createUser);
+    .post(userController.signUp);
 
 userRoutes.get('/:userId', userController.getUserById);
 userRoutes.get('/all', userController.getUsers)
