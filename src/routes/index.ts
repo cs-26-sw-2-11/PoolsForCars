@@ -1,4 +1,4 @@
-//=== IMPORTS ===///
+// === IMPORTS === //
 import express from "express";
 import * as path from 'path';
 import loginRoutes from "./login_router.js";
@@ -37,6 +37,12 @@ router.use('/dev/users', devUserRoutes);
 router.get("/", (req, res) => {
     res.sendFile(filePath + "/Login.html");
 })
+
+export const errorHandler: express.ErrorRequestHandler = (err: unknown, req: express.Request, res, next: express.NextFunction) => {
+    console.log("error:", { error: err});
+    res.status(500).json({ message: "Something went wrong!"});
+    //res.render('error', { error: err });
+}
 
 
 
