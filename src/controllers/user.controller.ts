@@ -33,9 +33,6 @@ export const loginHandling = async (req: express.Request, res: express.Response,
             throw new Error("Something went wrong");
         } else {
             throw new Error("idk");
-            res.cookie('user',user,{signed: true, maxAge: 1000*60*60, httpOnly: true});
-            res.status(200).json("Found user");
-            res.send();
         }
     } catch (err){
         next(err);
