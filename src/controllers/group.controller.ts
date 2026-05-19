@@ -34,6 +34,36 @@ export const getGroupsAsPassenger = async (req: express.Request, res: express.Re
     res.status(200).json(groups);
 }
 
+export const getGroupsAsDriver = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+    console.log("getting driver groups");
+
+    const groups: groupService.Group[] = await groupService.getAllUserGroupsAsDriver(Number(req.params['userId']));
+
+    res.status(200).json(groups);
+}
+
+export const getGroupsAsPassenger = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.log("getting groups");
+    const groups: groupService.Group[] = await groupService.getAllUserGroupsAsPassenger(Number(req.params['userId']));
+    res.status(200).json(groups);
+}
+
+export const getGroupsAsDriver = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
+    console.log("getting driver groups");
+
+    const groups: groupService.Group[] = await groupService.getAllUserGroupsAsDriver(Number(req.params['userId']));
+
+    res.status(200).json(groups);
+}
+
+export const getGroupsAsPassenger = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.log("getting groups");
+    const groups: groupService.Group[] = await groupService.getAllUserGroupsAsPassenger(Number(req.params['userId']));
+    res.status(200).json(groups);
+}
+
 export const searchForGroups = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const user: userModel.User = await userModel.readUser(Number(req.params['userId']));
     const compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex = await findEligbleDrivers(user, await userModel.readUsers());

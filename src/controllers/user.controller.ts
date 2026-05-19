@@ -11,20 +11,11 @@ import * as calendarModel from '../models/calendar.model.js';
 // Signup. i.e. (Create User)
 export const signUp = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try{
-        const success: uservice.signUpResult = await uservice.doSignup(
-        req.body.firstName, 
-        req.body.lastName,
-        req.body.phoneNumber,
-        req.body.preferences,
-        )
-        if (success === "User_Created"){
-            // Needs to call controller for group handling
-            res.status(200).json({
-            redirect: "/login",
-            });
-        } else if (success === "Phone_Number_Taken"){
-            res.status(401).json("Phone number is taken");
-        }
+        await uservice.doSignup(req)
+        // Needs to call controller for group handling
+        res.status(200).json({
+        redirect: "/login",
+        });
     } catch(err){
         next(err);
     }
@@ -33,15 +24,8 @@ export const signUp = async (req: express.Request, res: express.Response, next: 
 // Update a specific user, by finding them using their id
 export const updateUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try{
-        //const { firstName, lastName, phoneNumber, lookingForGroups } = req.body
-        const success: boolean = await uservice.updateUserInfoById(
-            req.body.firstName, 
-            req.body.lastName,
-            req.body.phoneNumber,
-            req.body.lookingForGroups,
-            req.params['userId'] as string
-        );
-        if (success === true){
+        const success: Number = await uservice.updateUserInfoById(req);
+        if (success === 1){
             res.status(200).json("User updated successfully");
         } else {
             res.status(401).json("Something went wrong")

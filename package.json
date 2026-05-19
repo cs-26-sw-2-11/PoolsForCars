@@ -41,9 +41,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-validator": "^7.3.2",
-    "node": "^22.22.3",
-    "ors-client": "^1.0.6",
-    "ts-node": "^10.9.2",
-    "Typescript": "npm:typescript@^6.0.3"
+    "memfs": "^4.57.2",
+    "ors-client": "^1.0.6"
   }
 }

@@ -1,13 +1,11 @@
 import express, { type NextFunction } from "express";
 import * as userModel from '../../models/user.model.js';
-import * as userHelper from './user.helper.service.js'
+import * as huService from './user.helper.service.js'
 import * as groupService from "../groups/group.service.js";
 
 export type LoginResult =
   | { success: true; userId: number }
   | { success: false; reason: "invalid_credentials" }
-
-export type signUpResult = "User_Created" | "Phone_Number_Taken";
 
 // Handles logins
 export const loginService = async (lastName: string, phoneNumber: string): Promise<LoginResult> => {
@@ -29,25 +27,12 @@ export const loginService = async (lastName: string, phoneNumber: string): Promi
 };
 
 // The actual called function responsible for the signup
-export const doSignup = async (
-    firstName: string,
-    lastName: string,
-    phoneNumber: string,
-    preferences: userHelper.userPreferences
-): Promise<signUpResult> => {
-
+export const doSignup = async (req: express.Request) => {
     // Unpacks all the information send through the form found on the signup page.
-    const user: userModel.User = await userHelper.unpackUser(
-        firstName,
-        lastName,
-        phoneNumber,
-        preferences
-    );
-
-    const exists: boolean = await userHelper.doUserExist(user);
-
+    const user: userModel.User = await huService.unpackUser(req);
+    const exists: boolean = await huService.doUserExist(user);
     if(exists === false) {
-        const newUser: userModel.User = await userHelper.createUser(user);
+        const newUser: userModel.User = await huService.createUser(user);
 
         //console.log("finished geocoding");
 
@@ -56,40 +41,25 @@ export const doSignup = async (
         //console.log("finished making groups");
 
         userModel.updateUser(newUser.id, newUser);
-
-        return "User_Created"
-        
-    } else if (exists === true) {
-
-        return "Phone_Number_Taken";
-
     } else {
-
-        throw new Error("Something went wrong here")
-    
+        throw new Error("Something went wrong")
     }
     // Needs to do something to let the user know their profile has been created.
-    // done, it redirects
 }
 
-export const updateUserInfoById = async (
-    firstName: string, 
-    lastName: string,
-    phoneNumber: string,
-    lookingForGroups: boolean,
-    userId: string
-    ) => {
-        let user: userModel.User = await userModel.readUser(Number(userId));
-        const oldUser: userModel.User = { ...user };
-        if(!firstName || !lastName || !phoneNumber || !lookingForGroups) throw new Error("Couldn't get data")
-        user.firstName = firstName;
-        user.lastName = lastName;
-        user.phoneNumber = phoneNumber;
-        user.lookingForGroups = lookingForGroups;
-        if(user.firstName === oldUser.firstName && user.lastName === oldUser.lastName && user.phoneNumber === oldUser.phoneNumber && user.lookingForGroups === oldUser.lookingForGroups){
-            return false;
-        }else {
-        userModel.updateUser(Number(userId), user);
-        return true;
+export const updateUserInfoById = async (req: express.Request) => {
+    let user: userModel.User = await userModel.readUser(Number(req.params['userId']));
+    const oldUser: userModel.User = { ...user };
+    const { firstName, lastName, phoneNumber, lookingForGroups } = req.body;
+    if(!firstName || !lastName || !phoneNumber || !lookingForGroups) throw new Error("Couldn't get data")
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.phoneNumber = phoneNumber;
+    user.lookingForGroups = lookingForGroups;
+    if(user.firstName === oldUser.firstName && user.lastName === oldUser.lastName && user.phoneNumber === oldUser.phoneNumber && user.lookingForGroups === oldUser.lookingForGroups){
+        return -1;
+    }else {
+    userModel.updateUser(Number(req.params['userId']), user);
+    return 1;
     };
 }
