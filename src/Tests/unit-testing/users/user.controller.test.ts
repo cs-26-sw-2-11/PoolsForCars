@@ -1,13 +1,27 @@
-import { describe, expect, vi, beforeEach,test,afterEach } from 'vitest'
-import * as uservices from "../../services/user.service"
-import * as controller from "../../controllers/user.controller"
+import { describe, expect, vi, beforeEach,test,afterEach,it } from 'vitest'
+import * as uservices from "../../../services/users/user.service.js"
+import * as controller from "../../../controllers/user.controller.js"
 import type { Request, Response, NextFunction } from 'express'
-import * as userModel from '../../models/user.model.js';
+import * as userModel from '../../../models/user.model.js';
 
 
 let req: Partial<Request>;
 let res: Partial<Response>;
 let next: NextFunction;
+
+// Mock all external dependencies
+vi.mock("../../../services/users/user.service.js", () => ({
+    loginService: vi.fn(),
+    doSignup: vi.fn()
+}))
+vi.mock("../../../services/groups/group.service.js", () => ({
+  makeNewGroups: vi.fn(),
+}))
+vi.mock("../../../models/user.model.js", () => ({
+  updateUser: vi.fn(),
+  readUsersJSON: vi.fn(),
+  readUser: vi.fn(),
+}))
 
 // Sets the variables to be a specific value before each test.
 beforeEach( () => {
@@ -36,53 +50,52 @@ afterEach(() => {
 
 // Testing the 3 possible states for the login controller:
 describe("Login controller", () => {
-    test.each([
+    test.each<{ label: string; mockResolve: uservices.LoginResult; expected: number }>([
         {
-            label: "Test response for correct login",
-            mockResolve: 0,
+            label: "correct login",
+            mockResolve: { success: true as const, userId: 1 },
             expected: 200
         }, {
-            label: "Response to login with credentials not in database",
-            mockResolve: -1,
+            label: "login with credentials not in db",
+            mockResolve: { success: false, reason: "invalid_credentials" },
             expected: 401
         }
     ])
     ("returns $expected for $label", async ({ mockResolve, expected }) => {
-        vi.spyOn(uservices, 'loginHandler').mockResolvedValue(mockResolve as number);
+        vi.mocked(uservices.loginService).mockResolvedValue(mockResolve);
         // await uservices.loginHandler(req as Request);
-        await controller.loginHandling(req as Request, res as Response, next as NextFunction)
+        await controller.loginHandler(req as Request, res as Response, next as NextFunction)
         expect(res.status).toHaveBeenCalledWith(expected);
     })
 
     // If it throws an error
-    test('tests response for incorrect login', async () => {
-        vi.spyOn(uservices, 'loginHandler').mockRejectedValue(new Error("db error"));
-        await controller.loginHandling(req as Request, res as Response, next as NextFunction);
+    test('test for error', async () => {
+        vi.mocked(uservices.loginService).mockRejectedValue(new Error("db error"));
+        await controller.loginHandler(req as Request, res as Response, next as NextFunction);
         expect(next).toHaveBeenCalledWith(expect.any(Error));
     })
 });
 
 describe("Signup controller", () => {
-    test.each([
+    it.each([
         {
-            label: "Valid data",
+            label: "successful signup",
             ableToCreateUser: true,
             Response: 200
         },{
-            label: "Invalid data / User already exists",
+            label: "duplicate user / db error",
             ableToCreateUser: false,
             Response: 401
         }
     ])
-    ("returns $Response for $label", async ({ ableToCreateUser, Response}) => {
-        vi.spyOn(uservices, "doSignup").mockResolvedValue(ableToCreateUser as boolean);
-        await controller.signUp(req as Request, res as Response, next as NextFunction)
-        expect(res.status).toHaveBeenCalledWith(Response)
-    })
-    test("returns reponse for db signup error", async () => {
-        vi.spyOn(uservices, "doSignup").mockRejectedValue(new Error("db error"));
+    ("returns $Response for $label", async ({ Response, ableToCreateUser }) => {
+        if (!ableToCreateUser) {
+        vi.mocked(uservices.doSignup).mockRejectedValue(new Error("db error"));
         await controller.signUp(req as Request, res as Response, next as NextFunction)
         expect(next).toHaveBeenCalledWith(expect.any(Error));
+        }
+        await controller.signUp(req as Request, res as Response, next as NextFunction)
+        expect(res.status).toHaveBeenCalledWith(Response)
     })
 });
 

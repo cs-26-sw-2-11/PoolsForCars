@@ -1,6 +1,6 @@
 import express from "express";
 import * as userModel from '../models/user.model.js';
-import * as uservice from '../services/user.service.js'
+import * as uservice from '../services/users/user.service.js'
 import * as calendarModel from '../models/calendar.model.js';
 
 
@@ -11,33 +11,12 @@ import * as calendarModel from '../models/calendar.model.js';
 // Signup. i.e. (Create User)
 export const signUp = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     try{
-        const signUp: boolean = await uservice.doSignup(req)
-        if (signUp === true){
-            // Needs to call controller for group handling
-            res.status(200).json({
-            redirect: "/login",
-            });
-        } else{
-            res.status(401).json("couldn't create user")
-        }
+        await uservice.doSignup(req)
+        // Needs to call controller for group handling
+        res.status(200).json({
+        redirect: "/login",
+        });
     } catch(err){
-        next(err);
-    }
-}
-
-// Login i.e. (kinda Read user)
-export const loginHandling = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    try {
-        const userId = await uservice.loginHandler(req)
-        if (Number(userId) === -1) {
-            res.status(401).json("Couldn't match user credentials");
-        } else if (userId === -2) {
-            throw new Error("Something went wrong");
-        } else {
-            console.log("user credentials found");
-            res.status(200).json({ message: "User credentials found", id: userId, redirect: "/calendar" });
-        }
-    } catch (err) {
         next(err);
     }
 }
@@ -72,6 +51,17 @@ export const deleteUserById = async (req: express.Request, res: express.Response
     }
 }
 
+// Gets all user from the database
+export const getUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const users: userModel.usersJSON = await userModel.readUsersJSON();
+    res.status(200).json(users);
+}
+
+// Get a specific user, using their id
+export const getUserById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    const user: userModel.User = await userModel.readUser(Number(req.params['userId']));
+    res.status(200).json(user);
+}
 
 
 // ───────────────────────────────────────────────────────────────
@@ -82,6 +72,22 @@ export const deleteUserById = async (req: express.Request, res: express.Response
 //  :::::: MISCELLANEOUS ::::::
 // ───────────────────────────────────────────────────────────────
 
+
+// Login i.e. (kinda Read user)
+export const loginHandler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    try {
+
+        const result = await uservice.loginService(req.body.lastName, req.body.phoneNumber);
+        if (!result.success) {
+            res.status(401).json({ message: "Couldn't match user credentials" });
+        } else {
+            //console.log("user credentials found");
+            res.status(200).json({ message: "User credentials found", id: result.userId, redirect: "/calendar" });
+        }
+    } catch (err) {
+        next(err);
+    }
+}
 
 
 export const enableGroupSearching = async (req: express.Request, res: express.Response, next: express.NextFunction) => {

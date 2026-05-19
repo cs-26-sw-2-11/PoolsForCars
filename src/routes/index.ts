@@ -41,7 +41,7 @@ router.get("/", (req, res) => {
 
 export const errorHandler: express.ErrorRequestHandler = (err: unknown, req: express.Request, res, next: express.NextFunction) => {
     console.log("error:", { error: err});
-    res.status(500);
+    res.status(500).json({ message: "Something went wrong!"});
     //res.render('error', { error: err });
 }
 

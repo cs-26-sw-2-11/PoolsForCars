@@ -2,7 +2,7 @@
 import express from "express";
 import * as validate from "../Validators/formValidators.js";
 import { filePath } from "./index.js"
-import { loginHandling } from "../controllers/user.controller.js";
+import { loginHandler } from "../controllers/user.controller.js";
 
 
 
@@ -22,7 +22,7 @@ router.route("")
             // Collects the objects from the HTTP body
         const handler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
             try {
-                await loginHandling(req, res, next);
+                await loginHandler(req, res, next);
             } catch (err) {
                 return next(err);
             }

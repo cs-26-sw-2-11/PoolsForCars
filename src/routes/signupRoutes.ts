@@ -1,7 +1,7 @@
 //=== IMPORTS ===///
 import express from "express";
 import { filePath } from "./index.js"
-import * as services from "../services/user.service.js"
+import * as services from "../services/users/user.service.js"
 import * as controller from "../controllers/user.controller.js"
 import * as validate from "../Validators/formValidators.js";
 
@@ -20,9 +20,6 @@ router.route("")
         // calls the service responsible for the signup, should probably be moved to a controller function instead of a body function.
         //controller.createUser(req, res, next);
         controller.signUp(req, res, next);
-        res.status(200).json({
-            redirect: "/login",
-        });
     });
 
 

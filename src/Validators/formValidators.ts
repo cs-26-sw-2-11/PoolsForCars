@@ -2,8 +2,19 @@ import express from "express"
 import { body, validationResult } from "express-validator"
 
 export const login = [
-    body("lastName").trim().notEmpty().isLength({ min: 1, max: 20 }).matches(/^[\p{L}]+(?:[ '-][\p{L}]+)*$/u).withMessage("Invalid Last name"),
-    body("phoneNumber").trim().notEmpty().customSanitizer(value => value.replace(/\s/g, "")).matches(/^\d{8}$/).withMessage("Phone must be 8 digits"),
+    body("lastName")
+    .trim()
+    .notEmpty().withMessage("Last name is required").bail()
+    .isLength({ max: 20 }).withMessage("Last name too long").bail()
+    .matches(/^[\p{L}]+(?:[ '-][\p{L}]+)*$/u).withMessage("Invalid Last name"),
+
+
+    body("phoneNumber")
+    .trim()
+    .notEmpty().withMessage("Phone number is required").bail()
+    .isLength({ max: 8 }).withMessage("Must be a danish phone number without +45").bail()
+    .customSanitizer(value => value.replace(/\s/g, ""))
+    .matches(/^\d{8}$/).withMessage("Phone must be 8 digits"),
 ];
 
 /*
@@ -21,8 +32,15 @@ Non-latin scripts (Arabic, Chinese, Cyrillic, Greek, etc.)
 - — a hyphen (e.g. "Smith-Jones")
 */
 export const signup = [
-    body("firstName").trim().notEmpty().isLength({ min: 1, max: 20 }).matches(/^[\p{L}]+(?:[ '-][\p{L}]+)*$/u).withMessage("Invalid First name"),
-    body("preferences").notEmpty().isObject().withMessage("Wrong format?"),
+    body("firstName")
+    .trim()
+    .notEmpty().withMessage("First name is required").bail()
+    .isLength({ max: 20 }).withMessage(" First name is too long").bail()
+    .matches(/^[\p{L}]+(?:[ '-][\p{L}]+)*$/u).withMessage("Invalid First name").bail(),
+    
+    body("preferences")
+    .notEmpty().bail()
+    .isObject().withMessage("Wrong format?"),
 ]
 
 // Function responsible for validating inputs. i.e. if if the body("lastName") the default route doesn't match 

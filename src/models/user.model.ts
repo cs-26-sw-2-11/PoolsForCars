@@ -201,6 +201,8 @@ export const readUsers = async (): Promise<Users> => {
 };
 
 export const readUsersJSON = async (): Promise<usersJSON> => {
+    if (USERS.size === 0) throw new Error("no users found");
+
     const users: usersJSON = {};
 
     for (const key of USERS.keys()) {
