@@ -12,7 +12,6 @@ import groupRoutes from "./groupRoutes.js";
 import notificationRoutes from "./notificationRoutes.js";
 
 
-
 //=====VARIABLES=====//
 
 // Needed for express to function, black box?

@@ -63,6 +63,8 @@ export const getUserById = async (req: express.Request, res: express.Response, n
     res.status(200).json(user);
 }
 
+// export const updateUsers = async (req: express.Request, res: express.Response, next: express.NextFunction) => {}
+
 
 // ───────────────────────────────────────────────────────────────
 

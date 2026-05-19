@@ -3,7 +3,6 @@ import { clearGroups, initGroups } from "./models/group.model.js";
 import * as server from "./server.js";
 
 
-// await clearNotifications();
 // await clearUsers();
 // await clearGroups();
 await initUsers();
