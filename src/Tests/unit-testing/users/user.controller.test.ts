@@ -93,9 +93,10 @@ describe("Signup controller", () => {
         vi.mocked(uservices.doSignup).mockRejectedValue(new Error("db error"));
         await controller.signUp(req as Request, res as Response, next as NextFunction)
         expect(next).toHaveBeenCalledWith(expect.any(Error));
-        }
+        } else {
         await controller.signUp(req as Request, res as Response, next as NextFunction)
         expect(res.status).toHaveBeenCalledWith(Response)
+        }
     })
 });
 
