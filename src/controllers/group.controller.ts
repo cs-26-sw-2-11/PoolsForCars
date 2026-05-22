@@ -36,7 +36,7 @@ export const getGroupsAsPassenger = async (req: express.Request, res: express.Re
 
 export const searchForGroups = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const user: userModel.User = await userModel.readUser(Number(req.params['userId']));
-    const compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex = await findEligbleDrivers(user);
+    const compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex = await findEligbleDrivers(user, await userModel.readUsers());
 
     console.log("\n");
     console.log("\n");
