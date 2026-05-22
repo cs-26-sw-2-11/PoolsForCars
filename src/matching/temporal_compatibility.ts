@@ -10,9 +10,9 @@ import { convertToDayname, setCompatibility, sortCompatibilityAccumulator, type 
 import { type User, type Users, readUsers } from '../models/user.model.js';
 
 
-const tolerance: number = 30;
+const TOLERANCE: number = 30;
 
-const calcLinearDecay = (toa1: string, toa2: string) => {
+export const calcLinearDecay = (toa1: string, toa2: string, tolerance: number) => {
     const toa1Array: number[] = toa1.split(":").map(string => Number(string));
     const toa2Array: number[] = toa2.split(":").map(string => Number(string));
 
@@ -20,7 +20,9 @@ const calcLinearDecay = (toa1: string, toa2: string) => {
         ((toa1Array[0] ?? 0) * 60 + (toa1Array[1] ?? 0)) -
         ((toa2Array[0] ?? 0) * 60 + (toa2Array[1] ?? 0));
 
-    return Math.max(0, Math.min(1, 1 - toaDiff / tolerance));
+    if (toaDiff < 0) return 0;
+
+    return Math.max(0, 1 - toaDiff / (tolerance ? tolerance : 1));
 }
 
 export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilityIndex> => {
@@ -80,8 +82,8 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
 
 
                 const compatibility: number = userDay.carAvailability
-                    ? calcLinearDecay(subUserDay.timeOfArrival, userDay.timeOfArrival)
-                    : calcLinearDecay(userDay.timeOfArrival, subUserDay.timeOfArrival);
+                    ? calcLinearDecay(subUserDay.timeOfArrival, userDay.timeOfArrival, TOLERANCE)
+                    : calcLinearDecay(userDay.timeOfArrival, subUserDay.timeOfArrival, TOLERANCE);
                 if (compatibility !== 0) {
                     setCompatibility(
                         compatibilityMap,
