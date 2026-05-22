@@ -22,16 +22,15 @@ export const calcLinearDecay = (toa1: string, toa2: string, tolerance: number) =
 
     if (toaDiff < 0) return 0;
 
+
     return Math.max(0, 1 - toaDiff / (tolerance ? tolerance : 1));
 }
 
-export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilityIndex> => {
+export const findEligbleDrivers = async (user: User, users: Users): Promise<WeeklyCompatibilityIndex> => {
     let compatibilityMap: WeeklyCompatibilityIndex = {
         weeks: {},
         accumulator: {},
     };
-
-    const users: Users = await readUsers();
 
     const todaysDate: Date = await calenderModel.getTodaysDate();
     const todaysWeek: number = await calenderModel.getTodaysWeek();
@@ -48,7 +47,7 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
             }
 
             for (const day of Object.entries(week[1].days)) {
-                if (day[1].date.getDay() < todaysDate.getDay()) continue; // Skip current iteration if the day is in the past
+                if (Number(week[0]) === todaysWeek && day[1].date.getDay() < todaysDate.getDay()) continue; // Skip current iteration if the day is in the past
 
                 const userDay: CalendarDay = day[1];
                 const subUserDay: CalendarDay = sub_user.calendar[Number(week[0])]?.days[day[0]] as CalendarDay;
@@ -74,7 +73,6 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
                 }
 
                 // If user is already a passenger in the sub_users group on this day
-                console.log(subUserDay.groups, userDay.groups);
                 if (subUserDay.groups.some(num => num === null ? false : userDay.groups.includes(num))) {
                     console.log("no bueno")
                     continue;
@@ -84,7 +82,8 @@ export const findEligbleDrivers = async (user: User): Promise<WeeklyCompatibilit
                 const compatibility: number = userDay.carAvailability
                     ? calcLinearDecay(subUserDay.timeOfArrival, userDay.timeOfArrival, TOLERANCE)
                     : calcLinearDecay(userDay.timeOfArrival, subUserDay.timeOfArrival, TOLERANCE);
-                if (compatibility !== 0) {
+
+                if (compatibility > 0) {
                     setCompatibility(
                         compatibilityMap,
                         Number(week[0]),

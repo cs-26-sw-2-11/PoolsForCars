@@ -607,7 +607,7 @@ export const refreshPendingMembers = async (
             = await userModel.readUser(Number(memberKey));
 
         const memberCompatibilityMap: compatibilityModel.WeeklyCompatibilityIndex
-            = await findEligbleDrivers(user);
+            = await findEligbleDrivers(user, await userModel.readUsers());
 
         await searchForGroups(
             user,

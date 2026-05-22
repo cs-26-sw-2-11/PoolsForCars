@@ -67,8 +67,10 @@ export const weekToDate = async (weekNumber: number): Promise<Date> => {
 
 export const getFirstDayOfWeek = async (date: Date): Promise<Date> => {
     const dayNum: number = (date.getDay() + 6) % 7;
+    // console.log(dayNum);
     const firstDay: Date = new Date(date);
     firstDay.setDate(date.getDate() - dayNum);
+    // console.log(firstDay);
     return firstDay;
 }
 
