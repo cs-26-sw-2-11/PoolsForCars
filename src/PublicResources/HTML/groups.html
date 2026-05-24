@@ -8,90 +8,90 @@
 </head>
 
 <body class="mode-driver">
-  <header class="top-bar">
-    <h1 id="pageTitle">My Groups</h1>
 
-    <div class="top-icons">
-      <!-- adding icons maybe? -->
-    </div>
-        <div class="container">
-        <nav>
-            <ul class="nav-links">
-                <li><a href="#">Home</a></li>
-                <li><a href="/groups">Groups</a></li>
-                <li><a href="/calendar">Calendar</a></li>
-                <li><a href="/profile">Profile</a></li>
+  <div class="page-wrapper">
+  
+    <div class="main-card">
+      <header class="top-nav">
+      <div class="nav-inner">
+
+        <h1 id="pageTitle">My Groups - Driver</h1>
+
+        <ul class="nav-links">
+          <li><a href="#">Home</a></li>
+          <li><a href="/groups">Groups</a></li>
+          <li><a href="/calendar">Calendar</a></li>
+          <li><a href="/profile">Profile</a></li>
+        </ul>
+
+      </div>
+      </header>
+          <div class="app-layout">
+
+          <aside class="sidebar">
+            <div class="toggle-button">
+              <i class="fa-solid fa-car" style="color: #2196F3;"></i>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+              </label>
+              <i class="fa-solid fa-user" style="color: #2196F3;"></i>
+            </div>
+
+            <div class="week-navigation">
+              <button id="prevWeek">&larr;</button>
+              <span id="weekLabel">Week 1</span>
+              <button id="nextWeek">&rarr;</button>
+            </div>
+
+            <ul class="day-list">
+              <li class="active">Monday</li>
+              <li>Tuesday</li>
+              <li>Wednesday</li>
+              <li>Thursday</li>
+              <li>Friday</li>
             </ul>
-        </nav>
+          </aside>
+          <main class="main-content">
+            <div class="main-content-inner">
+              <h2 class="group-title">ALG med Gutterne</h2>
+              <section class="schedule">
+                <div class="schedule-row">
+                  <span class="time">07:00</span>
+                  <span class="address">Vestergade 12</span>
+                </div>
+                <div class="schedule-row">
+                  <span class="time">07:20</span>
+                  <span class="address">Kastetvej 21</span>
+                </div>
+                <div class="schedule-row">
+                  <span class="time">07:35</span>
+                  <span class="address">Pilestræde 2</span>
+                </div>
+                <div class="schedule-row">
+                  <span class="time">07:50</span>
+                  <span class="address">Rantzausgade 65</span>
+                </div>
+                <div class="schedule-row">
+                  <span class="time">08:05</span>
+                  <span class="address">Frederik Bajers Vej 5</span>
+                </div>
+              </section>
+            </div>
+            <!-- <section class="members"> -->
+            <!--   <h3>4 / 4 Members</h3> -->
+            <!--   <ul> -->
+            <!--     <li>Todd Bonzales</li> -->
+            <!--     <li>Onson Sweemey</li> -->
+            <!--     <li>Bobson Dugnutt</li> -->
+            <!--     <li>Willie Dustice</li> -->
+            <!--   </ul> -->
+            <!-- </section> -->
+          </main>
+          </div>
     </div>
-  </header>
-
-  <div class="app-layout">
-
-    <aside class="sidebar">
-      <div class="toggle-button">
-        <i class="fa-solid fa-car" style="color: #2196F3;"></i>
-        <label class="switch">
-          <input type="checkbox">
-          <span class="slider round"></span>
-        </label>
-        <i class="fa-solid fa-user" style="color: #2196F3;"></i>
-      </div>
-
-      <div class="week-navigation">
-        <button id="prevWeek">&larr;</button>
-        <span id="weekLabel">Week 1</span>
-        <button id="nextWeek">&rarr;</button>
-      </div>
-
-      <ul class="day-list">
-        <li class="active">Monday</li>
-        <li>Tuesday</li>
-        <li>Wednesday</li>
-        <li>Thursday</li>
-        <li>Friday</li>
-      </ul>
-    </aside>
-
-    <main class="main-content">
-      <h2 class="group-title">ALG med Gutterne</h2>
-      <section class="schedule">
-        <div class="schedule-row">
-          <span class="time">07:00</span>
-          <span class="address">Vestergade 12</span>
-        </div>
-        <div class="schedule-row">
-          <span class="time">07:20</span>
-          <span class="address">Kastetvej 21</span>
-        </div>
-        <div class="schedule-row">
-          <span class="time">07:35</span>
-          <span class="address">Pilestræde 2</span>
-        </div>
-        <div class="schedule-row">
-          <span class="time">07:50</span>
-          <span class="address">Rantzausgade 65</span>
-        </div>
-        <div class="schedule-row">
-          <span class="time">08:05</span>
-          <span class="address">Frederik Bajers Vej 5</span>
-        </div>
-      </section>
-
-      <!-- <section class="members"> -->
-      <!--   <h3>4 / 4 Members</h3> -->
-      <!--   <ul> -->
-      <!--     <li>Todd Bonzales</li> -->
-      <!--     <li>Onson Sweemey</li> -->
-      <!--     <li>Bobson Dugnutt</li> -->
-      <!--     <li>Willie Dustice</li> -->
-      <!--   </ul> -->
-      <!-- </section> -->
-    </main>
-
   </div>
 </body>
-
 <script src="../JS/groups.js"></script>
 <script src="https://kit.fontawesome.com/0c5079a81d.js" crossorigin="anonymous"></script>
 
