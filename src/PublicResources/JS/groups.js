@@ -11,11 +11,12 @@ const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 let currentDay = days[(currentDate.getDay() + 6) % 7];
 let currentWeek = getDateWeek(currentDate);
 let currentMode = "driver";
-let activeGroup = {};
+let activeGroup = null;
 
 const weekLabel = document.getElementById("weekLabel");
 const prevBtn = document.getElementById("prevWeek");
 const nextBtn = document.getElementById("nextWeek");
+const groupBtn = document.getElementById("group-button")
 
 function renderWeek() {
     weekLabel.textContent = `Week ${currentWeek}`;
@@ -116,11 +117,16 @@ function renderGroups() {
 
     if (!activeGroup) {
         groupTitleElement.textContent = "No group available";
+        
+        groupBtn.style.display = "none";
+
         return;
     }
 
     // groupTitleElement.textContent = activeGroup.name;
     groupTitleElement.textContent = visibleGroup.id;
+
+    groupBtn.style.display = "block";
 }
 
 // Things to do with modes
@@ -144,6 +150,15 @@ function setMode(mode) {
     } else {
         title.textContent = "My Groups - Passenger";
     }
+
+    /// Changing of group button text
+
+    if (mode === "driver") {
+        groupBtn.textContent = "Delete Group";
+    } else {
+        groupBtn.textContent = "Leave Group";
+    }
+
     renderGroups();
     renderSchedule();
 }
@@ -170,9 +185,6 @@ if (modeToggle.checked) {
 } else {
     initialMode = "driver";
 }
-
-
-
 
 
 // Grab all weekday items
@@ -248,6 +260,81 @@ dayItems.forEach(day => {
         renderSchedule();
 
     });
+});
+
+// Delete+Leave Group button
+
+groupBtn.addEventListener("click", async () => {
+    
+    if (!activeGroup || !activeGroup.id) {
+        alert("No active group selected");
+        return;
+    }
+
+    // Final check for user to confirm whether to delete/leave group or not
+    let messageConfirm;
+
+    if (currentMode === "driver") {
+        messageConfirm = "Are you sure you want to delete this group?";
+    } else {
+        messageConfirm = "Are you sure you want to leave this group?";
+    }
+
+    const confirmed = confirm(messageConfirm);
+
+    if (!confirmed) {
+        return;
+    }
+
+    // Big ol' block of error handling, i.e. if any of these actions within fail,
+    // then it goes straight to catch and doesn't kill the entire program
+    try {
+
+        let response;
+
+        // If the user is currently a driver, the request 
+        // that gets sent to backend is a DELETE request
+        if(currentMode === "driver") {
+            response = await fetch(`/groups/${activeGroup.id}`, {
+                method: "DELETE"
+            });
+
+        } else if (currentMode === "passenger") {
+        // If the user is currently a passenger, the request 
+        // that gets sent to backend is a POST request
+            response = await fetch(`/groups/${activeGroup.id}/leave/${userId}`, {
+                method: "POST"
+            });
+        }
+
+        // Checks for a special kind of error, i.e. if the server is not responding
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+
+        // This is the part you get to if you succeed!
+        let messageAlert;
+
+        if (currentMode === "driver") {
+            messageAlert = "Group deleted";
+        } else {
+            messageAlert = "You left the group";
+        }
+
+        alert(messageAlert)
+
+        // Refreshes the data after actions have been taken
+        await getData();
+        
+        // Re-renders the UI, so changes actually become visible
+        renderGroups();
+        renderSchedule();
+    
+    // The catch-all for any error that might occur within this block
+    } catch (error) {
+        console.error(error);
+        alert("Action failed");
+    }
 });
 
 // Initial render

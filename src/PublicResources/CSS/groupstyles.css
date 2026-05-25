@@ -13,15 +13,12 @@
   --radius-md: 10px;
   --radius-lg: 12px;
 
-
   --blue-main: #87ade1;
   --blue-hover: #799ccb;
   --bg-page: #87ade1;
-  --bg-card: #ffffff;
   --border: #d8dee9;
   --text-main: #1f2937;
   --text-muted: #6b7280;
-
 }
 
 body {
@@ -77,8 +74,8 @@ h2 {
 .switch {
   position: relative;
   display: inline-block;
-  width: 30px;
-  height: 16px;
+  width: var(--space-xl);
+  height: var(--space-md);
 }
 
 .switch input { 
@@ -125,7 +122,7 @@ input:checked + .slider:before {
   transform: translateX(13px);
 }
 
-/* Makes sliders round, duh */
+/* Makes sliders round */
 .slider.round {
   border-radius: 18px;
 }
@@ -184,7 +181,7 @@ button:hover {
   flex-direction: column;
   width: 220px;
   border-right: 1px solid var(--border);
-  padding: 12px;
+  padding: var(--space-sm);
   background: #f1f5f9;
   border-radius: var(--radius-md);
   flex-shrink: 0;
@@ -240,7 +237,7 @@ button:hover {
 }
 
 .schedule {
-  margin-top: 24px;
+  margin-top: var(--space-lg);
 }
 .schedule-row {
   display: flex;
@@ -308,7 +305,7 @@ button:hover {
   justify-content: space-between;
   align-items: center;
   padding: var(--space-sm) var(--space-xl);
-  gap: 24px;
+  gap: var(--space-lg);
 }
 
 .logo {
@@ -355,7 +352,7 @@ button:hover {
   color: var(--text-main);
   text-decoration: none;
 
-  padding: 8px 12px;
+  padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);
 
   font-weight: 500;
@@ -369,10 +366,7 @@ button:hover {
 }
 
 
-.content {
-    padding: 50px 0;
-    text-align: center;
-}
+
 
 /* Stuff to do with smaller screen compatability */
 
