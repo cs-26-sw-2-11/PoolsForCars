@@ -14,7 +14,7 @@ const centerLocation: Location = {
 }
 
 // Data transfer object, mirroring our user interface
-type userPreferences = Record<string, {
+export type userPreferences = Record<string, {
     day: string,
     carAvailability: boolean,
     seatsOffered: number,
@@ -62,8 +62,12 @@ export const createUser = async (user: userModel.User): Promise<userModel.User> 
 }
 
 // Unpack and reformat preferences
-export const unpackUser = async (req: express.Request) => {
-    const { firstName, lastName, phoneNumber, preferences } = req.body
+export const unpackUser = async (
+    firstName: string,
+    lastName: string,
+    phoneNumber: string,
+    preferences: userPreferences
+) => {
 
     // Initiates the week
     let schedule: Week = {
