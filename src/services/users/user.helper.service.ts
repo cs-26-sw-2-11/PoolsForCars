@@ -43,8 +43,9 @@ export const doUserExist = async (user: userModel.User): Promise<boolean> => {
         }
         return false;
     } catch (error) {
-        if (error === "no users exist") return true;
-        return false;
+        if (error instanceof Error && error.message === "no users found")
+            return false;
+        throw new Error("something went wrong");
     }
 };
 

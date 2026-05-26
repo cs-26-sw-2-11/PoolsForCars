@@ -9,7 +9,7 @@ export default defineConfig({
             reporter: ["text", "html"],
             include: ["src/**/*.ts"],
             exclude: ["src/**/*.test.ts"],
-            reportsDirectory: "./coverage_output",
+            reportsDirectory: "./coverage",
         },
         include: ["src/**/*.test.ts"],
         exclude: [
