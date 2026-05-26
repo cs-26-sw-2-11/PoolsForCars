@@ -24,16 +24,22 @@ export type userPreferences = Record<string, {
     timeOfArrival: string
 }>
 
-export const doUserExist = async (user: userModel.User) => {
-    const allUsers = await userModel.readUsersJSON();
-    if (!allUsers) throw new Error ("something went wrong");
-    // Returns early if database is unpopulated.
-    for (const [key, value] of Object.entries(allUsers)) {
-        if(value.lastName === user.lastName && value.phoneNumber === user.phoneNumber && value.firstName === user.firstName){
-            return true;
+export const doUserExist = async (user: userModel.User): Promise<boolean> => {
+    try {
+        const allUsers = await userModel.readUsersJSON();
+        console.log(Error.isError(allUsers));
+        if (!allUsers) throw new Error("something went wrong");
+        // Returns early if database is unpopulated.
+        for (const [key, value] of Object.entries(allUsers)) {
+            if (value.lastName === user.lastName && value.phoneNumber === user.phoneNumber && value.firstName === user.firstName) {
+                return true;
+            }
         }
+        return false;
+    } catch (error) {
+        if (error === "no users exist") return true;
+        return false;
     }
-    return false;
 }
 
 export const createUser = async (user: userModel.User): Promise<userModel.User> => {
@@ -75,7 +81,7 @@ export const unpackUser = async (
         endDate: startDate,
         days: {},
     };
-             
+
     // Loads preferences into a custom object, so it is easier to get the data from it
     // Has the same format as our known faker, so the information mirrors what we've been building with
     const userPreferences: userPreferences = preferences as userPreferences
