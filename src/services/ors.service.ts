@@ -10,8 +10,8 @@ export type { DirectionsResponse, Route, RouteSummary };
 dotenv.config();
 const apiKey: string = process.env.ORS_API_KEY || "";
 
-const rateLimitRoute: number = 40 - 5 - 34;
-const rateLimitGeocode: number = 100 - 5 - 94;
+const rateLimitRoute: number = 40;
+const rateLimitGeocode: number = 100;
 
 // async function geocodingExamples() {
 //     try {

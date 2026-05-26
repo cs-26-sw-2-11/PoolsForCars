@@ -1,0 +1,74 @@
+{
+  "info": {
+    "_postman_id": "a4764195-10ac-4a71-96c9-5f253c75d48e",
+    "name": "Test Group Search",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42848843",
+    "_collection_link": "https://go.postman.co/collection/42848843-a4764195-10ac-4a71-96c9-5f253c75d48e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Search For Groups",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "var value = pm.environment.get(\"userId\");",
+              "",
+              "if( !value) {",
+              "    pm.environment.set(\"userId\", 1);",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var value = pm.environment.get(\"userId\");",
+              "",
+              "pm.environment.set(\"userId\", value+1);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3410/groups/:userId/search",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3410",
+          "path": [
+            "groups",
+            ":userId",
+            "search"
+          ],
+          "variable": [
+            {
+              "key": "userId",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "user",
+      "value": ""
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "info": {
+    "_postman_id": "782cc865-7050-4f12-a809-ad59c6fd6121",
+    "name": "Elementary test 1 Simple",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42848843",
+    "_collection_link": "https://go.postman.co/collection/42848843-782cc865-7050-4f12-a809-ad59c6fd6121?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Signup",
+      "item": [
+        {
+          "name": "User 0 - Driver",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3410/signup",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3410",
+              "path": [
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "User 1 - Passenger",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"firstName\":\"User\",\n    \"lastName\":\"One\",\n    \"phoneNumber\":\"12345678\",\n    \"preferences\": {\n        \"Monday\": {\n            \"day\": \"Monday\",\n            \"carAvailability\": false,\n            \"seatsOffered\": 0,\n            \"carpoolingIntent\": true,\n            \"pickupAddress\": \"Duathlonstien, Svenstrup, ND, Denmark\",\n            \"destinationAddress\": \"Fibigerstræde 15C, Aalborg, ND, Denmark\",\n            \"timeOfArrival\": \"09:00\"\n        },\n        \"Tuesday\": {\n            \"day\": \"Tuesday\",\n            \"carAvailability\": false,\n            \"seatsOffered\": 0,\n            \"carpoolingIntent\": true,\n            \"pickupAddress\": \"Duathlonstien, Svenstrup, ND, Denmark\",\n            \"destinationAddress\": \"Fibigerstræde 15C, Aalborg, ND, Denmark\",\n            \"timeOfArrival\": \"09:00\"\n        },\n        \"Wednesday\": {\n            \"day\": \"Wednesday\",\n            \"carAvailability\": false,\n            \"seatsOffered\": 0,\n            \"carpoolingIntent\": true,\n            \"pickupAddress\": \"Duathlonstien, Svenstrup, ND, Denmark\",\n            \"destinationAddress\": \"Fibigerstræde 15C, Aalborg, ND, Denmark\",\n            \"timeOfArrival\": \"09:00\"\n        },\n        \"Thursday\": {\n            \"day\": \"Thursday\",\n            \"carAvailability\": false,\n            \"seatsOffered\": 0,\n            \"carpoolingIntent\": true,\n            \"pickupAddress\": \"Duathlonstien, Svenstrup, ND, Denmark\",\n            \"destinationAddress\": \"Fibigerstræde 15C, Aalborg, ND, Denmark\",\n            \"timeOfArrival\": \"09:00\"\n        },\n        \"Friday\": {\n            \"day\": \"Friday\",\n            \"carAvailability\": false,\n            \"seatsOffered\": 0,\n            \"carpoolingIntent\": true,\n            \"pickupAddress\": \"Duathlonstien, Svenstrup, ND, Denmark\",\n            \"destinationAddress\": \"Fibigerstræde 15C, Aalborg, ND, Denmark\",\n            \"timeOfArrival\": \"09:00\"\n        }\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3410/signup",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3410",
+              "path": [
+                "signup"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Search For Groups",
+      "item": [
+        {
+          "name": "User 1 - Passenger",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "var value = pm.environment.get(\"userId\");",
+                  "",
+                  "if( !value) {",
+                  "    pm.environment.set(\"userId\", 1);",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var value = pm.environment.get(\"userId\");",
+                  "",
+                  "pm.environment.set(\"userId\", value+1);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3410/groups/:userId/search",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3410",
+              "path": [
+                "groups",
+                ":userId",
+                "search"
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

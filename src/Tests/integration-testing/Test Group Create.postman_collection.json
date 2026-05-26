@@ -1,0 +1,141 @@
+{
+  "info": {
+    "_postman_id": "ef365cdd-0f4f-461e-91d2-15d312a7f540",
+    "name": "Test Group Create",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42848843",
+    "_collection_link": "https://go.postman.co/collection/42848843-ef365cdd-0f4f-461e-91d2-15d312a7f540?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Fake Users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.variables.set('user', JSON.stringify(pm.response.json()));"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3410/dev/users/fake",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3410",
+          "path": [
+            "dev",
+            "users",
+            "fake"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create User",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const response = pm.response.json();",
+              "pm.variables.set('userId', response.id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{{user}}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3410/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3410",
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create All Groups",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3410/groups/:userId/make",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3410",
+          "path": [
+            "groups",
+            ":userId",
+            "make"
+          ],
+          "variable": [
+            {
+              "key": "userId",
+              "value": "{{userId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "user",
+      "value": ""
+    }
+  ]
+}

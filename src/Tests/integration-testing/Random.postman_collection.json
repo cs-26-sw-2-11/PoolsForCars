@@ -1,0 +1,95 @@
+{
+  "info": {
+    "_postman_id": "4ffa510c-5d11-4837-b046-c754bd8c3937",
+    "name": "Random",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42848843",
+    "_collection_link": "https://go.postman.co/collection/42848843-4ffa510c-5d11-4837-b046-c754bd8c3937?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Get User Notifications",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3410/notifications/:userId",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3410",
+          "path": [
+            "notifications",
+            ":userId"
+          ],
+          "variable": [
+            {
+              "key": "userId",
+              "value": "0"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Accept Group Member",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3410/groups/:groupId/:userId/accept",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3410",
+          "path": [
+            "groups",
+            ":groupId",
+            ":userId",
+            "accept"
+          ],
+          "variable": [
+            {
+              "key": "groupId",
+              "value": "0"
+            },
+            {
+              "key": "userId",
+              "value": "1"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get User",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3410/users/:userId",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3410",
+          "path": [
+            "users",
+            ":userId"
+          ],
+          "variable": [
+            {
+              "key": "userId",
+              "value": "0"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

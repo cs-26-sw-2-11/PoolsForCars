@@ -1,0 +1,194 @@
+{
+  "info": {
+    "_postman_id": "f443ad5e-c787-475e-8680-6416d3c11efe",
+    "name": "Test Group Create & Search",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42848843",
+    "_collection_link": "https://go.postman.co/collection/42848843-f443ad5e-c787-475e-8680-6416d3c11efe?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Fake Users",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.variables.set('user', JSON.stringify(pm.response.json()));"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3410/dev/users/fake",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3410",
+          "path": [
+            "dev",
+            "users",
+            "fake"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create User",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const response = pm.response.json();",
+              "pm.variables.set('userId', response.id);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{{user}}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3410/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3410",
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create All Groups",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3410/groups/:userId/make",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3410",
+          "path": [
+            "groups",
+            ":userId",
+            "make"
+          ],
+          "variable": [
+            {
+              "key": "userId",
+              "value": "{{userId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search For Groups",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3410/groups/:userId/search",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3410",
+          "path": [
+            "groups",
+            ":userId",
+            "search"
+          ],
+          "variable": [
+            {
+              "key": "userId",
+              "value": "{{userId}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Groups",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3410/groups/:userId",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3410",
+          "path": [
+            "groups",
+            ":userId"
+          ],
+          "variable": [
+            {
+              "key": "userId",
+              "value": "0"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "user",
+      "value": ""
+    }
+  ]
+}

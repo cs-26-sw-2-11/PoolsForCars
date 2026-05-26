@@ -1,4 +1,3 @@
-import express, { type NextFunction } from "express";
 import * as userModel from "../../models/user.model.js";
 import * as userHelper from "./user.helper.service.js";
 import * as groupService from "../groups/group.service.js";

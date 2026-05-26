@@ -22,7 +22,6 @@ export const calcLinearDecay = (toa1: string, toa2: string, tolerance: number) =
 
     if (toaDiff < 0) return 0;
 
-
     return Math.max(0, 1 - toaDiff / (tolerance ? tolerance : 1));
 }
 
@@ -82,8 +81,7 @@ export const findEligbleDrivers = async (user: User, users: Users): Promise<Week
                 const compatibility: number = userDay.carAvailability
                     ? calcLinearDecay(subUserDay.timeOfArrival, userDay.timeOfArrival, TOLERANCE)
                     : calcLinearDecay(userDay.timeOfArrival, subUserDay.timeOfArrival, TOLERANCE);
-
-                if (compatibility > 0) {
+                if (compatibility !== 0) {
                     setCompatibility(
                         compatibilityMap,
                         Number(week[0]),
