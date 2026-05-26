@@ -1,4 +1,4 @@
-import type { Location } from  './location.model.js';
+import type { Location } from "./location.model.js";
 
 export interface CalendarDay {
     // day: string;

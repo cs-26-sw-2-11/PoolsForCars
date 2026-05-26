@@ -1,9 +1,14 @@
 // ====== IMPORTS ======
-import * as fs from 'fs';
-import { asyncAppendLineToFile, asyncReadFile, asyncWriteFile, DATABASE_DIRNAME } from '../database/helper-functions.js'
+import * as fs from "fs";
+import {
+    asyncAppendLineToFile,
+    asyncReadFile,
+    asyncWriteFile,
+    DATABASE_DIRNAME,
+} from "../database/helper-functions.js";
 
-import { type Week } from './week.model.js';
-import { type Calendar } from './calendar.model.js';
+import { type Week } from "./week.model.js";
+import { type Calendar } from "./calendar.model.js";
 
 // ====== TYPES ======
 export interface User {
@@ -39,7 +44,7 @@ let userWriteQueue: Promise<any> = Promise.resolve();
 const enqueue = <T>(task: () => Promise<T>): Promise<T> => {
     userWriteQueue = userWriteQueue.then(task, task); // handle the rejected callback properly or something
     return userWriteQueue;
-}
+};
 
 // ====== INIT (load from disk) ======;
 export const initUsers = async (): Promise<void> => {
@@ -53,7 +58,10 @@ export const initUsers = async (): Promise<void> => {
                 meta = { lastId: 0 } as UserMeta;
             }
         } catch (error) {
-            console.warn("Something went wrong, trying to initialize the users", error);
+            console.warn(
+                "Something went wrong, trying to initialize the users",
+                error,
+            );
         }
     } else {
         asyncWriteFile(META_FILE, "");
@@ -66,10 +74,10 @@ export const initUsers = async (): Promise<void> => {
 
             const parsedUsers: User[] = users
                 .split("\n")
-                .filter(line => line.trim() !== "")
-                .map(line => JSON.parse(line)) as User[];
+                .filter((line) => line.trim() !== "")
+                .map((line) => JSON.parse(line)) as User[];
 
-            parsedUsers.forEach(user => {
+            parsedUsers.forEach((user) => {
                 // Make sure all Dates are Date objects
 
                 for (const dayEntry of Object.entries(user.schedule.days)) {
@@ -87,12 +95,15 @@ export const initUsers = async (): Promise<void> => {
                 USERS.set(user.id, user);
             });
         } catch (error) {
-            console.warn("Something went wrong, trying to initialize the users", error);
+            console.warn(
+                "Something went wrong, trying to initialize the users",
+                error,
+            );
         }
     } else {
         asyncWriteFile(USERS_FILE, "");
     }
-}
+};
 
 // ====== CREATE USER (SAFE) ======
 export const createUser = async (user: User): Promise<User> => {
@@ -119,8 +130,8 @@ export const createUser = async (user: User): Promise<User> => {
         await asyncWriteFile(META_FILE, JSON.stringify(meta));
 
         return user;
-    })
-}
+    });
+};
 
 // ====== READ USER ======
 export const readUser = async (user_id: number): Promise<User> => {
@@ -128,21 +139,24 @@ export const readUser = async (user_id: number): Promise<User> => {
         return USERS.get(user_id) as User;
     } catch (error) {
         //console.log(error);
-        throw new Error("Couldn't get user")
-        
+        throw new Error("Couldn't get user");
+
         // TODO: handle it properly
     }
 };
 
 // ====== UPDATE USER ======
-export const updateUser = async (id: number, updated_user: User): Promise<void> => {
+export const updateUser = async (
+    id: number,
+    updated_user: User,
+): Promise<void> => {
     return enqueue(async () => {
         // update memory
         USERS.set(id, updated_user);
 
         // update file
         await writeUsers(USERS);
-    })
+    });
 };
 
 // ====== DELETE USER ======
@@ -153,7 +167,7 @@ export const deleteUser = async (id: number): Promise<void> => {
 
         // update file
         await writeUsers(USERS);
-    })
+    });
 };
 
 // ====== WRITE USERS ======
@@ -161,7 +175,10 @@ export const writeUsers = async (users: Users): Promise<void> => {
     try {
         await asyncWriteFile(USERS_FILE, "");
         for (const key of users.keys()) {
-            await asyncAppendLineToFile(USERS_FILE, JSON.stringify(users.get(key)));
+            await asyncAppendLineToFile(
+                USERS_FILE,
+                JSON.stringify(users.get(key)),
+            );
         }
     } catch (error) {
         console.log(error);
@@ -209,10 +226,10 @@ export const readUsersJSON = async (): Promise<usersJSON> => {
         users[key] = USERS.get(key) as User;
     }
     return users;
-}
+};
 
 // ====== CLEAR USERS ======
 export const clearUsers = async (): Promise<void> => {
     await asyncWriteFile(USERS_FILE, "");
     await asyncWriteFile(META_FILE, "");
-}
+};

@@ -1,28 +1,30 @@
-import * as userModel from '../../models/user.model.js';
+import * as userModel from "../../models/user.model.js";
 import * as calendarModel from "../../models/calendar.model.js";
 import { addressToCoordinates } from "../ors.service.js";
-import type { Week } from '../../models/week.model.js';
+import type { Week } from "../../models/week.model.js";
 import type { Location } from "../../models/location.model.js";
-import express from "express";
 
 const startDate: Date = new Date();
 
 // Our final destination for all travellers.
 const centerLocation: Location = {
     address: "Fibigerstræde 15, 9220 Aalborg",
-    coordinates: [57.0161, 9.97759]
-}
+    coordinates: [57.0161, 9.97759],
+};
 
 // Data transfer object, mirroring our user interface
-export type userPreferences = Record<string, {
-    day: string,
-    carAvailability: boolean,
-    seatsOffered: number,
-    carpoolingIntent: boolean,
-    pickupAddress: string,
-    destinationAddress: string,
-    timeOfArrival: string
-}>
+export type userPreferences = Record<
+    string,
+    {
+        day: string;
+        carAvailability: boolean;
+        seatsOffered: number;
+        carpoolingIntent: boolean;
+        pickupAddress: string;
+        destinationAddress: string;
+        timeOfArrival: string;
+    }
+>;
 
 export const doUserExist = async (user: userModel.User): Promise<boolean> => {
     try {
@@ -31,7 +33,11 @@ export const doUserExist = async (user: userModel.User): Promise<boolean> => {
         if (!allUsers) throw new Error("something went wrong");
         // Returns early if database is unpopulated.
         for (const [key, value] of Object.entries(allUsers)) {
-            if (value.lastName === user.lastName && value.phoneNumber === user.phoneNumber && value.firstName === user.firstName) {
+            if (
+                value.lastName === user.lastName &&
+                value.phoneNumber === user.phoneNumber &&
+                value.firstName === user.firstName
+            ) {
                 return true;
             }
         }
@@ -40,41 +46,48 @@ export const doUserExist = async (user: userModel.User): Promise<boolean> => {
         if (error === "no users exist") return true;
         return false;
     }
-}
+};
 
-export const createUser = async (user: userModel.User): Promise<userModel.User> => {
+export const createUser = async (
+    user: userModel.User,
+): Promise<userModel.User> => {
     const recievedUser: userModel.User = user;
     try {
         const currentDate: Date = new Date();
         const currentWeek: number = await calendarModel.dateToWeek(currentDate);
 
-        recievedUser.schedule.startDate = await calendarModel.getFirstDayOfWeek(currentDate);
-        recievedUser.schedule.endDate = await calendarModel.getLastWorkdayOfWeek(currentDate);
+        recievedUser.schedule.startDate =
+            await calendarModel.getFirstDayOfWeek(currentDate);
+        recievedUser.schedule.endDate =
+            await calendarModel.getLastWorkdayOfWeek(currentDate);
 
-        const tempDate: Date = new Date(recievedUser.schedule.startDate.valueOf());
+        const tempDate: Date = new Date(
+            recievedUser.schedule.startDate.valueOf(),
+        );
         for (const dayEntry of Object.entries(recievedUser.schedule.days)) {
             // set the correct dates for the week
             dayEntry[1].date = new Date(tempDate.valueOf());
             tempDate.setDate(tempDate.getDate() + 1);
         }
 
-        recievedUser.calendar[currentWeek] = JSON.parse(JSON.stringify(recievedUser.schedule)); // Copy the users schedule into its calendar under the current week
+        recievedUser.calendar[currentWeek] = JSON.parse(
+            JSON.stringify(recievedUser.schedule),
+        ); // Copy the users schedule into its calendar under the current week
 
         return await userModel.createUser(recievedUser); // Create a new user in the database
     } catch (err) {
         console.log(err);
         throw err;
     }
-}
+};
 
 // Unpack and reformat preferences
 export const unpackUser = async (
     firstName: string,
     lastName: string,
     phoneNumber: string,
-    preferences: userPreferences
+    preferences: userPreferences,
 ) => {
-
     // Initiates the week
     let schedule: Week = {
         startDate: startDate,
@@ -84,7 +97,8 @@ export const unpackUser = async (
 
     // Loads preferences into a custom object, so it is easier to get the data from it
     // Has the same format as our known faker, so the information mirrors what we've been building with
-    const userPreferences: userPreferences = preferences as userPreferences
+    const userPreferences: userPreferences = preferences;
+
     for (const day of Object.entries(userPreferences)) {
         schedule.days[day[1].day] = {
             date: startDate,
@@ -97,7 +111,9 @@ export const unpackUser = async (
             } as Location,
             destination: {
                 address: day[1].destinationAddress,
-                coordinates: await addressToCoordinates(day[1].destinationAddress),
+                coordinates: await addressToCoordinates(
+                    day[1].destinationAddress,
+                ),
             } as Location,
             timeOfArrival: day[1].timeOfArrival,
             groups: [null, null],
@@ -118,4 +134,4 @@ export const unpackUser = async (
         driverInGroups: [],
         passengerInGroups: [],
     } as userModel.User;
-}
+};
