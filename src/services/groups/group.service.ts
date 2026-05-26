@@ -252,7 +252,7 @@ export const searchForGroups = async (
         week: number;
         day: string;
     } | null,
-) => {
+): Promise<void> => {
 
     const pairs: CandidatePair[] = dayInfo
         ? findCompatibleCandidatePairs(user, compatibilityMap, dayInfo.week, dayInfo.day)
