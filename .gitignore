@@ -10,3 +10,4 @@ src/database/groups/*
 node_modules/*
 src/.DS_Store
 src/PublicResources/.DS_Store
+.prettierrc

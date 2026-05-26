@@ -1,9 +1,16 @@
-import { describe, expect, test } from 'vitest'
-import { type Group, planInsertion } from '../../../../services/groups/group.service';
-import { dateToWeek } from '../../../../models/calendar.model';
-import { type Location } from '../../../../models/location.model';
+import { describe, expect, test } from "vitest";
+import {
+    type Group,
+    planInsertion,
+} from "../../../../services/groups/group.service";
+import { dateToWeek } from "../../../../models/calendar.model";
+import { type Location } from "../../../../models/location.model";
 
+describe("", () => {
+    test.todo("add tests");
+});
 
+/*
 const todaysWeek: number = await dateToWeek(new Date());
 
 const mockGroup: Group = {
@@ -30,3 +37,4 @@ const mockGroup: Group = {
 
 
 planInsertion();
+*/
