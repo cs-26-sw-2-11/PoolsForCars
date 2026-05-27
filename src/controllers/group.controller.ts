@@ -35,18 +35,23 @@ export const getGroupsAsPassenger = async (req: express.Request, res: express.Re
 }
 
 export const searchForGroups = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const user: userModel.User = await userModel.readUser(Number(req.params['userId']));
-    const compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex = await findEligbleDrivers(user, await userModel.readUsers());
+    try {
 
-    console.log("\n");
-    console.log("\n");
-    console.log("\n");
-    console.log(`Searching for groups for user ${user.id}`);
-    console.log(JSON.stringify(compatibilityMap, null, 2));
+        const user: userModel.User = await userModel.readUser(Number(req.params['userId']));
+        const compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex = await findEligbleDrivers(user, await userModel.readUsers());
 
-    await groupService.searchForGroups(user, compatibilityMap);
+        console.log("\n");
+        console.log("\n");
+        console.log("\n");
+        console.log(`Searching for groups for user ${user.id}`);
+        console.log(JSON.stringify(compatibilityMap, null, 2));
 
-    res.status(200).json(user);
+        await groupService.searchForGroups(user, compatibilityMap);
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export const makeAllGroups = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
