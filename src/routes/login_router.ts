@@ -17,19 +17,14 @@ router.route("")
         res.sendFile(filePath + "/Login.html");
     })
     .post(validate.login, validate.validate,
-        (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        async (req: express.Request, res: express.Response, next: express.NextFunction) => {
             //=== TERMINATES THE REQUEST BY NOT RESPONDING IF DATA IS INCORRECT ===//
             // Collects the objects from the HTTP body
-        const handler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
             try {
-                await loginHandler(req, res, next);
+                loginHandler(req, res, next);
             } catch (err) {
                 return next(err);
             }
-        };
-        handler(req,res,next);
-            // Console logs to ensure they match input
-            // console.log(` Last name: ${lastName} & Phone number: ${phone} `);
         }
     )
 

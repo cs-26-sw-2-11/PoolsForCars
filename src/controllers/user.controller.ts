@@ -130,7 +130,7 @@ export const loginHandler = async (
             res.status(200).json({
                 message: "User credentials found",
                 id: result.userId,
-                redirect: "/calendar",
+                redirect: "/landing",
             });
         }
     } catch (err) {

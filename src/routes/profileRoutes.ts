@@ -14,8 +14,6 @@ router.route("")
 
 
 router.route("/:userId")
-    .post((req, res)=> {
-    })
     .put(
         // Add input validation to guarantee valid data is parsed through
         updateUserById)
