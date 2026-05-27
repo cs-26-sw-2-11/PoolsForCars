@@ -290,6 +290,9 @@ export const searchForGroups = async (
           )
         : findCandidatePairs(user, compatibilityMap);
 
+    
+    console.log(pairs);
+
     for (const pair of pairs) {
         if (typeof pair.driver !== "object" && pair.driver !== null) {
             pair.driver = await userModel.readUser(pair.driver);
@@ -313,12 +316,17 @@ export const searchForGroups = async (
         if (!pair.passengerDay)
             throw new Error("Could not read candidate passengers calendarday");
 
-        const group: groupModel.Group = await groupModel.readGroup(
-            Number(pair.driverDay.groups[0]),
-        );
+        pair.driverDay = pair.driver.calendar[pair.week]?.days[pair.day] as calendarDayModel.CalendarDay;
+        if (!pair.driverDay) throw new Error("Could not read candidate drivers calendar day");
+        pair.passengerDay = pair.passenger.calendar[pair.week]?.days[pair.day] as calendarDayModel.CalendarDay;
+        if (!pair.passengerDay) throw new Error("Could not read candidate passengers calendarday");
+
+        console.log("doing stuff")
+
+        const group: groupModel.Group = await groupModel.readGroup(Number(pair.driverDay.groups[0]));
 
         if (group.members.length >= group.seatsOffered + 1) continue;
-
+        console.log("wtf");
         const plan: InsertionPlan | null = await planInsertion(
             group,
             {
@@ -329,6 +337,7 @@ export const searchForGroups = async (
             },
             ACCEPTED_DETOUR,
         );
+        console.log(plan);
 
         if (!plan) continue;
 

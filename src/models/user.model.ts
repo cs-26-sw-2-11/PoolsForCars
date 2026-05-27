@@ -65,6 +65,7 @@ export const initUsers = async (): Promise<void> => {
         }
     } else {
         asyncWriteFile(META_FILE, "");
+        meta = { lastId: 0 } as UserMeta;
     }
 
     // Load users
