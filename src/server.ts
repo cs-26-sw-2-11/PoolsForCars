@@ -1,6 +1,6 @@
 import express from "express";
 import routes, { errorHandler } from "./routes/index.js";
-import cookieParser from "cookie-parser"
+
 
 //=== VARIABLES ===//
 
@@ -22,7 +22,6 @@ app.use(express.json());
 
 // Enable receiving and working with req.body in express. Vital for the program.
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser('idk'));
 app.use(errorHandler);
 
 

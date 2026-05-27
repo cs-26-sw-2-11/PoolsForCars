@@ -37,7 +37,6 @@ beforeEach(() => {
         status: vi.fn().mockReturnThis(),
         json: vi.fn().mockReturnThis(),
         send: vi.fn().mockReturnThis(),
-        cookie: vi.fn().mockReturnThis(),
     };
     next = vi.fn();
 });
@@ -137,7 +136,7 @@ describe("Signup controller", () => {
 
 /*describe("Get specific user by their id", () => {
     test.each([
-        {   
+        {
             mockUser: {
                 id: 1001,
                 firstName: "ackles",
@@ -180,7 +179,7 @@ describe("Signup controller", () => {
         expect(res.status).toHaveBeenCalledWith(result);
     }
     })
-    
+
     test("returns response for db error")
 
 });*/
