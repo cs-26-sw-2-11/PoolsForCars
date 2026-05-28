@@ -23,12 +23,10 @@ export const loginService = async (
         if (user.lastName === lastName && user.phoneNumber === phoneNumber) {
             //console.log(value.id)
             // Return the user id, if the user exists in the database.
-            console.log("success");
             return { success: true, userId: user.id };
         }
     }
     // Returns -1, an id not found in the database, if login doesnt match an user.
-    console.log("fail");
     return { success: false, reason: "invalid_credentials" };
 };
 
