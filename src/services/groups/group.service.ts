@@ -1,7 +1,6 @@
 import {
     getRoute,
     type DirectionsResponse,
-    type Route,
     type RouteSummary,
 } from "../ors.service.js";
 import * as calendarDayModel from "../../models/calendar_day.model.js";
@@ -54,13 +53,13 @@ export interface InsertionPlan {
 const ACCEPTED_DETOUR: number = 10 * 60;
 
 export const getGroup = async (id: number): Promise<groupModel.Group> => {
-    return await groupModel.readGroup(id);
-};
+    return groupModel.readGroup(id);
+}
 
 export const getAllUserGroups = async (
     userId: number,
 ): Promise<groupModel.Group[]> => {
-    const user: userModel.User = await userModel.readUser(userId);
+    const user: userModel.User = userModel.readUser(userId);
     const groupIds: number[] = user.driverInGroups.concat(
         user.passengerInGroups,
     );
@@ -73,7 +72,7 @@ export const getAllUserGroups = async (
 export const getAllUserGroupsAsDriver = async (
     userId: number,
 ): Promise<groupModel.Group[]> => {
-    const user: userModel.User = await userModel.readUser(userId);
+    const user: userModel.User = userModel.readUser(userId);
 
     const groups: groupModel.Group[] = await Promise.all(
         user.driverInGroups.map((groupId) => groupModel.readGroup(groupId)),
@@ -85,7 +84,7 @@ export const getAllUserGroupsAsDriver = async (
 export const getAllUserGroupsAsPassenger = async (
     userId: number,
 ): Promise<groupModel.Group[]> => {
-    const user: userModel.User = await userModel.readUser(userId);
+    const user: userModel.User = userModel.readUser(userId);
     const groups: groupModel.Group[] = await Promise.all(
         user.passengerInGroups.map((groupId) => groupModel.readGroup(groupId)),
     );
@@ -218,7 +217,7 @@ export const makeNewGroups = async (
     return userDriverGroups;
 };
 
-export const findCandidatePairs = (
+export const collectAllCompatiblePairs = (
     user: userModel.User,
     compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex,
 ): CandidatePair[] => {
@@ -227,12 +226,12 @@ export const findCandidatePairs = (
     for (const [weekNum, week] of Object.entries(user.calendar)) {
         for (const dayKey in week.days) {
             pairs.push(
-                findCompatibleCandidatePairs(
+                getCompatiblePairsForDay(
                     user,
                     compatibilityMap,
                     Number(weekNum),
-                    dayKey,
-                ),
+                    dayKey
+                )
             );
         }
     }
@@ -240,7 +239,7 @@ export const findCandidatePairs = (
     return pairs.flat();
 };
 
-export const findCompatibleCandidatePairs = (
+export const getCompatiblePairsForDay = (
     user: userModel.User,
     compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex,
     weekNum: number,
@@ -273,7 +272,7 @@ export const findCompatibleCandidatePairs = (
     return pairs;
 };
 
-export const searchForGroups = async (
+export const processGroupInsertions = async (
     user: userModel.User,
     compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex,
     dayInfo?: {
@@ -282,25 +281,20 @@ export const searchForGroups = async (
     } | null,
 ): Promise<void> => {
     const pairs: CandidatePair[] = dayInfo
-        ? findCompatibleCandidatePairs(
-              user,
-              compatibilityMap,
-              dayInfo.week,
-              dayInfo.day,
-          )
-        : findCandidatePairs(user, compatibilityMap);
+        ? getCompatiblePairsForDay(user, compatibilityMap, dayInfo.week, dayInfo.day)
+        : collectAllCompatiblePairs(user, compatibilityMap);
 
     
     console.log(pairs);
 
     for (const pair of pairs) {
         if (typeof pair.driver !== "object" && pair.driver !== null) {
-            pair.driver = await userModel.readUser(pair.driver);
+            pair.driver = userModel.readUser(pair.driver);
         }
         if (!pair.driver) throw new Error("Could not read candidate driver");
 
         if (typeof pair.passenger !== "object" && pair.passenger !== null) {
-            pair.passenger = await userModel.readUser(pair.passenger);
+            pair.passenger = userModel.readUser(pair.passenger);
         }
         if (!pair.passenger)
             throw new Error("Could not read candidate passenger");
@@ -316,14 +310,17 @@ export const searchForGroups = async (
         if (!pair.passengerDay)
             throw new Error("Could not read candidate passengers calendarday");
 
-        pair.driverDay = pair.driver.calendar[pair.week]?.days[pair.day] as calendarDayModel.CalendarDay;
+        if (!pair.driverDay)
+            pair.driverDay = pair.driver.calendar[pair.week]?.days[pair.day] as calendarDayModel.CalendarDay;
         if (!pair.driverDay) throw new Error("Could not read candidate drivers calendar day");
-        pair.passengerDay = pair.passenger.calendar[pair.week]?.days[pair.day] as calendarDayModel.CalendarDay;
+
+        if (!pair.passengerDay)
+            pair.passengerDay = pair.passenger.calendar[pair.week]?.days[pair.day] as calendarDayModel.CalendarDay;
         if (!pair.passengerDay) throw new Error("Could not read candidate passengers calendarday");
 
         console.log("doing stuff")
 
-        const group: groupModel.Group = await groupModel.readGroup(Number(pair.driverDay.groups[0]));
+        const group: groupModel.Group = groupModel.readGroup(Number(pair.driverDay.groups[0]));
 
         if (group.members.length >= group.seatsOffered + 1) continue;
         console.log("wtf");
@@ -345,7 +342,6 @@ export const searchForGroups = async (
 
         await groupModel.updateGroup(group.id, group);
 
-        console.log(JSON.stringify(pair.passengerDay));
         pair.passengerDay.pendingGroups.push(group.id);
 
         await userModel.updateUser(pair.passenger.id, pair.passenger);
@@ -567,9 +563,9 @@ export const makeGroupMapsLink = (
 ): string => {
     let link: string = `https://www.google.com/maps/dir/?api=1&origin=${group.members[0]?.location.coordinates[0]}%2C${group.members[0]?.location.coordinates[1]}&destination=${group.destination?.coordinates[0]}%2C${group.destination?.coordinates[1]}&travelmode=driving&waypoints=`;
 
-    for (const [index, member] of Object.entries(group.route)) {
+    for (const [index, routeMember] of Object.entries(group.route)) {
         const member: GroupMember | undefined = group.members.find(
-            (member) => member.userId === member.userId,
+            (member) => member.userId === routeMember.userId,
         );
         if (typeof member === "undefined")
             throw new Error(
@@ -594,63 +590,12 @@ export const makeGroupMapsLink = (
     return link;
 };
 
-// const buildRoutesForPlan = async (
-//     group: groupModel.Group,
-//     plan: InsertionPlan,
-// ): Promise<groupExecutor.Routes> => {
-//
-//     const previousMember: groupModel.GroupMember = group.members.find(
-//         x => x.userId === plan.previousUserId
-//     ) as groupModel.GroupMember;
-//     const currentMember: groupModel.GroupMember = group.members.find(
-//         x => x.userId === plan.currentUserId
-//     ) as groupModel.GroupMember;
-//     const nextMember: groupModel.GroupMember | null = plan.nextUserId
-//         ? group.members.find(x => x.userId === plan.currentUserId) as groupModel.GroupMember
-//         : null;
-//
-//
-//     const prevToCurrRoute: DirectionsResponse = await getRoute(previousMember?.coordinates, currentMember?.coordinates);
-//     const prevToCurrSummary: RouteSummary = prevToCurrRoute.routes[0]?.summary as RouteSummary;
-//
-//     const currToNextRoute: DirectionsResponse | null = plan.nextUserId
-//         ? await getRoute(
-//             currentMember?.coordinates,
-//             nextMember?.coordinates as [number, number]
-//         )
-//         : null;
-//     const currToNextSummary: RouteSummary | null = currToNextRoute ? currToNextRoute.routes[0]?.summary as RouteSummary : null;
-//
-//     const currToDestRoute: DirectionsResponse = await getRoute(currentMember?.coordinates, group.destination.coordinates);
-//     const currToDestSummary: RouteSummary = currToDestRoute.routes[0]?.summary as RouteSummary;
-//
-//     const routes: groupExecutor.Routes = {
-//         prevToCurr: {
-//             travelDistanceMeters: prevToCurrSummary.distance,
-//             travelTimeSeconds: prevToCurrSummary.duration,
-//             distanceEuclidean: plan.prevToCurrDistance,
-//         },
-//         currToNext: currToNextRoute && currToNextSummary ? {
-//             travelDistanceMeters: currToNextSummary.distance,
-//             travelTimeSeconds: currToNextSummary.duration,
-//             distanceEuclidean: plan.currToNextDistance,
-//         } : null,
-//         currToDest: {
-//             travelDistanceMeters: currToDestSummary.distance,
-//             travelTimeSeconds: currToDestSummary.duration,
-//             distanceEuclidean: euclideanDistance(plan.insertionCandidate.coordinates, group.destination.coordinates),
-//         },
-//         isDestination: currToNextRoute ? false : true,
-//     };
-//
-//     return routes;
-// }
-
-export const appendPassengerToGroup = async (
+export const appendPassengerToGroup = (
     group: Group,
     plan: InsertionPlan,
     // candidate: Candidate,
-): Promise<Group> => {
+): Group => {
+
     const updatedGroup: groupModel.Group = groupExecutor.applyInsertion(
         group,
         plan,
@@ -662,35 +607,39 @@ export const appendPassengerToGroup = async (
     return updatedGroup;
 };
 
-export const denyPassengerFromGroup = async (
+export const denyPassengerFromGroup = (
     group: Group,
     candidate: Candidate,
+): Group => {
+
+    const updatedGroup = structuredClone(group);
+
+    delete updatedGroup.pendingMembers[candidate.userId];
+
+    updatedGroup.bannedMembers.push(candidate.userId);
+
+    return updatedGroup;
+}
+
+export const refreshPendingMembers = async (
+    group: Group,
 ): Promise<Group> => {
-    // Delete element of member from pendingMembers Record
-    delete group.pendingMembers[candidate.userId];
 
-    // Add users id to banned members - they cant be added again.
-    group.bannedMembers.push(candidate.userId);
-
-    // Persist to database
-    await groupModel.updateGroup(group.id, group);
-
-    return group;
-};
-
-export const refreshPendingMembers = async (group: Group): Promise<Group> => {
     for (const memberKey in group.pendingMembers) {
-        const user: userModel.User = await userModel.readUser(
-            Number(memberKey),
-        );
 
-        const memberCompatibilityMap: compatibilityModel.WeeklyCompatibilityIndex =
-            await findEligbleDrivers(user, await userModel.readUsers());
+        const user: userModel.User
+            = userModel.readUser(Number(memberKey));
 
-        await searchForGroups(user, memberCompatibilityMap, {
-            week: group.week,
-            day: group.day,
-        });
+        const memberCompatibilityMap: compatibilityModel.WeeklyCompatibilityIndex
+            = await findEligbleDrivers(user, userModel.readUsers());
+
+        await processGroupInsertions(
+            user,
+            memberCompatibilityMap,
+            {
+                week: group.week,
+                day: group.day,
+            });
     }
 
     return group;

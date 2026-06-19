@@ -94,7 +94,7 @@ export const initGroups = async (): Promise<void> => {
             console.warn("Something went wrong, trying to initialize the groups", error);
         }
     } else {
-        asyncWriteFile(META_FILE, "");
+        await asyncWriteFile(META_FILE, "");
     }
 
     // Load groups
@@ -114,7 +114,7 @@ export const initGroups = async (): Promise<void> => {
             console.warn("Something went wrong, trying to initialize the groups", error);
         }
     } else {
-        asyncWriteFile(GROUPS_FILE, "");
+        await asyncWriteFile(GROUPS_FILE, "");
     }
 }
 
@@ -138,7 +138,7 @@ export const createGroup = async (group: Group): Promise<Group> => {
 }
 
 // ====== READ GROUP ======
-export const readGroup = async (id: number): Promise<Group> => {
+export const readGroup = (id: number): Group => {
     try {
         return GROUPS.get(id) as Group;
     } catch (error) {

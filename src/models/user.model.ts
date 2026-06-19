@@ -18,8 +18,8 @@ export interface User {
     phoneNumber: string;
     schedule: Week;
     calendar: Calendar;
-    editedCalendarWeeks: number[];
     lookingForGroups: boolean;
+    editedCalendarWeeks: number[];
     driverInGroups: number[];
     passengerInGroups: number[];
 }
@@ -64,8 +64,7 @@ export const initUsers = async (): Promise<void> => {
             );
         }
     } else {
-        asyncWriteFile(META_FILE, "");
-        meta = { lastId: 0 } as UserMeta;
+        await asyncWriteFile(META_FILE, "");
     }
 
     // Load users
@@ -102,7 +101,7 @@ export const initUsers = async (): Promise<void> => {
             );
         }
     } else {
-        asyncWriteFile(USERS_FILE, "");
+        await asyncWriteFile(USERS_FILE, "");
     }
 };
 
@@ -135,7 +134,7 @@ export const createUser = async (user: User): Promise<User> => {
 };
 
 // ====== READ USER ======
-export const readUser = async (user_id: number): Promise<User> => {
+export const readUser = (user_id: number): User => {
     try {
         return USERS.get(user_id) as User;
     } catch (error) {
@@ -174,13 +173,11 @@ export const deleteUser = async (id: number): Promise<void> => {
 // ====== WRITE USERS ======
 export const writeUsers = async (users: Users): Promise<void> => {
     try {
-        await asyncWriteFile(USERS_FILE, "");
+        var stringifiedUsers: string = "";
         for (const key of users.keys()) {
-            await asyncAppendLineToFile(
-                USERS_FILE,
-                JSON.stringify(users.get(key)),
-            );
+            stringifiedUsers += JSON.stringify(users.get(key)) + "\n";
         }
+        await asyncWriteFile(USERS_FILE, stringifiedUsers);
     } catch (error) {
         console.log(error);
         throw error; // TODO: handle it properly
@@ -188,7 +185,7 @@ export const writeUsers = async (users: Users): Promise<void> => {
 };
 
 // ====== READ USERS ======
-export const readUsers = async (): Promise<Users> => {
+export const readUsers = (): Users => {
     return USERS;
     // try {
     //     const users: string = await asyncReadFile(USERS_FILE);
@@ -218,7 +215,8 @@ export const readUsers = async (): Promise<Users> => {
     // }
 };
 
-export const readUsersJSON = async (): Promise<usersJSON> => {
+
+export const readUsersJSON = (): usersJSON => {
     if (USERS.size === 0) throw new Error("no users found");
 
     const users: usersJSON = {};

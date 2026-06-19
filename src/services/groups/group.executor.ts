@@ -9,12 +9,6 @@ export interface Routes {
     isDestination: boolean;
 }
 
-// interface ApplyInsertionInput {
-//     group: groupService.Group;
-//     plan: groupService.InsertionPlan;
-//     // routes: Routes;
-// };
-
 
 export const applyInsertion = (
     group: groupService.Group,

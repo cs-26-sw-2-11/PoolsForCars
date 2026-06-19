@@ -4,14 +4,14 @@ import { type Week } from "./week.model.js";
 export type Calendar = Record<number, Week>;
 
 
-export const createWeek = async (calendar: Calendar, weekNumber: number, schedule: Week): Promise<Week> => {
+export const createWeek = (calendar: Calendar, weekNumber: number, schedule: Week): Week => {
     calendar[weekNumber] = JSON.parse(JSON.stringify(schedule));
 
-    const weekDate: Date = await weekToDate(weekNumber);
+    const weekDate: Date = weekToDate(weekNumber);
 
     if (typeof calendar[weekNumber] !== 'undefined') {
-        calendar[weekNumber].startDate = await getFirstDayOfWeek(weekDate);
-        calendar[weekNumber].endDate = await getLastWorkdayOfWeek(weekDate);
+        calendar[weekNumber].startDate = getFirstDayOfWeek(weekDate);
+        calendar[weekNumber].endDate = getLastWorkdayOfWeek(weekDate);
 
         const tempDate: Date = new Date(calendar[weekNumber].startDate.valueOf());
         for (const day of Object.entries(calendar[weekNumber].days)) {
@@ -21,19 +21,19 @@ export const createWeek = async (calendar: Calendar, weekNumber: number, schedul
     }
 
 
-    return await readWeek(calendar, weekNumber);
+    return readWeek(calendar, weekNumber);
 }
 
 export const readCalendar = (user: User): Calendar => {
     return user.calendar as Calendar;
 }
 
-export const readWeek = async (calendar: Calendar, weekNumber: number): Promise<Week> => {
+export const readWeek = (calendar: Calendar, weekNumber: number): Week => {
     return calendar[weekNumber] as Week;
 }
 
 
-export const dateToWeek = async (date: Date): Promise<number> => {
+export const dateToWeek = (date: Date): number => {
     const tempDate: Date = new Date(date.valueOf()); // Copying date so the original date won't be modified
 
     const dayNum: number = (date.getDay() + 6) % 7; // ISO week date weeks start on Monday, so correct the day number
@@ -53,7 +53,7 @@ export const dateToWeek = async (date: Date): Promise<number> => {
     return 1 + Math.ceil((firstThursday - tempDate.valueOf()) / 604800000); // 604800000 = number of milliseconds in a week
 }
 
-export const weekToDate = async (weekNumber: number): Promise<Date> => {
+export const weekToDate = (weekNumber: number): Date => {
     const firstDayOfYear: Date = new Date(Date.UTC(2026, 0, 1, 1));
 
     const daysInWeek: number = 7;
@@ -65,7 +65,7 @@ export const weekToDate = async (weekNumber: number): Promise<Date> => {
     return date;
 }
 
-export const getFirstDayOfWeek = async (date: Date): Promise<Date> => {
+export const getFirstDayOfWeek = (date: Date): Date => {
     const dayNum: number = (date.getDay() + 6) % 7;
     // console.log(dayNum);
     const firstDay: Date = new Date(date);
@@ -74,17 +74,17 @@ export const getFirstDayOfWeek = async (date: Date): Promise<Date> => {
     return firstDay;
 }
 
-export const getLastWorkdayOfWeek = async (date: Date): Promise<Date> => {
+export const getLastWorkdayOfWeek = (date: Date): Date => {
     const dayNum: number = (date.getDay() + 6) % 7;
     const lastDay: Date = new Date(date);
     lastDay.setDate(date.getDate() + (4 - dayNum));
     return lastDay;
 }
 
-export const getTodaysDate = async () => {
+export const getTodaysDate = () => {
     return new Date();
 }
 
-export const getTodaysWeek = async () => {
-    return await dateToWeek(await getTodaysDate());
+export const getTodaysWeek = () => {
+    return dateToWeek(getTodaysDate());
 }

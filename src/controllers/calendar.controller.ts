@@ -20,10 +20,10 @@ export const getCalendarWeek = async (req: express.Request, res: express.Respons
         const calendar: calendarModel.Calendar = calendarModel.readCalendar(user)
 
         const weekNumber: number = Number(req.params['weekNumber']);
-        let week: weekModel.Week = await calendarModel.readWeek(calendar, weekNumber);
+        let week: weekModel.Week = calendarModel.readWeek(calendar, weekNumber);
 
         if (typeof week === 'undefined') {
-            week = await calendarModel.createWeek(calendar, weekNumber, user.schedule);
+            week = calendarModel.createWeek(calendar, weekNumber, user.schedule);
             userModel.updateUser(user.id, user);
         }
 

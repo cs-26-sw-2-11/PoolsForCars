@@ -35,18 +35,12 @@ export const getGroupsAsPassenger = async (req: express.Request, res: express.Re
 }
 
 export const searchForGroups = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+
     try {
+        const user: userModel.User = userModel.readUser(Number(req.params['userId']));
+        const compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex = await findEligbleDrivers(user, userModel.readUsers());
 
-        const user: userModel.User = await userModel.readUser(Number(req.params['userId']));
-        const compatibilityMap: compatibilityModel.WeeklyCompatibilityIndex = await findEligbleDrivers(user, await userModel.readUsers());
-
-        console.log("\n");
-        console.log("\n");
-        console.log("\n");
-        console.log(`Searching for groups for user ${user.id}`);
-        console.log(JSON.stringify(compatibilityMap, null, 2));
-
-        await groupService.searchForGroups(user, compatibilityMap);
+        await groupService.processGroupInsertions(user, compatibilityMap);
 
         res.status(200).json(user);
     } catch (error) {
@@ -109,7 +103,8 @@ export const denyGroupMember = async (req: express.Request, res: express.Respons
     if (typeof insertionPlan === 'undefined') return; // do something
 
 
-    const updatedGroup: groupService.Group = await groupService.denyPassengerFromGroup(group, insertionPlan.insertionCandidate);
+    const updatedGroup: groupService.Group = groupService.denyPassengerFromGroup(group, insertionPlan.insertionCandidate);
+    await updateGroup(updatedGroup.id, updatedGroup);
 
     res.status(200).json(updatedGroup);
 }

@@ -49,6 +49,9 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+
 
     // Custom set options
     "esModuleInterop": true,
