@@ -49,7 +49,7 @@ const groups = [
 
 var passengerGroups = [];
 var driverGroups = [];
-getData();
+//getData();
 
 async function getData() {
     var url = "/groups/" + userId;
@@ -125,9 +125,10 @@ function renderGroups() {
     }
 
     // groupTitleElement.textContent = activeGroup.name;
-    groupTitleElement.textContent = visibleGroup.id;
+    groupTitleElement.textContent = `Group ${Number(visibleGroup.id) + 1}`;
 
     groupBtn.style.display = "block";
+
 }
 
 // Things to do with modes
@@ -354,6 +355,14 @@ searchBtn.addEventListener("click", async () => {
 });
 
 
+async function init() {
+    await getData();      // wait for both fetches to finish
+    setMode(initialMode);
+    renderWeek(currentWeek);
+}
+
+init();
+
 // Initial render
-setMode(initialMode);
-renderWeek(currentWeek);
+//setMode(initialMode);
+//renderWeek(currentWeek);
