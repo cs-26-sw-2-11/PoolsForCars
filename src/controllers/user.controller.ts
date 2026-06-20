@@ -26,10 +26,14 @@ export const signUp = async (
                 redirect: "/login",
             });
         } else if (success === "Phone_Number_Taken") {
-            res.status(401).json("Phone number is taken");
+            res.status(401).json({
+                message: "Phone number is taken"
+            });
         }
     } catch (err) {
-        next(err);
+        res.status(400).json({
+            message: String(err)
+        });
     }
 };
 
@@ -66,7 +70,7 @@ export const deleteUserById = async (
 ) => {
     try {
         userModel.deleteUser(Number(req.params["userId"]));
-        let user: userModel.User = await userModel.readUser(
+        let user: userModel.User = userModel.readUser(
             Number(req.params["userId"]),
         );
         if (typeof user === "undefined") {
@@ -84,9 +88,8 @@ export const deleteUserById = async (
 export const getUsers = async (
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction,
 ) => {
-    const users: userModel.usersJSON = await userModel.readUsersJSON();
+    const users: userModel.usersJSON = userModel.readUsersJSON();
     res.status(200).json(users);
 };
 
@@ -94,9 +97,8 @@ export const getUsers = async (
 export const getUserById = async (
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction,
 ) => {
-    const user: userModel.User = await userModel.readUser(
+    const user: userModel.User = userModel.readUser(
         Number(req.params["userId"]),
     );
     res.status(200).json(user);
@@ -130,7 +132,7 @@ export const loginHandler = async (
             res.status(200).json({
                 message: "User credentials found",
                 id: result.userId,
-                redirect: "/landing",
+                redirect: "/home",
             });
         }
     } catch (err) {

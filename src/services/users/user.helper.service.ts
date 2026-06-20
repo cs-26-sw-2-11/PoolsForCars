@@ -28,8 +28,8 @@ export type userPreferences = Record<
 
 export const doUserExist = async (user: userModel.User): Promise<boolean> => {
     try {
-        const allUsers = await userModel.readUsersJSON();
-        console.log(Error.isError(allUsers));
+        const allUsers = userModel.readUsersJSON();
+
         if (!allUsers) throw new Error("something went wrong");
         // Returns early if database is unpopulated.
         for (const [key, value] of Object.entries(allUsers)) {
@@ -55,12 +55,10 @@ export const createUser = async (
     const recievedUser: userModel.User = user;
     try {
         const currentDate: Date = new Date();
-        const currentWeek: number = await calendarModel.dateToWeek(currentDate);
+        const currentWeek: number = calendarModel.dateToWeek(currentDate);
 
-        recievedUser.schedule.startDate =
-            await calendarModel.getFirstDayOfWeek(currentDate);
-        recievedUser.schedule.endDate =
-            await calendarModel.getLastWorkdayOfWeek(currentDate);
+        recievedUser.schedule.startDate = calendarModel.getFirstDayOfWeek(currentDate);
+        recievedUser.schedule.endDate = calendarModel.getLastWorkdayOfWeek(currentDate);
 
         const tempDate: Date = new Date(
             recievedUser.schedule.startDate.valueOf(),
@@ -100,26 +98,31 @@ export const unpackUser = async (
     // Has the same format as our known faker, so the information mirrors what we've been building with
     const userPreferences: userPreferences = preferences;
 
+
     for (const day of Object.entries(userPreferences)) {
-        schedule.days[day[1].day] = {
-            date: startDate,
-            carAvailability: day[1].carAvailability,
-            seatsOffered: day[1].seatsOffered,
-            carpoolingIntent: day[1].carpoolingIntent,
-            pickupPoint: {
-                address: day[1].pickupAddress,
-                coordinates: await addressToCoordinates(day[1].pickupAddress),
-            } as Location,
-            destination: {
-                address: day[1].destinationAddress,
-                coordinates: await addressToCoordinates(
-                    day[1].destinationAddress,
-                ),
-            } as Location,
-            timeOfArrival: day[1].timeOfArrival,
-            groups: [null, null],
-            pendingGroups: [],
-        };
+        try {
+            schedule.days[day[1].day] = {
+                date: startDate,
+                carAvailability: day[1].carAvailability,
+                seatsOffered: day[1].seatsOffered,
+                carpoolingIntent: day[1].carpoolingIntent,
+                pickupPoint: {
+                    address: day[1].pickupAddress,
+                    coordinates: await addressToCoordinates(day[1].pickupAddress),
+                } as Location,
+                destination: {
+                    address: day[1].destinationAddress,
+                    coordinates: await addressToCoordinates(
+                        day[1].destinationAddress,
+                    ),
+                } as Location,
+                timeOfArrival: day[1].timeOfArrival,
+                groups: [null, null],
+                pendingGroups: [],
+            };
+        } catch (error) {
+            throw new Error(`${day[0]}s ${error}`)
+        }
     }
 
     // Returns the value in the format known in the user interface.

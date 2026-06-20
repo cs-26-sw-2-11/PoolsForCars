@@ -42,12 +42,16 @@ const rateLimitGeocode: number = 100;
 export const addressToCoordinates = async (
     address: string,
 ): Promise<[number, number]> => {
-    const response: GeocodingResponse = await getGeocoding(address);
-    const coordinates: [number, number] = [
-        response.features[0]?.geometry.coordinates[1] as number,
-        response.features[0]?.geometry.coordinates[0] as number,
-    ];
-    return coordinates;
+    try {
+        const response: GeocodingResponse = await getGeocoding(address);
+        const coordinates: [number, number] = [
+            response.features[0]?.geometry.coordinates[1] as number,
+            response.features[0]?.geometry.coordinates[0] as number,
+        ];
+        return coordinates;
+    } catch {
+        throw new Error(`address '${address}' does not match required format.`)
+    }
 };
 
 // Get a route
@@ -76,7 +80,7 @@ const getGeocoding = async (address: string): Promise<GeocodingResponse> => {
                     );
                 }
             } catch (error) {
-                console.error("Failed to fetch route:", error);
+                // console.error("Failed to fetch route:", error);
                 throw error;
             }
         },
@@ -165,8 +169,8 @@ const enqueue = <T>(task: () => Promise<T>, waitMS: number): Promise<T> => {
         return result;
     });
 
-    userWriteQueue = resultPromise.catch((error) => {
-        console.log("Task failed", error);
+    userWriteQueue = resultPromise.catch((/*error*/) => {
+        // console.log("Task failed", error);
         return wait(waitMS);
     });
 

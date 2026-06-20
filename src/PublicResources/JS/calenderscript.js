@@ -92,7 +92,7 @@ function showSummary() {
     document.getElementById("summary-time").textContent = bookingInfo.arrivalTime;
     document.getElementById("summary-role").textContent = bookingInfo.role;
     document.getElementById("summary-seats").textContent = bookingInfo.seats;
-    
+
 }
 
 // ===== SEND DATA TO BACKEND =====
@@ -124,15 +124,15 @@ function submitBooking() {
         },
         body: JSON.stringify(dataToSend)  // Convert to JSON text
     })
-    .then(response => response.json())  // Get response back
-    .then(data => {
-        console.log("SUCCESS! Backend said:", data);
-        showSuccessMessage();
-    })
-    .catch(error => {
-        console.log("ERROR! Something went wrong:", error);
-        alert("Error booking ride. Check your backend is running!");
-    });
+        .then(response => response.json())  // Get response back
+        .then(data => {
+            console.log("SUCCESS! Backend said:", data);
+            showSuccessMessage();
+        })
+        .catch(error => {
+            console.log("ERROR! Something went wrong:", error);
+            alert("Error booking ride. Check your backend is running!");
+        });
 }
 
 // ===== SHOW SUCCESS MESSAGE =====
@@ -142,7 +142,7 @@ function showSuccessMessage() {
     document.getElementById("step-2").style.display = "none";
     document.getElementById("step-3").style.display = "none";
     document.getElementById("step-4").style.display = "none";
-    
+
     // Show success message
     document.getElementById("success-message").style.display = "block";
 
@@ -152,8 +152,8 @@ function goFromStepFour() {
         goToStep(2);
     } else {
         goToStep(3);
-        
-}
+
+    }
 
 }
 // ===== START OVER - RESET EVERYTHING =====
@@ -188,7 +188,7 @@ function startOver() {
     // Go back to step 1
     goToStep(1);
 
-    
+
 }
 
 function checkRoleandGo() {
@@ -201,7 +201,7 @@ function checkRoleandGo() {
     } else {
         goToStep(4);
     }
-    
+
 }
 
 // ===== CALENDAR NAVIGATION FUNCTIONALITY =====
@@ -215,7 +215,7 @@ function getDateWeek(date) {
     const dayNum = (date.getDay() + 6) % 7;
     tempDate.setDate(tempDate.getDate() - dayNum + 3);
     const firstThursday = tempDate.valueOf();
-    
+
     tempDate.setMonth(0, 1);
     if (tempDate.getDay() !== 4) {
         tempDate.setMonth(0, 1 + ((4 - tempDate.getDay()) + 7) % 7);
@@ -232,7 +232,7 @@ function getFirstDayOfWeek(date) {
     firstDay.setDate(date.getDate() - dayNum);
     return firstDay;
 
-  
+
 }
 
 function getLastDayOfWeek(date) {
@@ -241,14 +241,14 @@ function getLastDayOfWeek(date) {
     lastDay.setDate(date.getDate() + (4 - dayNum));
     return lastDay;
 
-    
+
 }
 // Function to format date as "Mon DD, YYYY"
 function formatDate(date) {
     const options = { weekday: 'long', month: 'short', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 
-    
+
 }
 
 // Function to format week range
@@ -256,23 +256,23 @@ function formatWeek(weekStart) {
     const weekEnd = getLastDayOfWeek(weekStart);
     return `${formatDate(weekStart)} - ${formatDate(weekEnd)}`;
 
-    
+
 }
 
 // Update the display of current date and week
 function Display() {
     document.getElementById('current-date').textContent = formatDate(currentDate);
-    document.getElementById('current-week').textContent = 
+    document.getElementById('current-week').textContent =
         `Week ${getDateWeek(currentDate)}: ${formatWeek(currentWeekStart)}`;
-
-        updateData();
-    
 }
 
 // Navigate to previous week
 function previousWeek() {
+    saveData()
+
     currentWeekStart.setDate(currentWeekStart.getDate() - 7);
     currentDate = new Date(currentWeekStart); // Set current date to start of the week
+
     Display();
 
     updateData();
@@ -280,8 +280,11 @@ function previousWeek() {
 
 // Navigate to next week
 function nextWeek() {
+    saveData()
+
     currentWeekStart.setDate(currentWeekStart.getDate() + 7);
     currentDate = new Date(currentWeekStart); // Set current date to start of the week
+
     Display();
 
     updateData();
@@ -289,9 +292,12 @@ function nextWeek() {
 
 // Navigate to previous date
 function previousDate() {
+    saveData()
+
     currentDate.setDate(currentDate.getDate() - 1);
     currentDate = WannaSkipWeekend(currentDate, -1);
     currentWeekStart = getFirstDayOfWeek(currentDate);
+
     Display();
 
     updateData();
@@ -299,16 +305,19 @@ function previousDate() {
 
 // Navigate to next date
 function nextDay() {
+    saveData()
+
     currentDate.setDate(currentDate.getDate() + 1);
     currentDate = WannaSkipWeekend(currentDate, 1);
     currentWeekStart = getFirstDayOfWeek(currentDate);
+
     Display();
 
     updateData();
 }
 
 // Initialize the calendar display when the page loads
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     Display();
 });
 
@@ -322,7 +331,7 @@ function WannaSkipWeekend(date, MoveDayForward) {
     }
     return date;
 
-  
+
 }
 /*async function getData() {
     const url = "/calendar/0";
@@ -348,9 +357,9 @@ function WannaSkipWeekend(date, MoveDayForward) {
 }
 */
 async function getData() {
-    const url = "/calendar/0";
+    const url = `/calendar/${userId}`;
 
-    try { 
+    try {
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -359,7 +368,9 @@ async function getData() {
 
         const result = await response.json();
 
-        console.log(result);
+        console.log("result", result);
+
+        calenderData = result;
 
         // 🔑 dynamically calculate week number
         const currentWeek = getDateWeek(currentDate);
@@ -398,17 +409,28 @@ async function getData() {
 function fillFromFetch(dayData) {
     if (!dayData) return;
 
-    bookingInfo.pickup = dayData.pickupPoint.address ||"";
-    bookingInfo.destination = dayData.destination.address ||"";
-    bookingInfo.arrivalTime = dayData.timeOfArrival ||"";
-    bookingInfo.seats = dayData.seatsAvailable ||"";
-    
-    document.getElementById("pickup").value = bookingInfo.pickup;
-    document.getElementById("destination").value = bookingInfo.destination;
-    document.getElementById("arrival-time").value = bookingInfo.arrivalTime;
-    document.getElementById("seats").value = bookingInfo.seats;
+    // bookingInfo.pickup = dayData.pickupPoint.address || "";
+    // bookingInfo.destination = dayData.destination.address || "";
+    // bookingInfo.arrivalTime = dayData.timeOfArrival || "";
+    // bookingInfo.seats = dayData.seatsAvailable || "";
+    //
 
-    
+    if (dayData.carpoolingIntent) {
+        document.getElementById("carpoolYes").checked = true;
+    } else {
+        document.getElementById("carpoolNo").checked = true;
+    }
+
+    if (dayData.carAvailability) {
+        document.getElementById("driver").checked = true;
+    } else {
+        document.getElementById("passenger").checked = true;
+    }
+
+    document.getElementById("pickup").value = dayData.pickupPoint.address;
+    document.getElementById("destination").value = dayData.destination.address;
+    document.getElementById("arrival").value = dayData.timeOfArrival;
+    document.getElementById("seats").value = dayData.seatsAvailable || 0;
 }
 
 async function loadInitialData() {
@@ -435,7 +457,7 @@ function findWeekIndexByDate(data, date) {
 
     updateData();
 }    
-*/    
+*/
 
 
 /*async function fetchOrCreateWeekData(date) {
@@ -475,31 +497,31 @@ async function updateData() {
 async function fetchOrCreateWeekData(date) {
     // Step 1: Calculate which week number this date belongs to
     const weekNumber = getDateWeek(date);
-    
+
     // Step 2: Check if week already exists in cache
     if (calenderData[weekNumber]) {
         console.log(`Week ${weekNumber} found in cache`);
         return calenderData[weekNumber];
     }
-    
+
     // Step 3: Week doesn't exist in cache, fetch from backend
     console.log(`Week ${weekNumber} not in cache, fetching from backend...`);
     try {
         const userId = 0; // Get this from cookie or somewhere
         const response = await fetch(`/calendar/${userId}/${weekNumber}`);
-        
+
         if (!response.ok) {
             throw new Error(`Failed to fetch week ${weekNumber}`);
         }
-        
+
         const weekData = await response.json();
-        
+
         // Step 4: Save to cache for next time
         calenderData[weekNumber] = weekData;
         console.log(`Week ${weekNumber} cached successfully`);
-        
+
         return weekData;
-        
+
     } catch (error) {
         console.error(`Error fetching week ${weekNumber}:`, error);
         return null;
@@ -511,27 +533,85 @@ async function updateData() {
     try {
         // Step 1: Fetch or get week data from cache
         const weekData = await fetchOrCreateWeekData(currentDate);
-        
+
         if (!weekData) {
             console.warn("Could not load week data");
             return;
         }
-        
+
         // Step 2: Get current day name (Monday, Tuesday, etc)
         const dayName = currentDate.toLocaleDateString('en-US', { weekday: 'long' });
-        
+
         // Step 3: Get the specific day's data from the week
         const dayData = weekData.days?.[dayName];
-        
+
         if (!dayData) {
             console.warn(`No data for ${dayName}`);
             return;
         }
-        
+
+        console.log(dayData)
+
         // Step 4: Fill the form with this day's data
         fillFromFetch(dayData);
-        
+
     } catch (error) {
         console.error("Error updating calendar data:", error);
     }
 }
+
+// ===== SAVE DATA =====
+function saveData() {
+    const dayName = currentDate.toLocaleDateString('en-US', { weekday: 'long' });
+    const weekNumber = getDateWeek(currentDate);
+    console.log(weekNumber)
+
+    console.log(calenderData)
+    const weekData = calenderData[weekNumber];
+    if (!weekData) {
+        console.warn(`No data for week ${weekNumber}`);
+        return;
+    }
+
+    const dayData = weekData.days[dayName];
+    if (!dayData) {
+        console.warn(`No data for day ${dayName}`);
+        return;
+    }
+
+    dayData.carpoolingIntent = document.getElementById("carpoolYes").checked;
+    dayData.carAvailability = document.getElementById("driver").checked;
+
+    dayData.pickupPoint.address = document.getElementById("pickup").value;
+    dayData.destination.address = document.getElementById("destination").value;
+    dayData.timeOfArrival = document.getElementById("arrival").value;
+    dayData.seatsAvailable = document.getElementById("seats").value;
+}
+
+
+
+window.addEventListener("DOMContentLoaded", function () {
+    var form = document.getElementById("calendarForm");
+
+    if (!form) {
+        return;
+    }
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        document.getElementById("calendarSubmit").disabled = true; // prevent double submission
+
+        saveData();
+
+        const response = await fetch(`/calendar/${userId}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(calenderData)
+        });
+
+        const data = await response.json();
+
+        alert(data.message);
+        document.getElementById("calendarSubmit").disabled = false; // reenable submission
+    });
+});

@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="../CSS/profile.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../CSS/profile.css">
     <title>Profile</title>
 </head>
+
 <body>
     <div class="profile-page">
         <div class="Header">
             <nav class="menu-bar menu-bar--inside" aria-label="Top navigation">
                 <ul class="topbarmenu">
-                    <li><a href="/landing">Home</a></li>
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/profile">Profile</a></li>
                     <li><a href="/calendar">Calendar</a></li>
                     <li><a href="/groups">Groups</a></li>
                     <li><a href="/notifications">Notifications</a></li>
@@ -26,7 +29,8 @@
                 </div>
                 <div class="profile-hero-copy">
                     <div class="title title--left">Welcome Back</div>
-                    <p class="form-intro" style="text-align: center;">Manage your personal information and carpooling preferences.</p>
+                    <p class="form-intro" style="text-align: center;">Manage your personal information and carpooling
+                        preferences.</p>
                 </div>
             </section>
 
@@ -52,27 +56,27 @@
                 <fieldset>
                     <div class="legend">Carpooling Preferences</div>
                     <div class="day-selector" role="radiogroup" aria-label="Choose a day for carpooling preferences">
-                <label class="day-selector__option" for="signupDayMonday">
-                    <input type="radio" id="signupDayMonday" name="signupSelectedDay" value="monday" checked>
-                    <span>Monday</span>
-                </label>
-                <label class="day-selector__option" for="signupDayTuesday">
-                    <input type="radio" id="signupDayTuesday" name="signupSelectedDay" value="tuesday">
-                    <span>Tuesday</span>
-                </label>
-                <label class="day-selector__option" for="signupDayWednesday">
-                    <input type="radio" id="signupDayWednesday" name="signupSelectedDay" value="wednesday">
-                    <span>Wednesday</span>
-                </label>
-                <label class="day-selector__option" for="signupDayThursday">
-                    <input type="radio" id="signupDayThursday" name="signupSelectedDay" value="thursday">
-                    <span>Thursday</span>
-                </label>
-                <label class="day-selector__option" for="signupDayFriday">
-                    <input type="radio" id="signupDayFriday" name="signupSelectedDay" value="friday">
-                    <span>Friday</span>
-                </label>
-            </div>
+                        <label class="day-selector__option" for="signupDayMonday">
+                            <input type="radio" id="signupDayMonday" name="signupSelectedDay" value="monday" checked>
+                            <span>Monday</span>
+                        </label>
+                        <label class="day-selector__option" for="signupDayTuesday">
+                            <input type="radio" id="signupDayTuesday" name="signupSelectedDay" value="tuesday">
+                            <span>Tuesday</span>
+                        </label>
+                        <label class="day-selector__option" for="signupDayWednesday">
+                            <input type="radio" id="signupDayWednesday" name="signupSelectedDay" value="wednesday">
+                            <span>Wednesday</span>
+                        </label>
+                        <label class="day-selector__option" for="signupDayThursday">
+                            <input type="radio" id="signupDayThursday" name="signupSelectedDay" value="thursday">
+                            <span>Thursday</span>
+                        </label>
+                        <label class="day-selector__option" for="signupDayFriday">
+                            <input type="radio" id="signupDayFriday" name="signupSelectedDay" value="friday">
+                            <span>Friday</span>
+                        </label>
+                    </div>
                     <div class="day-grid" data-day-picker>
                         <section class="day-card" data-role-card data-day-card="monday">
                             <div class="day-card__title">Monday</div>
@@ -80,11 +84,13 @@
                                 <span class="details">Are you able to carpool today?</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="mondayCarpoolYes">
-                                        <input type="radio" id="mondayCarpoolYes" name="mondayCarpoolingIntent" required value="true" checked>
+                                        <input type="radio" id="mondayCarpoolYes" name="mondayCarpoolingIntent" required
+                                            value="true" checked>
                                         <span>Yes</span>
                                     </label>
                                     <label class="radio-option" for="mondayCarpoolNo">
-                                        <input type="radio" id="mondayCarpoolNo" name="mondayCarpoolingIntent" required value="false">
+                                        <input type="radio" id="mondayCarpoolNo" name="mondayCarpoolingIntent" required
+                                            value="false">
                                         <span>No</span>
                                     </label>
                                 </div>
@@ -93,26 +99,31 @@
                                 <span class="details">Passenger or Driver</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="mondayPassenger">
-                                        <input type="radio" id="mondayPassenger" name="mondayCarAvailability" required value="false" checked>
+                                        <input type="radio" id="mondayPassenger" name="mondayCarAvailability" required
+                                            value="false" checked>
                                         <span>Passenger</span>
                                     </label>
                                     <label class="radio-option" for="mondayDriver">
-                                        <input type="radio" id="mondayDriver" name="mondayCarAvailability" required value="true">
+                                        <input type="radio" id="mondayDriver" name="mondayCarAvailability" required
+                                            value="true">
                                         <span>Driver</span>
                                     </label>
                                 </div>
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="mondaySeats">Seats Available</label>
-                                <input type="number" id="mondaySeats" name="mondaySeatsOffered" required min="1" max="5" placeholder="Number of seats excluding driver">
+                                <input type="number" id="mondaySeats" name="mondaySeatsOffered" required min="1" max="5"
+                                    placeholder="Number of seats excluding driver">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="mondayPickup">Pickup-point</label>
-                                <input type="text" id="mondayPickup" name="mondayPickupPoint" required placeholder="Address to point">
+                                <input type="text" id="mondayPickup" name="mondayPickupPoint" required
+                                    placeholder="Address to point">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="mondayDestination">Destination</label>
-                                <input type="text" id="mondayDestination" name="mondayDestination" required placeholder="Address to stop">
+                                <input type="text" id="mondayDestination" name="mondayDestination" required
+                                    placeholder="Address to stop">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="mondayArrival">Time of arrival</label>
@@ -120,17 +131,19 @@
                             </div>
                         </section>
 
-                       <section class="day-card" data-role-card data-day-card="tuesday">
+                        <section class="day-card" data-role-card data-day-card="tuesday">
                             <div class="day-card__title">Tuesday</div>
                             <div class="day-card__field">
                                 <span class="details">Are you able to carpool today?</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="tuesdayCarpoolYes">
-                                        <input type="radio" id="tuesdayCarpoolYes" name="tuesdayCarpoolingIntent" required value="true" checked>
+                                        <input type="radio" id="tuesdayCarpoolYes" name="tuesdayCarpoolingIntent"
+                                            required value="true" checked>
                                         <span>Yes</span>
                                     </label>
                                     <label class="radio-option" for="tuesdayCarpoolNo">
-                                        <input type="radio" id="tuesdayCarpoolNo" name="tuesdayCarpoolingIntent" required value="false">
+                                        <input type="radio" id="tuesdayCarpoolNo" name="tuesdayCarpoolingIntent"
+                                            required value="false">
                                         <span>No</span>
                                     </label>
                                 </div>
@@ -139,26 +152,31 @@
                                 <span class="details">Passenger or Driver</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="tuesdayPassenger">
-                                        <input type="radio" id="tuesdayPassenger" name="tuesdayCarAvailability" required value="false" checked>
+                                        <input type="radio" id="tuesdayPassenger" name="tuesdayCarAvailability" required
+                                            value="false" checked>
                                         <span>Passenger</span>
                                     </label>
                                     <label class="radio-option" for="tuesdayDriver">
-                                        <input type="radio" id="tuesdayDriver" name="tuesdayCarAvailability" required value="true">
+                                        <input type="radio" id="tuesdayDriver" name="tuesdayCarAvailability" required
+                                            value="true">
                                         <span>Driver</span>
                                     </label>
                                 </div>
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="tuesdaySeats">Seats Available</label>
-                                <input type="number" id="tuesdaySeats" name="tuesdaySeatsOffered" required min="1" max="5" placeholder="Number of seats excluding driver">
+                                <input type="number" id="tuesdaySeats" name="tuesdaySeatsOffered" required min="1"
+                                    max="5" placeholder="Number of seats excluding driver">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="tuesdayPickup">Pickup-point</label>
-                                <input type="text" id="tuesdayPickup" name="tuesdayPickupPoint" required placeholder="Address to point">
+                                <input type="text" id="tuesdayPickup" name="tuesdayPickupPoint" required
+                                    placeholder="Address to point">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="tuesdayDestination">Destination</label>
-                                <input type="text" id="tuesdayDestination" name="tuesdayDestination" required placeholder="Address to stop">
+                                <input type="text" id="tuesdayDestination" name="tuesdayDestination" required
+                                    placeholder="Address to stop">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="tuesdayArrival">Time of arrival</label>
@@ -172,11 +190,13 @@
                                 <span class="details">Are you able to carpool today?</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="wednesdayCarpoolYes">
-                                        <input type="radio" id="wednesdayCarpoolYes" name="wednesdayCarpoolingIntent" required value="true" checked>
+                                        <input type="radio" id="wednesdayCarpoolYes" name="wednesdayCarpoolingIntent"
+                                            required value="true" checked>
                                         <span>Yes</span>
                                     </label>
                                     <label class="radio-option" for="wednesdayCarpoolNo">
-                                        <input type="radio" id="wednesdayCarpoolNo" name="wednesdayCarpoolingIntent" required value="false">
+                                        <input type="radio" id="wednesdayCarpoolNo" name="wednesdayCarpoolingIntent"
+                                            required value="false">
                                         <span>No</span>
                                     </label>
                                 </div>
@@ -185,26 +205,31 @@
                                 <span class="details">Passenger or Driver</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="wednesdayPassenger">
-                                        <input type="radio" id="wednesdayPassenger" name="wednesdayCarAvailability" required value="false" checked>
+                                        <input type="radio" id="wednesdayPassenger" name="wednesdayCarAvailability"
+                                            required value="false" checked>
                                         <span>Passenger</span>
                                     </label>
                                     <label class="radio-option" for="wednesdayDriver">
-                                        <input type="radio" id="wednesdayDriver" name="wednesdayCarAvailability" required value="true">
+                                        <input type="radio" id="wednesdayDriver" name="wednesdayCarAvailability"
+                                            required value="true">
                                         <span>Driver</span>
                                     </label>
                                 </div>
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="wednesdaySeats">Seats Available</label>
-                                <input type="number" id="wednesdaySeats" name="wednesdaySeatsOffered" required min="1" max="5" placeholder="Number of seats excluding driver">
+                                <input type="number" id="wednesdaySeats" name="wednesdaySeatsOffered" required min="1"
+                                    max="5" placeholder="Number of seats excluding driver">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="wednesdayPickup">Pickup-point</label>
-                                <input type="text" id="wednesdayPickup" name="wednesdayPickupPoint" required placeholder="Address to point">
+                                <input type="text" id="wednesdayPickup" name="wednesdayPickupPoint" required
+                                    placeholder="Address to point">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="wednesdayDestination">Destination</label>
-                                <input type="text" id="wednesdayDestination" name="wednesdayDestination" required placeholder="Address to stop">
+                                <input type="text" id="wednesdayDestination" name="wednesdayDestination" required
+                                    placeholder="Address to stop">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="wednesdayArrival">Time of arrival</label>
@@ -212,17 +237,19 @@
                             </div>
                         </section>
 
-                          <section class="day-card" data-role-card data-day-card="thursday">
+                        <section class="day-card" data-role-card data-day-card="thursday">
                             <div class="day-card__title">Thursday</div>
                             <div class="day-card__field">
                                 <span class="details">Are you able to carpool today?</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="thursdayCarpoolYes">
-                                        <input type="radio" id="thursdayCarpoolYes" name="thursdayCarpoolingIntent" required value="true" checked>
+                                        <input type="radio" id="thursdayCarpoolYes" name="thursdayCarpoolingIntent"
+                                            required value="true" checked>
                                         <span>Yes</span>
                                     </label>
                                     <label class="radio-option" for="thursdayCarpoolNo">
-                                        <input type="radio" id="thursdayCarpoolNo" name="thursdayCarpoolingIntent" required value="false">
+                                        <input type="radio" id="thursdayCarpoolNo" name="thursdayCarpoolingIntent"
+                                            required value="false">
                                         <span>No</span>
                                     </label>
                                 </div>
@@ -231,26 +258,31 @@
                                 <span class="details">Passenger or Driver</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="thursdayPassenger">
-                                        <input type="radio" id="thursdayPassenger" name="thursdayCarAvailability" required value="false" checked>
+                                        <input type="radio" id="thursdayPassenger" name="thursdayCarAvailability"
+                                            required value="false" checked>
                                         <span>Passenger</span>
                                     </label>
                                     <label class="radio-option" for="thursdayDriver">
-                                        <input type="radio" id="thursdayDriver" name="thursdayCarAvailability" required value="true">
+                                        <input type="radio" id="thursdayDriver" name="thursdayCarAvailability" required
+                                            value="true">
                                         <span>Driver</span>
                                     </label>
                                 </div>
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="thursdaySeats">Seats Available</label>
-                                <input type="number" id="thursdaySeats" name="thursdaySeatsOffered" required min="1" max="5" placeholder="Number of seats excluding driver">
+                                <input type="number" id="thursdaySeats" name="thursdaySeatsOffered" required min="1"
+                                    max="5" placeholder="Number of seats excluding driver">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="thursdayPickup">Pickup-point</label>
-                                <input type="text" id="thursdayPickup" name="thursdayPickupPoint" required placeholder="Address to point">
+                                <input type="text" id="thursdayPickup" name="thursdayPickupPoint" required
+                                    placeholder="Address to point">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="thursdayDestination">Destination</label>
-                                <input type="text" id="thursdayDestination" name="thursdayDestination" required placeholder="Address to stop">
+                                <input type="text" id="thursdayDestination" name="thursdayDestination" required
+                                    placeholder="Address to stop">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="thursdayArrival">Time of arrival</label>
@@ -258,17 +290,19 @@
                             </div>
                         </section>
 
-                          <section class="day-card" data-role-card data-day-card="friday">
+                        <section class="day-card" data-role-card data-day-card="friday">
                             <div class="day-card__title">Friday</div>
                             <div class="day-card__field">
                                 <span class="details">Are you able to carpool today?</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="fridayCarpoolYes">
-                                        <input type="radio" id="fridayCarpoolYes" name="fridayCarpoolingIntent" required value="true" checked>
+                                        <input type="radio" id="fridayCarpoolYes" name="fridayCarpoolingIntent" required
+                                            value="true" checked>
                                         <span>Yes</span>
                                     </label>
                                     <label class="radio-option" for="fridayCarpoolNo">
-                                        <input type="radio" id="fridayCarpoolNo" name="fridayCarpoolingIntent" required value="false">
+                                        <input type="radio" id="fridayCarpoolNo" name="fridayCarpoolingIntent" required
+                                            value="false">
                                         <span>No</span>
                                     </label>
                                 </div>
@@ -277,26 +311,31 @@
                                 <span class="details">Passenger or Driver</span>
                                 <div class="radio-group radio-group--stacked">
                                     <label class="radio-option" for="fridayPassenger">
-                                        <input type="radio" id="fridayPassenger" name="fridayCarAvailability" required value="false" checked>
+                                        <input type="radio" id="fridayPassenger" name="fridayCarAvailability" required
+                                            value="false" checked>
                                         <span>Passenger</span>
                                     </label>
                                     <label class="radio-option" for="fridayDriver">
-                                        <input type="radio" id="fridayDriver" name="fridayCarAvailability" required value="true">
+                                        <input type="radio" id="fridayDriver" name="fridayCarAvailability" required
+                                            value="true">
                                         <span>Driver</span>
                                     </label>
                                 </div>
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="fridaySeats">Seats Available</label>
-                                <input type="number" id="fridaySeats" name="fridaySeatsOffered" required min="1" max="5" placeholder="Number of seats excluding driver">
+                                <input type="number" id="fridaySeats" name="fridaySeatsOffered" required min="1" max="5"
+                                    placeholder="Number of seats excluding driver">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="fridayPickup">Pickup-point</label>
-                                <input type="text" id="fridayPickup" name="fridayPickupPoint" required placeholder="Address to point">
+                                <input type="text" id="fridayPickup" name="fridayPickupPoint" required
+                                    placeholder="Address to point">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="fridayDestination">Destination</label>
-                                <input type="text" id="fridayDestination" name="fridayDestination" required placeholder="Address to stop">
+                                <input type="text" id="fridayDestination" name="fridayDestination" required
+                                    placeholder="Address to stop">
                             </div>
                             <div class="day-card__field">
                                 <label class="details" for="fridayArrival">Time of arrival</label>
@@ -314,4 +353,5 @@
     </div>
     <script src="../JS/Profile.js"></script>
 </body>
+
 </html>

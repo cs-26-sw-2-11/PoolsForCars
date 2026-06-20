@@ -24,6 +24,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (response.status === 200) { // ok
             window.location.href = data.redirect;
+        } else {
+            alert(data.message);
         }
     })
 })

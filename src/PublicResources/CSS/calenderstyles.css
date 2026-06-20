@@ -1,6 +1,8 @@
-
+/* @import "forms.css"; */
+/* @import "base.css"; */
+@import "profile.css";
  
- BASIC STYLING 
+ /* BASIC STYLING  */
 * {
     margin: 0;
     padding: 0;
@@ -45,7 +47,7 @@ body {
 }
 
 .phone-header {
-    
+
   width: min(100%, 1060px);
   background-color: #fff;
   padding: 30px 20px;
@@ -121,6 +123,7 @@ body {
     padding: 8px 12px;
     border-radius: 6px;
     cursor: pointer;
+    color: black;
     font-size: 12px;
 }
 
@@ -146,15 +149,15 @@ body {
     margin-bottom: 20px;
 }
 
-/* FORM ELEMENTS */
-form label {
-    display: block;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-    font-size: 14px;
-}
+/* /* FORM ELEMENTS */ */
+/* form label { */
+/*     display: block; */
+/*     margin-top: 15px; */
+/*     margin-bottom: 5px; */
+/*     font-weight: bold; */
+/*     color: #555; */
+/*     font-size: 14px; */
+/* } */
 
 form input[type="text"],
 form input[type="time"],

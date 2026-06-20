@@ -16,7 +16,8 @@ let activeGroup = null;
 const weekLabel = document.getElementById("weekLabel");
 const prevBtn = document.getElementById("prevWeek");
 const nextBtn = document.getElementById("nextWeek");
-const groupBtn = document.getElementById("group-button")
+const groupBtn = document.getElementById("group-button");
+const searchBtn = document.getElementById("searchForGroups");
 
 function renderWeek() {
     weekLabel.textContent = `Week ${currentWeek}`;
@@ -117,7 +118,7 @@ function renderGroups() {
 
     if (!activeGroup) {
         groupTitleElement.textContent = "No group available";
-        
+
         groupBtn.style.display = "none";
 
         return;
@@ -265,7 +266,7 @@ dayItems.forEach(day => {
 // Delete+Leave Group button
 
 groupBtn.addEventListener("click", async () => {
-    
+
     if (!activeGroup || !activeGroup.id) {
         alert("No active group selected");
         return;
@@ -294,14 +295,14 @@ groupBtn.addEventListener("click", async () => {
 
         // If the user is currently a driver, the request 
         // that gets sent to backend is a DELETE request
-        if(currentMode === "driver") {
+        if (currentMode === "driver") {
             response = await fetch(`/groups/${activeGroup.id}`, {
                 method: "DELETE"
             });
 
         } else if (currentMode === "passenger") {
-        // If the user is currently a passenger, the request 
-        // that gets sent to backend is a POST request
+            // If the user is currently a passenger, the request 
+            // that gets sent to backend is a POST request
             response = await fetch(`/groups/${activeGroup.id}/leave/${userId}`, {
                 method: "POST"
             });
@@ -325,17 +326,33 @@ groupBtn.addEventListener("click", async () => {
 
         // Refreshes the data after actions have been taken
         await getData();
-        
+
         // Re-renders the UI, so changes actually become visible
         renderGroups();
         renderSchedule();
-    
-    // The catch-all for any error that might occur within this block
+
+        // The catch-all for any error that might occur within this block
     } catch (error) {
         console.error(error);
         alert("Action failed");
     }
+})
+
+searchBtn.addEventListener("click", async () => {
+    searchBtn.disabled = true; // prevent double submission
+
+    const response = await fetch(`/groups/${userId}/search`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+    });
+
+    const data = await response.json();
+
+    console.log(data);
+
+    searchBtn.disabled = false; // reenable submission
 });
+
 
 // Initial render
 setMode(initialMode);

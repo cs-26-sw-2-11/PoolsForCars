@@ -13,12 +13,13 @@ router.route("")
 
 router.route("/:userId")
     .get(calendarController.getCalendar)
+    .patch(calendarController.updateCalendar)
 
 router.route("/:userId/:weekNumber")
     .get(calendarController.getCalendarWeek)
 
-//
-// calendarRoutes.get('/:calendarId', calendarController.getcalendarById);
+
+
 //
 // calendarRoutes.post('/', calendarController.createcalendar);
 export default router;

@@ -42,7 +42,7 @@ router.get("/", (req, res) => {
     res.sendFile(filePath + "/Login.html");
 });
 
-router.get("/landing", (req, res) => {
+router.get("/home", (req, res) => {
     res.sendFile(filePath + "/Landing.html");
 });
 

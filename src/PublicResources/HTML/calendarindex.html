@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,139 +13,192 @@
         <!-- Phone header with time and status -->
         <div class="phone-header">
 
-                
-        <nav class="menu-bar menu-bar--inside" aria-label="Top navigation">
-        <ul class="topbarmenu">
-            <li><a href="/landing">Home</a></li>
-            <li><a href="/profile">Profile</a></li>
-            <li><a href="/groups">Groups</a></li>
-            <li><a href="/notifications">Notifications</a></li>
-            <li><a href="/login">Logout</a></li>
-        </ul>
-        </nav>
 
-        <!-- Navigation tabs -->
-        <div class="nav-tabs">
-            <button class="nav-tab">Calender</button>
-            <button class="nav-tab active">Schedule</button>
-        </div>
+            <nav class="menu-bar menu-bar--inside" aria-label="Top navigation">
+                <ul class="topbarmenu">
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/profile">Profile</a></li>
+                    <li><a href="/calendar">Calendar</a></li>
+                    <li><a href="/groups">Groups</a></li>
+                    <li><a href="/notifications">Notifications</a></li>
+                    <li><a href="/login">Logout</a></li>
+                </ul>
+            </nav>
 
-        <!-- Week Navigation -->
-        <div class="week-nav">
-            <button id="prev-week" onclick="previousWeek()">← Prev Week</button>
-            <span id="current-week">Current Week</span>
-            <button id="next-week" onclick="nextWeek()">Next Week →</button>
-        </div>
-        <!-- Date navigation -->
-        <div class="date-nav">
-            <button id="prev-date" onclick="previousDate()">← Previous</button>
-            <span id="current-date">Current Date</span>
-            <button id="next-date" onclick="nextDay()">Next →</button>
-        </div>
+            <!-- Navigation tabs -->
+            <!-- <div class="nav-tabs"> -->
+            <!--     <button class="nav-tab">Calender</button> -->
+            <!--     <button class="nav-tab active">Schedule</button> -->
+            <!-- </div> -->
 
-
-        <!-- FORM STEP 1 -->
-        <div class="step" id="step-1">
-            <h2>Step 1: Trip Details</h2>
-            <form id="form-step-1">
-                <label>Pickup Location:</label>
-                <input type="text" id="pickup" placeholder="Enter pickup address" required>
-
-                <label>Destination:</label>
-                <input type="text" id="destination" placeholder="Enter destination" required>
-
-                <label>Time of Arrival:</label>
-                <input type="time" id="arrival-time" required>
-
-                <label>Number of destinations:</label>
-                <input type="number" id="num-destinations" placeholder="1" min="1" required>
-
-                <div class="button-group">
-                    <button type="button" class="btn-next" onclick="goToStep(2)">Next →</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- FORM STEP 2 -->
-        <div class="step" id="step-2" style="display: none;">
-            <h2>Step 2: Cancel or Continue?</h2>
-            <form id="form-step-2">
-                <label>Do you want to cancel today?</label>
-                <div class="checkbox-group">
-                    <input type="checkbox" id="cancel-trip">
-                    <label for="cancel-trip">Yes, cancel my ride</label>
-                </div>
-
-                <label>Are you a Driver or Passenger?</label>
-                <div class="checkbox-group">
-                    <input type="radio" name="role" value="driver" id="driver">
-                    <label for="driver">Driver</label>
-                </div>
-                <div class="checkbox-group">
-                    <input type="radio" name="role" value="passenger" id="passenger" checked>
-                    <label for="passenger">Passenger</label>
-                </div>
-
-                <div class="button-group">
-                    <button type="button" class="btn-back" onclick="goToStep(1)">← Back</button>
-                    <button type="button" class="btn-next" onclick="checkRoleandGo()">Next →</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- FORM STEP 3 -->
-        <div class="step" id="step-3" style="display: none;">
-            <h2>Step 3: More Details</h2>
-            <form id="form-step-3">
-                <label>Are you able to drive this date?</label>
-                <div class="checkbox-group">
-                    <input type="radio" name="car-available" value="yes" id="car-yes">
-                    <label for="car-yes">Yes</label>
-                </div>
-                <div class="checkbox-group">
-                    <input type="radio" name="car-available" value="no" id="car-no" checked>
-                    <label for="car-no">No</label>
-                </div>
-
-                <label>How many seats are available?</label>
-                <input type="number" id="seats" placeholder="0" min="0" max="8" required>
-
-                <label>Destination:</label>
-                <input type="text" id="destination-2" placeholder="Enter destination" required>
-
-                <div class="button-group">
-                    <button type="button" class="btn-back" onclick="goToStep(2)">← Back</button>
-                    <button type="button" class="btn-next" onclick="goToStep(4)">Next →</button>
-                </div>
-            </form>
-        </div>
-
-        <!-- FORM STEP 4 - SUMMARY -->
-        <div class="step" id="step-4" style="display: none;">
-            <h2>Step 4: Review Your Booking</h2>
-            <div class="summary-box">
-                <p><strong>Pickup:</strong> <span id="summary-pickup">-</span></p>
-                <p><strong>Destination:</strong> <span id="summary-destination">-</span></p>
-                <p><strong>Time:</strong> <span id="summary-time">-</span></p>
-                <p><strong>You are a:</strong> <span id="summary-role">-</span></p>
-                <p><strong>Seats Available:</strong> <span id="summary-seats">-</span></p>
+            <!-- Week Navigation -->
+            <div class="week-nav">
+                <button id="prev-week" onclick="previousWeek()">← Prev Week</button>
+                <span id="current-week">Current Week</span>
+                <button id="next-week" onclick="nextWeek()">Next Week →</button>
+            </div>
+            <!-- Date navigation -->
+            <div class="date-nav">
+                <button id="prev-date" onclick="previousDate()">← Previous</button>
+                <span id="current-date">Current Date</span>
+                <button id="next-date" onclick="nextDay()">Next →</button>
             </div>
 
-            <div class="button-group">
-                <button type="button" class="btn-back" onclick="goFromStepFour()">← Back</button>
-                <button type="button" class="btn-submit" onclick="submitBooking()">✓ Submit Booking</button>
-            </div>
+
+            <!-- FORM STEP 1 -->
+            <!-- <div class="step" id="step-1"> -->
+            <!--     <h2>Step 1: Trip Details</h2> -->
+            <!--     <form id="form-step-1"> -->
+            <!--         <label>Pickup Location:</label> -->
+            <!--         <input type="text" id="pickup" placeholder="Enter pickup address" required> -->
+            <!---->
+            <!--         <label>Destination:</label> -->
+            <!--         <input type="text" id="destination" placeholder="Enter destination" required> -->
+            <!---->
+            <!--         <label>Time of Arrival:</label> -->
+            <!--         <input type="time" id="arrival-time" required> -->
+            <!---->
+            <!--         <label>Number of destinations:</label> -->
+            <!--         <input type="number" id="num-destinations" placeholder="1" min="1" required> -->
+            <!---->
+            <!--         <div class="button-group"> -->
+            <!--             <button type="button" class="btn-next" onclick="goToStep(2)">Next →</button> -->
+            <!--         </div> -->
+            <!--     </form> -->
+            <!-- </div> -->
+
+            <!-- FORM STEP 2 -->
+            <!-- <div class="step" id="step-2" style="display: none;"> -->
+            <!--     <h2>Step 2: Cancel or Continue?</h2> -->
+            <!--     <form id="form-step-2"> -->
+            <!--         <label>Do you want to cancel today?</label> -->
+            <!--         <div class="checkbox-group"> -->
+            <!--             <input type="checkbox" id="cancel-trip"> -->
+            <!--             <label for="cancel-trip">Yes, cancel my ride</label> -->
+            <!--         </div> -->
+            <!---->
+            <!--         <label>Are you a Driver or Passenger?</label> -->
+            <!--         <div class="checkbox-group"> -->
+            <!--             <input type="radio" name="role" value="driver" id="driver"> -->
+            <!--             <label for="driver">Driver</label> -->
+            <!--         </div> -->
+            <!--         <div class="checkbox-group"> -->
+            <!--             <input type="radio" name="role" value="passenger" id="passenger" checked> -->
+            <!--             <label for="passenger">Passenger</label> -->
+            <!--         </div> -->
+            <!---->
+            <!--         <div class="button-group"> -->
+            <!--             <button type="button" class="btn-back" onclick="goToStep(1)">← Back</button> -->
+            <!--             <button type="button" class="btn-next" onclick="checkRoleandGo()">Next →</button> -->
+            <!--         </div> -->
+            <!--     </form> -->
+            <!-- </div> -->
+
+            <!-- FORM STEP 3 -->
+            <!-- <div class="step" id="step-3" style="display: none;"> -->
+            <!--     <h2>Step 3: More Details</h2> -->
+            <!--     <form id="form-step-3"> -->
+            <!--         <label>Are you able to drive this date?</label> -->
+            <!--         <div class="checkbox-group"> -->
+            <!--             <input type="radio" name="car-available" value="yes" id="car-yes"> -->
+            <!--             <label for="car-yes">Yes</label> -->
+            <!--         </div> -->
+            <!--         <div class="checkbox-group"> -->
+            <!--             <input type="radio" name="car-available" value="no" id="car-no" checked> -->
+            <!--             <label for="car-no">No</label> -->
+            <!--         </div> -->
+            <!---->
+            <!--         <label>How many seats are available?</label> -->
+            <!--         <input type="number" id="seats" placeholder="0" min="0" max="8" required> -->
+            <!---->
+            <!--         <label>Destination:</label> -->
+            <!--         <input type="text" id="destination-2" placeholder="Enter destination" required> -->
+            <!---->
+            <!--         <div class="button-group"> -->
+            <!--             <button type="button" class="btn-back" onclick="goToStep(2)">← Back</button> -->
+            <!--             <button type="button" class="btn-next" onclick="goToStep(4)">Next →</button> -->
+            <!--         </div> -->
+            <!--     </form> -->
+            <!-- </div> -->
+
+            <!-- FORM STEP 4 - SUMMARY -->
+            <!-- <div class="step" id="step-4" style="display: none;"> -->
+            <!--     <h2>Step 4: Review Your Booking</h2> -->
+            <!--     <div class="summary-box"> -->
+            <!--         <p><strong>Pickup:</strong> <span id="summary-pickup">-</span></p> -->
+            <!--         <p><strong>Destination:</strong> <span id="summary-destination">-</span></p> -->
+            <!--         <p><strong>Time:</strong> <span id="summary-time">-</span></p> -->
+            <!--         <p><strong>You are a:</strong> <span id="summary-role">-</span></p> -->
+            <!--         <p><strong>Seats Available:</strong> <span id="summary-seats">-</span></p> -->
+            <!--     </div> -->
+            <!---->
+            <!--     <div class="button-group"> -->
+            <!--         <button type="button" class="btn-back" onclick="goFromStepFour()">← Back</button> -->
+            <!--         <button type="button" class="btn-submit" onclick="submitBooking()">✓ Submit Booking</button> -->
+            <!--     </div> -->
+            <!-- </div> -->
+
+            <!-- SUCCESS MESSAGE -->
+            <!-- <div id="success-message" style="display: none;" class="success-box"> -->
+            <!--     <h2>✓ Booking Confirmed!</h2> -->
+            <!--     <p>Your ride has been booked successfully.</p> -->
+            <!--     <button onclick="startOver()" class="btn-next">Book Another Ride</button> -->
+            <!-- </div> -->
+
+
+            <form action="signup" id="calendarForm">
+                <fieldset>
+                    <div class="day-card__field">
+                        <span class="details">Are you able to carpool today?</span>
+                        <div class="radio-group radio-group--stacked">
+                            <label class="radio-option" for="carpoolYes">
+                                <input type="radio" id="carpoolYes" name="carpoolingIntent" required value="true"
+                                    checked>
+                                <span>Yes</span>
+                            </label>
+                            <label class="radio-option" for="carpoolNo">
+                                <input type="radio" id="carpoolNo" name="carpoolingIntent" required value="false">
+                                <span>No</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="day-card__field">
+                        <span class="details">Passenger or Driver</span>
+                        <div class="radio-group radio-group--stacked">
+                            <label class="radio-option" for="passenger">
+                                <input type="radio" id="passenger" name="carAvailability" required value="false"
+                                    checked>
+                                <span>Passenger</span>
+                            </label>
+                            <label class="radio-option" for="driver">
+                                <input type="radio" id="driver" name="carAvailability" required value="true">
+                                <span>Driver</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="day-card__field">
+                        <label class="details" for="seats">Seats Available</label>
+                        <input type="number" id="seats" name="seatsOffered" required min="1" max="5"
+                            placeholder="Number of seats excluding driver">
+                    </div>
+                    <div class="day-card__field">
+                        <label class="details" for="pickup">Pickup-point</label>
+                        <input type="text" id="pickup" name="pickupPoint" required placeholder="Address to point">
+                    </div>
+                    <div class="day-card__field">
+                        <label class="details" for="destination">Destination</label>
+                        <input type="text" id="destination" name="destination" required placeholder="Address to stop">
+                    </div>
+                    <div class="day-card__field">
+                        <label class="details" for="arrival">Time of arrival</label>
+                        <input type="time" id="arrival" name="timeOfArrival" required>
+                    </div>
+                </fieldset>
+                <input type="submit" id="calendarSubmit" value="Save">
+            </form>
         </div>
 
-        <!-- SUCCESS MESSAGE -->
-        <div id="success-message" style="display: none;" class="success-box">
-            <h2>✓ Booking Confirmed!</h2>
-            <p>Your ride has been booked successfully.</p>
-            <button onclick="startOver()" class="btn-next">Book Another Ride</button>
-        </div>
-
-    </div>
-    
-    <script src="../JS/calenderscript.js"></script>
+        <script src="../JS/calenderscript.js"></script>
 </body>
+
 </html>

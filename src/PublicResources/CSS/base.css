@@ -102,7 +102,8 @@ input:focus {
 }
 
 button,
-.button-secondary {
+.button-secondary,
+input[type="submit"] {
   width: 100%;
   padding: 15px;
   margin-top: 15px;
@@ -118,12 +119,14 @@ button,
 }
 
 button:hover:not(:disabled),
-.button-secondary:hover:not(:disabled) {
+.button-secondary:hover:not(:disabled),
+input[type="submit"]:hover:not(:disabled) {
   background-color: var(--color-primary-hover);
 }
 
 button:disabled,
-.button-secondary:disabled {
+.button-secondary:disabled,
+input[type="submit"]:disabled {
   background-color: #cbd5e1;
   color: #64748b;
   cursor: not-allowed;

@@ -4,9 +4,9 @@ import * as groupService from "../groups/group.service.js";
 
 export type LoginResult =
     | { success: true; userId: number }
-    | { success: false; reason: "invalid_credentials" };
+    | { success: false; reason: string };
 
-export type signUpResult = "User_Created" | "Phone_Number_Taken";
+export type signUpResult = "User_Created" | "Phone_Number_Taken" | string;
 
 // Handles logins
 export const loginService = async (
@@ -14,20 +14,24 @@ export const loginService = async (
     phoneNumber: string,
 ): Promise<LoginResult> => {
     // Loads all the users, using an asynchronous function
-    const users = await userModel.readUsersJSON();
+    try {
+        const users = userModel.readUsersJSON();
 
-    if (!users || Object.keys(users).length === 0) throw new Error("Empty db");
+        if (!users || Object.keys(users).length === 0) throw new Error("Empty db");
 
-    // Sorts through all the users, using the object from the key value paired users, since the user is the value.
-    for (const user of Object.values(users)) {
-        if (user.lastName === lastName && user.phoneNumber === phoneNumber) {
-            //console.log(value.id)
-            // Return the user id, if the user exists in the database.
-            return { success: true, userId: user.id };
+        // Sorts through all the users, using the object from the key value paired users, since the user is the value.
+        for (const user of Object.values(users)) {
+            if (user.lastName === lastName && user.phoneNumber === phoneNumber) {
+                //console.log(value.id)
+                // Return the user id, if the user exists in the database.
+                return { success: true, userId: user.id };
+            }
         }
+        throw new Error("invalid_credentials")
+    } catch (error) {
+        // Returns -1, an id not found in the database, if login doesnt match an user.
+        return { success: false, reason: String(error) };
     }
-    // Returns -1, an id not found in the database, if login doesnt match an user.
-    return { success: false, reason: "invalid_credentials" };
 };
 
 // The actual called function responsible for the signup
@@ -38,34 +42,38 @@ export const doSignup = async (
     preferences: userHelper.userPreferences,
 ): Promise<signUpResult> => {
     // Unpacks all the information send through the form found on the signup page.
-    const user: userModel.User = await userHelper.unpackUser(
-        firstName,
-        lastName,
-        phoneNumber,
-        preferences,
-    );
+    try {
+        const user: userModel.User = await userHelper.unpackUser(
+            firstName,
+            lastName,
+            phoneNumber,
+            preferences,
+        );
 
-    const exists: boolean = await userHelper.doUserExist(user);
+        const exists: boolean = await userHelper.doUserExist(user);
 
-    if (exists === false) {
-        const newUser: userModel.User = await userHelper.createUser(user);
+        if (exists === false) {
+            const newUser: userModel.User = await userHelper.createUser(user);
 
-        //console.log("finished geocoding");
+            //console.log("finished geocoding");
 
-        newUser.driverInGroups = await groupService.makeNewGroups(user);
+            newUser.driverInGroups = await groupService.makeNewGroups(user);
 
-        //console.log("finished making groups");
+            //console.log("finished making groups");
 
-        userModel.updateUser(newUser.id, newUser);
+            userModel.updateUser(newUser.id, newUser);
 
-        return "User_Created";
-    } else if (exists === true) {
-        return "Phone_Number_Taken";
-    } else {
-        throw new Error("Something went wrong here");
+            return "User_Created";
+        } else if (exists === true) {
+            return "Phone_Number_Taken";
+        } else {
+            throw new Error("Something went wrong while trying to create your user");
+        }
+        // Needs to do something to let the user know their profile has been created.
+        // done, it redirects
+    } catch (error) {
+        throw error;
     }
-    // Needs to do something to let the user know their profile has been created.
-    // done, it redirects
 };
 
 export const updateUserInfoById = async (
@@ -75,7 +83,7 @@ export const updateUserInfoById = async (
     lookingForGroups: boolean,
     userId: string,
 ): Promise<boolean> => {
-    let user: userModel.User = await userModel.readUser(Number(userId));
+    let user: userModel.User = userModel.readUser(Number(userId));
     const oldUser: userModel.User = { ...user };
     if (!firstName || !lastName || !phoneNumber || !lookingForGroups)
         throw new Error("Couldn't get data");

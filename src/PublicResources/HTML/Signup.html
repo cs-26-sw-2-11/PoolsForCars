@@ -1,295 +1,336 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="../CSS/signup.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../CSS/signup.css">
     <title>HTML Signup Form</title>
 </head>
+
 <body>
-<div class="signup-page">
-<div class="Header Header--signup">
-    <div class="title">Sign Up</div>
-    <form action="signup" id="signupForm">
-        <fieldset>
-            <div class="legend">Personal Information</div>
-            <div class="user-details user-details--stacked">
-                <div class="input-box">
-                    <label class="details" for="firstNameInput">First name</label>
-                    <input type="text" id="firstNameInput" name="firstName" required>
-                </div>
-                <div class="input-box">
-                    <label class="details" for="lastNameInput">Last name</label>
-                    <input type="text" id="lastNameInput" name="lastName" required>
-                </div>
-                <div class="input-box">
-                    <label class="details" for="phoneInput">Phone</label>
-                    <input type="tel" id="phoneInput" name="phoneNumber" required pattern="[0-9]{8}">
-                </div>
-            </div>
-        </fieldset>
+    <div class="signup-page">
+        <div class="Header Header--signup">
+            <div class="title">Sign Up</div>
+            <form action="signup" id="signupForm">
+                <fieldset>
+                    <div class="legend">Personal Information</div>
+                    <div class="user-details user-details--stacked">
+                        <div class="input-box">
+                            <label class="details" for="firstNameInput">First name</label>
+                            <input type="text" id="firstNameInput" name="firstName" required>
+                        </div>
+                        <div class="input-box">
+                            <label class="details" for="lastNameInput">Last name</label>
+                            <input type="text" id="lastNameInput" name="lastName" required>
+                        </div>
+                        <div class="input-box">
+                            <label class="details" for="phoneInput">Phone</label>
+                            <input type="tel" id="phoneInput" name="phoneNumber" required pattern="[0-9]{8}">
+                        </div>
+                    </div>
+                </fieldset>
 
-        <fieldset>
-            <div class="legend">Carpooling Preferences</div>
-            <div class="day-selector" role="radiogroup" aria-label="Choose a day for carpooling preferences">
-                <label class="day-selector__option" for="signupDayMonday">
-                    <input type="radio" id="signupDayMonday" name="signupSelectedDay" value="monday" checked>
-                    <span>Monday</span>
-                </label>
-                <label class="day-selector__option" for="signupDayTuesday">
-                    <input type="radio" id="signupDayTuesday" name="signupSelectedDay" value="tuesday">
-                    <span>Tuesday</span>
-                </label>
-                <label class="day-selector__option" for="signupDayWednesday">
-                    <input type="radio" id="signupDayWednesday" name="signupSelectedDay" value="wednesday">
-                    <span>Wednesday</span>
-                </label>
-                <label class="day-selector__option" for="signupDayThursday">
-                    <input type="radio" id="signupDayThursday" name="signupSelectedDay" value="thursday">
-                    <span>Thursday</span>
-                </label>
-                <label class="day-selector__option" for="signupDayFriday">
-                    <input type="radio" id="signupDayFriday" name="signupSelectedDay" value="friday">
-                    <span>Friday</span>
-                </label>
-            </div>
-            <div class="day-grid" data-day-picker>
-                <section class="day-card" data-role-card data-day-card="monday">
-                    <div class="day-card__title">Monday</div>
-                    <div class="day-card__field">
-                        <span class="details">Are you able to carpool today?</span>
-                        <div class="radio-group radio-group--stacked">
-                            <label class="radio-option" for="signupMondayCarpoolYes">
-                                <input type="radio" id="signupMondayCarpoolYes" name="signupMondayCarpoolingIntent" required value="true" checked>
-                                <span>Yes</span>
-                            </label>
-                            <label class="radio-option" for="signupMondayCarpoolNo">
-                                <input type="radio" id="signupMondayCarpoolNo" name="signupMondayCarpoolingIntent" required value="false">
-                                <span>No</span>
-                            </label>
-                        </div>
+                <fieldset>
+                    <div class="legend">Carpooling Preferences</div>
+                    <div class="day-selector" role="radiogroup" aria-label="Choose a day for carpooling preferences">
+                        <label class="day-selector__option" for="signupDayMonday">
+                            <input type="radio" id="signupDayMonday" name="signupSelectedDay" value="monday" checked>
+                            <span>Monday</span>
+                        </label>
+                        <label class="day-selector__option" for="signupDayTuesday">
+                            <input type="radio" id="signupDayTuesday" name="signupSelectedDay" value="tuesday">
+                            <span>Tuesday</span>
+                        </label>
+                        <label class="day-selector__option" for="signupDayWednesday">
+                            <input type="radio" id="signupDayWednesday" name="signupSelectedDay" value="wednesday">
+                            <span>Wednesday</span>
+                        </label>
+                        <label class="day-selector__option" for="signupDayThursday">
+                            <input type="radio" id="signupDayThursday" name="signupSelectedDay" value="thursday">
+                            <span>Thursday</span>
+                        </label>
+                        <label class="day-selector__option" for="signupDayFriday">
+                            <input type="radio" id="signupDayFriday" name="signupSelectedDay" value="friday">
+                            <span>Friday</span>
+                        </label>
                     </div>
-                    <div class="day-card__field">
-                        <span class="details">Passenger or Driver</span>
-                        <div class="radio-group radio-group--stacked">
-                            <label class="radio-option" for="signupMondayPassenger">
-                                <input type="radio" id="signupMondayPassenger" name="signupMondayCarAvailability" required value="false" checked>
-                                <span>Passenger</span>
-                            </label>
-                            <label class="radio-option" for="signupMondayDriver">
-                                <input type="radio" id="signupMondayDriver" name="signupMondayCarAvailability" required value="true">
-                                <span>Driver</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupMondaySeats">Seats Available</label>
-                        <input type="number" id="signupMondaySeats" name="signupMondaySeatsOffered" required min="1" max="5" placeholder="Number of seats excluding driver">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupMondayPickup">Pickup-point</label>
-                        <input type="text" id="signupMondayPickup" name="signupMondayPickupPoint" required placeholder="Address to point">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupMondayDestination">Destination</label>
-                        <input type="text" id="signupMondayDestination" name="signupMondayDestination" required placeholder="Address to stop">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupMondayArrival">Time of arrival</label>
-                        <input type="time" id="signupMondayArrival" name="signupMondayTimeOfArrival" required>
-                    </div>
-                </section>
+                    <div class="day-grid" data-day-picker>
+                        <section class="day-card" data-role-card data-day-card="monday">
+                            <div class="day-card__title">Monday</div>
+                            <div class="day-card__field">
+                                <span class="details">Are you able to carpool today?</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="signupMondayCarpoolYes">
+                                        <input type="radio" id="signupMondayCarpoolYes"
+                                            name="signupMondayCarpoolingIntent" required value="true" checked>
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="radio-option" for="signupMondayCarpoolNo">
+                                        <input type="radio" id="signupMondayCarpoolNo"
+                                            name="signupMondayCarpoolingIntent" required value="false">
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-card__field">
+                                <span class="details">Passenger or Driver</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="signupMondayPassenger">
+                                        <input type="radio" id="signupMondayPassenger"
+                                            name="signupMondayCarAvailability" required value="false" checked>
+                                        <span>Passenger</span>
+                                    </label>
+                                    <label class="radio-option" for="signupMondayDriver">
+                                        <input type="radio" id="signupMondayDriver" name="signupMondayCarAvailability"
+                                            required value="true">
+                                        <span>Driver</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupMondaySeats">Seats Available</label>
+                                <input type="number" id="signupMondaySeats" name="signupMondaySeatsOffered" required
+                                    min="1" max="5" placeholder="Number of seats excluding driver">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupMondayPickup">Pickup-point</label>
+                                <input type="text" id="signupMondayPickup" name="signupMondayPickupPoint" required
+                                    placeholder="Address to point">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupMondayDestination">Destination</label>
+                                <input type="text" id="signupMondayDestination" name="signupMondayDestination" required
+                                    placeholder="Address to stop">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupMondayArrival">Time of arrival</label>
+                                <input type="time" id="signupMondayArrival" name="signupMondayTimeOfArrival" required>
+                            </div>
+                        </section>
 
-                <section class="day-card" data-role-card data-day-card="tuesday">
-                    <div class="day-card__title">Tuesday</div>
-                    <div class="day-card__field">
-                        <span class="details">Are you able to carpool today?</span>
-                        <div class="radio-group radio-group--stacked">
-                            <label class="radio-option" for="signupTuesdayCarpoolYes">
-                                <input type="radio" id="signupTuesdayCarpoolYes" name="signupTuesdayCarpoolingIntent" required value="true" checked>
-                                <span>Yes</span>
-                            </label>
-                            <label class="radio-option" for="signupTuesdayCarpoolNo">
-                                <input type="radio" id="signupTuesdayCarpoolNo" name="signupTuesdayCarpoolingIntent" required value="false">
-                                <span>No</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="day-card__field">
-                        <span class="details">Passenger or Driver</span>
-                        <div class="radio-group radio-group--stacked">
-                            <label class="radio-option" for="signupTuesdayPassenger">
-                                <input type="radio" id="signupTuesdayPassenger" name="signupTuesdayCarAvailability" required value="false" checked>
-                                <span>Passenger</span>
-                            </label>
-                            <label class="radio-option" for="signupTuesdayDriver">
-                                <input type="radio" id="signupTuesdayDriver" name="signupTuesdayCarAvailability" required value="true">
-                                <span>Driver</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupTuesdaySeats">Seats Available</label>
-                        <input type="number" id="signupTuesdaySeats" name="signupTuesdaySeatsOffered" required min="1" max="5" placeholder="Number of seats excluding driver">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupTuesdayPickup">Pickup-point</label>
-                        <input type="text" id="signupTuesdayPickup" name="signupTuesdayPickupPoint" required placeholder="Address to point">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupTuesdayDestination">Destination</label>
-                        <input type="text" id="signupTuesdayDestination" name="signupTuesdayDestination" required placeholder="Address to stop">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupTuesdayArrival">Time of arrival</label>
-                        <input type="time" id="signupTuesdayArrival" name="signupTuesdayTimeOfArrival" required>
-                    </div>
-                </section>
+                        <section class="day-card" data-role-card data-day-card="tuesday">
+                            <div class="day-card__title">Tuesday</div>
+                            <div class="day-card__field">
+                                <span class="details">Are you able to carpool today?</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="signupTuesdayCarpoolYes">
+                                        <input type="radio" id="signupTuesdayCarpoolYes"
+                                            name="signupTuesdayCarpoolingIntent" required value="true" checked>
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="radio-option" for="signupTuesdayCarpoolNo">
+                                        <input type="radio" id="signupTuesdayCarpoolNo"
+                                            name="signupTuesdayCarpoolingIntent" required value="false">
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-card__field">
+                                <span class="details">Passenger or Driver</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="signupTuesdayPassenger">
+                                        <input type="radio" id="signupTuesdayPassenger"
+                                            name="signupTuesdayCarAvailability" required value="false" checked>
+                                        <span>Passenger</span>
+                                    </label>
+                                    <label class="radio-option" for="signupTuesdayDriver">
+                                        <input type="radio" id="signupTuesdayDriver" name="signupTuesdayCarAvailability"
+                                            required value="true">
+                                        <span>Driver</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupTuesdaySeats">Seats Available</label>
+                                <input type="number" id="signupTuesdaySeats" name="signupTuesdaySeatsOffered" required
+                                    min="1" max="5" placeholder="Number of seats excluding driver">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupTuesdayPickup">Pickup-point</label>
+                                <input type="text" id="signupTuesdayPickup" name="signupTuesdayPickupPoint" required
+                                    placeholder="Address to point">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupTuesdayDestination">Destination</label>
+                                <input type="text" id="signupTuesdayDestination" name="signupTuesdayDestination"
+                                    required placeholder="Address to stop">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupTuesdayArrival">Time of arrival</label>
+                                <input type="time" id="signupTuesdayArrival" name="signupTuesdayTimeOfArrival" required>
+                            </div>
+                        </section>
 
-                <section class="day-card" data-role-card data-day-card="wednesday">
-                    <div class="day-card__title">Wednesday</div>
-                    <div class="day-card__field">
-                        <span class="details">Are you able to carpool today?</span>
-                        <div class="radio-group radio-group--stacked">
-                            <label class="radio-option" for="signupWednesdayCarpoolYes">
-                                <input type="radio" id="signupWednesdayCarpoolYes" name="signupWednesdayCarpoolingIntent" required value="true" checked>
-                                <span>Yes</span>
-                            </label>
-                            <label class="radio-option" for="signupWednesdayCarpoolNo">
-                                <input type="radio" id="signupWednesdayCarpoolNo" name="signupWednesdayCarpoolingIntent" required value="false">
-                                <span>No</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="day-card__field">
-                        <span class="details">Passenger or Driver</span>
-                        <div class="radio-group radio-group--stacked">
-                            <label class="radio-option" for="signupWednesdayPassenger">
-                                <input type="radio" id="signupWednesdayPassenger" name="signupWednesdayCarAvailability" required value="false" checked>
-                                <span>Passenger</span>
-                            </label>
-                            <label class="radio-option" for="signupWednesdayDriver">
-                                <input type="radio" id="signupWednesdayDriver" name="signupWednesdayCarAvailability" required value="true">
-                                <span>Driver</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupWednesdaySeats">Seats Available</label>
-                        <input type="number" id="signupWednesdaySeats" name="signupWednesdaySeatsOffered" required min="1" max="5" placeholder="Number of seats excluding driver">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupWednesdayPickup">Pickup-point</label>
-                        <input type="text" id="signupWednesdayPickup" name="signupWednesdayPickupPoint" required placeholder="Address to point">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupWednesdayDestination">Destination</label>
-                        <input type="text" id="signupWednesdayDestination" name="signupWednesdayDestination" required placeholder="Address to stop">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupWednesdayArrival">Time of arrival</label>
-                        <input type="time" id="signupWednesdayArrival" name="signupWednesdayTimeOfArrival" required>
-                    </div>
-                </section>
+                        <section class="day-card" data-role-card data-day-card="wednesday">
+                            <div class="day-card__title">Wednesday</div>
+                            <div class="day-card__field">
+                                <span class="details">Are you able to carpool today?</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="signupWednesdayCarpoolYes">
+                                        <input type="radio" id="signupWednesdayCarpoolYes"
+                                            name="signupWednesdayCarpoolingIntent" required value="true" checked>
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="radio-option" for="signupWednesdayCarpoolNo">
+                                        <input type="radio" id="signupWednesdayCarpoolNo"
+                                            name="signupWednesdayCarpoolingIntent" required value="false">
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-card__field">
+                                <span class="details">Passenger or Driver</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="signupWednesdayPassenger">
+                                        <input type="radio" id="signupWednesdayPassenger"
+                                            name="signupWednesdayCarAvailability" required value="false" checked>
+                                        <span>Passenger</span>
+                                    </label>
+                                    <label class="radio-option" for="signupWednesdayDriver">
+                                        <input type="radio" id="signupWednesdayDriver"
+                                            name="signupWednesdayCarAvailability" required value="true">
+                                        <span>Driver</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupWednesdaySeats">Seats Available</label>
+                                <input type="number" id="signupWednesdaySeats" name="signupWednesdaySeatsOffered"
+                                    required min="1" max="5" placeholder="Number of seats excluding driver">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupWednesdayPickup">Pickup-point</label>
+                                <input type="text" id="signupWednesdayPickup" name="signupWednesdayPickupPoint" required
+                                    placeholder="Address to point">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupWednesdayDestination">Destination</label>
+                                <input type="text" id="signupWednesdayDestination" name="signupWednesdayDestination"
+                                    required placeholder="Address to stop">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupWednesdayArrival">Time of arrival</label>
+                                <input type="time" id="signupWednesdayArrival" name="signupWednesdayTimeOfArrival"
+                                    required>
+                            </div>
+                        </section>
 
-                <section class="day-card" data-role-card data-day-card="thursday">
-                    <div class="day-card__title">Thursday</div>
-                    <div class="day-card__field">
-                        <span class="details">Are you able to carpool today?</span>
-                        <div class="radio-group radio-group--stacked">
-                            <label class="radio-option" for="signupThursdayCarpoolYes">
-                                <input type="radio" id="signupThursdayCarpoolYes" name="signupThursdayCarpoolingIntent" required value="true" checked>
-                                <span>Yes</span>
-                            </label>
-                            <label class="radio-option" for="signupThursdayCarpoolNo">
-                                <input type="radio" id="signupThursdayCarpoolNo" name="signupThursdayCarpoolingIntent" required value="false">
-                                <span>No</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="day-card__field">
-                        <span class="details">Passenger or Driver</span>
-                        <div class="radio-group radio-group--stacked">
-                            <label class="radio-option" for="signupThursdayPassenger">
-                                <input type="radio" id="signupThursdayPassenger" name="signupThursdayCarAvailability" required value="false" checked>
-                                <span>Passenger</span>
-                            </label>
-                            <label class="radio-option" for="signupThursdayDriver">
-                                <input type="radio" id="signupThursdayDriver" name="signupThursdayCarAvailability" required value="true">
-                                <span>Driver</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupThursdaySeats">Seats Available</label>
-                        <input type="number" id="signupThursdaySeats" name="signupThursdaySeatsOffered" required min="1" max="5" placeholder="Number of seats excluding driver">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupThursdayPickup">Pickup-point</label>
-                        <input type="text" id="signupThursdayPickup" name="signupThursdayPickupPoint" required placeholder="Address to point">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupThursdayDestination">Destination</label>
-                        <input type="text" id="signupThursdayDestination" name="signupThursdayDestination" required placeholder="Address to stop">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupThursdayArrival">Time of arrival</label>
-                        <input type="time" id="signupThursdayArrival" name="signupThursdayTimeOfArrival" required>
-                    </div>
-                </section>
+                        <section class="day-card" data-role-card data-day-card="thursday">
+                            <div class="day-card__title">Thursday</div>
+                            <div class="day-card__field">
+                                <span class="details">Are you able to carpool today?</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="signupThursdayCarpoolYes">
+                                        <input type="radio" id="signupThursdayCarpoolYes"
+                                            name="signupThursdayCarpoolingIntent" required value="true" checked>
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="radio-option" for="signupThursdayCarpoolNo">
+                                        <input type="radio" id="signupThursdayCarpoolNo"
+                                            name="signupThursdayCarpoolingIntent" required value="false">
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-card__field">
+                                <span class="details">Passenger or Driver</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="signupThursdayPassenger">
+                                        <input type="radio" id="signupThursdayPassenger"
+                                            name="signupThursdayCarAvailability" required value="false" checked>
+                                        <span>Passenger</span>
+                                    </label>
+                                    <label class="radio-option" for="signupThursdayDriver">
+                                        <input type="radio" id="signupThursdayDriver"
+                                            name="signupThursdayCarAvailability" required value="true">
+                                        <span>Driver</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupThursdaySeats">Seats Available</label>
+                                <input type="number" id="signupThursdaySeats" name="signupThursdaySeatsOffered" required
+                                    min="1" max="5" placeholder="Number of seats excluding driver">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupThursdayPickup">Pickup-point</label>
+                                <input type="text" id="signupThursdayPickup" name="signupThursdayPickupPoint" required
+                                    placeholder="Address to point">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupThursdayDestination">Destination</label>
+                                <input type="text" id="signupThursdayDestination" name="signupThursdayDestination"
+                                    required placeholder="Address to stop">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupThursdayArrival">Time of arrival</label>
+                                <input type="time" id="signupThursdayArrival" name="signupThursdayTimeOfArrival"
+                                    required>
+                            </div>
+                        </section>
 
-                <section class="day-card" data-role-card data-day-card="friday">
-                    <div class="day-card__title">Friday</div>
-                    <div class="day-card__field">
-                        <span class="details">Are you able to carpool today?</span>
-                        <div class="radio-group radio-group--stacked">
-                            <label class="radio-option" for="signupFridayCarpoolYes">
-                                <input type="radio" id="signupFridayCarpoolYes" name="signupFridayCarpoolingIntent" required value="true" checked>
-                                <span>Yes</span>
-                            </label>
-                            <label class="radio-option" for="signupFridayCarpoolNo">
-                                <input type="radio" id="signupFridayCarpoolNo" name="signupFridayCarpoolingIntent" required value="false">
-                                <span>No</span>
-                            </label>
-                        </div>
+                        <section class="day-card" data-role-card data-day-card="friday">
+                            <div class="day-card__title">Friday</div>
+                            <div class="day-card__field">
+                                <span class="details">Are you able to carpool today?</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="signupFridayCarpoolYes">
+                                        <input type="radio" id="signupFridayCarpoolYes"
+                                            name="signupFridayCarpoolingIntent" required value="true" checked>
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="radio-option" for="signupFridayCarpoolNo">
+                                        <input type="radio" id="signupFridayCarpoolNo"
+                                            name="signupFridayCarpoolingIntent" required value="false">
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-card__field">
+                                <span class="details">Passenger or Driver</span>
+                                <div class="radio-group radio-group--stacked">
+                                    <label class="radio-option" for="signupFridayPassenger">
+                                        <input type="radio" id="signupFridayPassenger"
+                                            name="signupFridayCarAvailability" required value="false" checked>
+                                        <span>Passenger</span>
+                                    </label>
+                                    <label class="radio-option" for="signupFridayDriver">
+                                        <input type="radio" id="signupFridayDriver" name="signupFridayCarAvailability"
+                                            required value="true">
+                                        <span>Driver</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupFridaySeats">Seats Available</label>
+                                <input type="number" id="signupFridaySeats" name="signupFridaySeatsOffered" required
+                                    min="1" max="5" placeholder="Number of seats excluding driver">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupFridayPickup">Pickup-point</label>
+                                <input type="text" id="signupFridayPickup" name="signupFridayPickupPoint" required
+                                    placeholder="Address to point">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupFridayDestination">Destination</label>
+                                <input type="text" id="signupFridayDestination" name="signupFridayDestination" required
+                                    placeholder="Address to stop">
+                            </div>
+                            <div class="day-card__field">
+                                <label class="details" for="signupFridayArrival">Time of arrival</label>
+                                <input type="time" id="signupFridayArrival" name="signupFridayTimeOfArrival" required>
+                            </div>
+                        </section>
                     </div>
-                    <div class="day-card__field">
-                        <span class="details">Passenger or Driver</span>
-                        <div class="radio-group radio-group--stacked">
-                            <label class="radio-option" for="signupFridayPassenger">
-                                <input type="radio" id="signupFridayPassenger" name="signupFridayCarAvailability" required value="false" checked>
-                                <span>Passenger</span>
-                            </label>
-                            <label class="radio-option" for="signupFridayDriver">
-                                <input type="radio" id="signupFridayDriver" name="signupFridayCarAvailability" required value="true">
-                                <span>Driver</span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupFridaySeats">Seats Available</label>
-                        <input type="number" id="signupFridaySeats" name="signupFridaySeatsOffered" required min="1" max="5" placeholder="Number of seats excluding driver">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupFridayPickup">Pickup-point</label>
-                        <input type="text" id="signupFridayPickup" name="signupFridayPickupPoint" required placeholder="Address to point">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupFridayDestination">Destination</label>
-                        <input type="text" id="signupFridayDestination" name="signupFridayDestination" required placeholder="Address to stop">
-                    </div>
-                    <div class="day-card__field">
-                        <label class="details" for="signupFridayArrival">Time of arrival</label>
-                        <input type="time" id="signupFridayArrival" name="signupFridayTimeOfArrival" required>
-                    </div>
-                </section>
-            </div>
-        </fieldset>
+                </fieldset>
 
-        <button id="signupSubmit" type="submit">Sign Up</button>
-        <p class="login-text">Already have an account? <a href="./login">Login</a></p>
-    </form>
-</div>
-</div>
-<script src="../JS/Signup.js"></script>
+
+                <input type="submit" id="signupSubmit" value="Sign Up">
+                <p class="login-text">Already have an account? <a href="./login">Login</a></p>
+            </form>
+        </div>
+    </div>
+    <script src="../JS/Signup.js"></script>
 </body>
+
 </html>

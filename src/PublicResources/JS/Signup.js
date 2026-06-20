@@ -135,6 +135,8 @@ window.addEventListener("DOMContentLoaded", function () {
 
     form.addEventListener("submit", async function (event) {
         event.preventDefault();
+        document.getElementById("signupSubmit").disabled = true; // prevent double submission
+
         var formData = new FormData(form);
         var userPayload = buildUserPayload(formData);
 
@@ -146,8 +148,13 @@ window.addEventListener("DOMContentLoaded", function () {
 
         const data = await response.json();
 
+        console.log(data);
+
         if (response.status === 200) { // ok
             window.location.href = data.redirect;
+        } else {
+            alert(data.message);
+            document.getElementById("signupSubmit").disabled = false; // reenable submission
         }
     });
 });
