@@ -316,7 +316,7 @@ if (userId === undefined || userId === 'undefined') {
             var lookingForGroups = false;
             var schedule = null;
 
-            if (currentUser) {
+            if (currentUser != null) {
                 lookingForGroups = currentUser.lookingForGroups;
                 updateScheduleFromForm();
                 schedule = currentUser.schedule;

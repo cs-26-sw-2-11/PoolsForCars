@@ -1,6 +1,7 @@
 import * as userModel from "../../models/user.model.js";
 import * as userHelper from "./user.helper.service.js";
 import * as groupService from "../groups/group.service.js";
+import type { Week } from "../../models/week.model.js";
 
 export type LoginResult =
     | { success: true; userId: number }
@@ -51,6 +52,7 @@ export const doSignup = async (
         );
 
         const exists: boolean = await userHelper.doUserExist(user);
+        console.log(exists)
 
         if (exists === false) {
             const newUser: userModel.User = await userHelper.createUser(user);
@@ -81,16 +83,18 @@ export const updateUserInfoById = async (
     lastName: string,
     phoneNumber: string,
     lookingForGroups: boolean,
+    schedule: Week,
     userId: string,
 ): Promise<boolean> => {
     let user: userModel.User = userModel.readUser(Number(userId));
     const oldUser: userModel.User = { ...user };
-    if (!firstName || !lastName || !phoneNumber || !lookingForGroups)
+    if (!firstName || !lastName || !phoneNumber)
         throw new Error("Couldn't get data");
     user.firstName = firstName;
     user.lastName = lastName;
     user.phoneNumber = phoneNumber;
     user.lookingForGroups = lookingForGroups;
+    user.schedule = schedule;
     if (
         user.firstName === oldUser.firstName &&
         user.lastName === oldUser.lastName &&

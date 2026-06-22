@@ -42,7 +42,7 @@ let meta: UserMeta;
 // ====== WRITE QUEUE ======
 let userWriteQueue: Promise<any> = Promise.resolve();
 const enqueue = <T>(task: () => Promise<T>): Promise<T> => {
-    userWriteQueue = userWriteQueue.then(task, task); // handle the rejected callback properly or something
+    userWriteQueue = userWriteQueue.then(task, task);
     return userWriteQueue;
 };
 

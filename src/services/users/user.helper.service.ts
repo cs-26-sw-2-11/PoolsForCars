@@ -100,6 +100,7 @@ export const unpackUser = async (
 
 
     for (const day of Object.entries(userPreferences)) {
+        if (!day[1].carpoolingIntent) continue;
         try {
             schedule.days[day[1].day] = {
                 date: startDate,

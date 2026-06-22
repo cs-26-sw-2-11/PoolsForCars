@@ -50,6 +50,7 @@ export const updateUserById = async (
             req.body.lastName,
             req.body.phoneNumber,
             req.body.lookingForGroups,
+            req.body.schedule,
             req.params["userId"] as string,
         );
         if (success === true) {
